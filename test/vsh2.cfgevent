@@ -1,0 +1,78 @@
+"config"
+{
+	// same as "weapons" with "*" params, except it doesnt limit to only the player and gets executed before "weapons"
+	"globals"
+	{
+		"downloads"
+		{
+			"<enum>"
+			{
+				"procedure"  "ConfigEvent_Download"
+				
+				"materials"
+				{
+					"<enum>"	"test0"
+					"<enum>"	"test1"
+					"<enum>"	"test1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.6"
+					"<enum>"	"test1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXyt"
+				}
+			}
+		}
+		"uber_deploy"
+		{
+			"<enum>"
+			{
+				"procedure"  "ConfigEvent_ManageSelfTFCond"
+				
+				// depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
+				// 'target' will assume the 'player' is an entity index
+				// while 'vsh2target' will assume the 'player' is a client userid
+				"vsh2target"	"medic"
+				//"target"		"medic"
+
+				// 1 << 0 = target my team
+				// 1 << 1 = target other team
+				// 1 << 2 = ignore minions
+				"flags"			"101"		// target my team and my minions only
+				"add"			"true"
+				
+				"distance"		"<800.0"	// less than 800.0 HU
+				//"distance"	"800.0"		// less than 800.0 HU
+				//"distance"	">800.0"	// more than 800.0 HU
+
+				"conditions"
+				{
+					"<enum>"
+					{
+						"id"		"7"
+						"duration"  "10.0"
+					}
+				}
+			}
+		}		 
+	}
+	"weapons"
+	{
+		"36, 305"
+		{
+			"uber_deploy"
+			{
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_PrintToServer"
+					"text"	"First"
+				}
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_PrintToServer"
+					"text"	"Second"
+				}
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_PrintToServer"
+					"text"	"Last"
+				}
+			}
+		}
+	}
+}
