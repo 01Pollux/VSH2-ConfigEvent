@@ -1,4 +1,3 @@
-
 /**
  * Keys:
  * [in] "victim" : victim userid/vsh2player instance
@@ -10,6 +9,31 @@
  * default: rewrite the new damage, returning 'Plugin_Handled' will halt function execution for weapons
  */
 
+Action ConfigEvent_OnBossTakeDamage(
+	VSH2Player victim,
+	int& attacker,
+	int& inflictor,
+	float& damage,
+	int& damagetype,
+	int& weapon,
+	float damageForce[3],
+	float damagePosition[3],
+	int damagecustom
+)
+{
+	if (0 < attacker <= MaxClients)
+	{
+		VSH2Player player = VSH2Player(attacker);
+		if (player.GetPropAny("bIsZombie"))
+		{
+			ConfigMap section = view_as<ConfigMap>(player.GetPropAny("_cfgsys_minion_section"));
+			float steal_hp; section.GetFloat("vampire", steal_hp);
+			if (steal_hp)
+				damage /= steal_hp;
+		}
+	}
+	return Plugin_Continue;
+}
 
 Action ConfigEvent_OnBossTakeDamage_OnStabbed(
 	VSH2Player victim,
@@ -45,7 +69,7 @@ Action ConfigEvent_OnBossTakeDamage_OnStabbed(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnStabbed);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnStabbed);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -93,7 +117,7 @@ Action ConfigEvent_OnBossTakeDamage_OnTelefragged(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnTelefragged);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnTelefragged);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -141,7 +165,7 @@ Action ConfigEvent_OnBossTakeDamage_OnSwordTaunt(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnSwordTaunt);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnSwordTaunt);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -189,7 +213,7 @@ Action ConfigEvent_OnBossTakeDamage_OnHeavyShotgun(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnHeavyShotgun);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnHeavyShotgun);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -237,7 +261,7 @@ Action ConfigEvent_OnBossTakeDamage_OnSniped(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnSniped);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnSniped);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -285,7 +309,7 @@ Action ConfigEvent_OnBossTakeDamage_OnThirdDegreed(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnThirdDegreed);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnThirdDegreed);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -333,7 +357,7 @@ Action ConfigEvent_OnBossTakeDamage_OnHitSword(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnHitSword);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnHitSword);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -381,7 +405,7 @@ Action ConfigEvent_OnBossTakeDamage_OnHitFanOWar(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnHitFanOWar);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnHitFanOWar);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -429,7 +453,7 @@ Action ConfigEvent_OnBossTakeDamage_OnHitCandyCane(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnHitCandyCane);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnHitCandyCane);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -477,7 +501,7 @@ Action ConfigEvent_OnBossTakeDamage_OnMarketGardened(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnMarketGardened);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnMarketGardened);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -525,7 +549,7 @@ Action ConfigEvent_OnBossTakeDamage_OnKatana(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnKatana);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnKatana);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -573,7 +597,7 @@ Action ConfigEvent_OnBossTakeDamage_OnPowerJack(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnPowerJack);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnPowerJack);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -621,7 +645,7 @@ Action ConfigEvent_OnBossTakeDamage_OnAmbassadorHeadshot(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnAmbassadorHeadshot);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnAmbassadorHeadshot);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -669,7 +693,7 @@ Action ConfigEvent_OnBossTakeDamage_OnHolidayPunch(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnHolidayPunch);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnHolidayPunch);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -717,7 +741,7 @@ Action ConfigEvent_OnBossTakeDamage_OnDiamondbackManmelterCrit(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnDiamonBackManmelterCrit);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnDiamonBackManmelterCrit);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -765,7 +789,7 @@ Action ConfigEvent_OnBossAirShotProj(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BossAirshotProj);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BossAirshotProj);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -823,7 +847,7 @@ Action ConfigEvent_OnBossTakeDamage_OnTriggerHurt(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("attacker", attacker);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnTriggerHurt);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnTriggerHurt);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -871,7 +895,7 @@ Action ConfigEvent_OnBossTakeDamage_OnMantreadsStomp(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("damage", damage);
 		ConfigSys.Params.SetValue("attacker", attacker);
-		Action ret = ConfigEvent_ExecuteWeapons(attacker, CET_BTD_OnMantreadsStomps);
+		Action ret = ConfigEvent_ExecuteWeapons(VSH2Player(attacker), attacker, CET_BTD_OnMantreadsStomps);
 		switch (ret)
 		{
 			case Plugin_Continue: { }

@@ -9,12 +9,9 @@
 			{
 				"procedure"  "ConfigEvent_Download"
 				
-				"materials"
+				"models"
 				{
-					"<enum>"	"test0"
-					"<enum>"	"test1"
-					"<enum>"	"test1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.6"
-					"<enum>"	"test1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXyt"
+					"<enum>"	"models/freak_fortress_2/seeman/seeldier_v0"
 				}
 			}
 		}
@@ -59,18 +56,55 @@
 			{
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_PrintToServer"
-					"text"	"First"
-				}
-				"<enum>"
-				{
-					"procedure"  "ConfigEvent_PrintToServer"
-					"text"	"Second"
-				}
-				"<enum>"
-				{
-					"procedure"  "ConfigEvent_PrintToServer"
-					"text"	"Last"
+					"procedure"	 "ConfigEvent_SummonZombie"
+					"minion can execute"	"false"
+
+					"vsh2target"	 "medic"
+					"max players"	 "3"
+
+					"vampire"		 "10.0"	// steal 5.0% of victim's health on attack
+
+					"slay"			"true"  // slay when the owner dies
+					"no boss"		"true"  // dont summon as minion if the player was previously a boss
+
+					"allow weapons" "false" // allow minions to use execute weapons config ('bCfgSysXAllow')
+					"delay"			"0.1"	// spawn minion after 'delay' seconds
+					"spawn"		 "false" // true to teleport directly to spawn
+
+					"climb"
+					{
+						"enable"	"true"
+						"velocity"  "400.0"
+					}
+
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"Xx"
+							"value" "1.0"
+						}
+					}
+
+					"info"
+					{
+						"<enum>"
+						{
+							"class"	 "3"
+							"health"	"450.0"
+							"model"	 "models/freak_fortress_2/seeman/seeldier_v0.mdl"
+
+							"text"  "You are now %N's minion! Attack the other team."
+
+							"classname"  "tf_weapon_bottle"
+							"attributes" "68 ; -1"
+							"index"	  "191"
+							"ammo"		"-9"
+							"clip"		"-9"
+
+							"particle"	"ghost_smoke"
+						}
+					}
 				}
 			}
 		}

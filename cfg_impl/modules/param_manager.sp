@@ -82,7 +82,3 @@ public Action ConfigEvent_WriteParams(EventMap args, ConfigEventType_t event_typ
 		}
 	}
 }
-
-// public Action ConfigEvent_BreakIf(EventMap args, ConfigEventType_t event_type)
-// {
-// }

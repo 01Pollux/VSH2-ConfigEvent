@@ -8,7 +8,8 @@ void ConfigEvent_LoadVSH2Hooks()
 	VSH2_HOOK(OnCallDownloads);
 
 	VSH2_HOOK(OnTouchPlayer);
-	VSH2_HOOK(OnBossDealDamage);
+	VSH2_HOOK(OnMinionInitialized);
+	VSH2_HOOK(OnTouchBuilding);
 	VSH2_HOOK(OnPlayerKilled);
 	VSH2_HOOK(OnPlayerAirblasted);
 	VSH2_HOOK(OnBossMedicCall);
@@ -16,6 +17,7 @@ void ConfigEvent_LoadVSH2Hooks()
 	VSH2_HOOK(OnBossKillBuilding);
 	VSH2_HOOK(OnBossJarated);
 	VSH2_HOOK(OnBossPickUpItem);
+	VSH2_HOOK(OnVariablesReset);
 	VSH2_HOOK(OnUberDeployed);
 	VSH2_HOOK(OnUberLoop);
 	VSH2_HOOK(OnLastPlayer);
@@ -23,6 +25,7 @@ void ConfigEvent_LoadVSH2Hooks()
 	VSH2_HOOK(OnPrepRedTeam);
 	VSH2_HOOK(OnPlayerHurt);
 
+	VSH2_HOOK(OnBossDealDamage);
 	VSH2_HOOK(OnBossDealDamage_OnStomp);
 	VSH2_HOOK(OnBossDealDamage_OnHitDefBuff);
 	VSH2_HOOK(OnBossDealDamage_OnHitCritMmmph);
@@ -31,6 +34,7 @@ void ConfigEvent_LoadVSH2Hooks()
 	VSH2_HOOK(OnBossDealDamage_OnHitCloakedSpy);
 	VSH2_HOOK(OnBossDealDamage_OnHitShield);
 
+	VSH2_HOOK(OnBossTakeDamage);
 	VSH2_HOOK(OnBossTakeDamage_OnStabbed);
 	VSH2_HOOK(OnBossTakeDamage_OnTelefragged);
 	VSH2_HOOK(OnBossTakeDamage_OnSwordTaunt);
@@ -68,8 +72,8 @@ void ConfigEvent_UnloadVSH2Hooks()
 	VSH2_UNHOOK(OnCallDownloads);
 
 	VSH2_UNHOOK(OnTouchPlayer);
+	VSH2_UNHOOK(OnMinionInitialized);
 	VSH2_UNHOOK(OnTouchBuilding);
-	VSH2_UNHOOK(OnBossDealDamage);
 	VSH2_UNHOOK(OnPlayerKilled);
 	VSH2_UNHOOK(OnPlayerAirblasted);
 	VSH2_UNHOOK(OnBossMedicCall);
@@ -77,6 +81,7 @@ void ConfigEvent_UnloadVSH2Hooks()
 	VSH2_UNHOOK(OnBossKillBuilding);
 	VSH2_UNHOOK(OnBossJarated);
 	VSH2_UNHOOK(OnBossPickUpItem);
+	VSH2_UNHOOK(OnVariablesReset);
 	VSH2_UNHOOK(OnUberDeployed);
 	VSH2_UNHOOK(OnUberLoop);
 	VSH2_UNHOOK(OnLastPlayer);
@@ -84,6 +89,7 @@ void ConfigEvent_UnloadVSH2Hooks()
 	VSH2_UNHOOK(OnPrepRedTeam);
 	VSH2_UNHOOK(OnPlayerHurt);
 
+	VSH2_UNHOOK(OnBossDealDamage);
 	VSH2_UNHOOK(OnBossDealDamage_OnStomp);
 	VSH2_UNHOOK(OnBossDealDamage_OnHitDefBuff);
 	VSH2_UNHOOK(OnBossDealDamage_OnHitCritMmmph);
@@ -92,6 +98,7 @@ void ConfigEvent_UnloadVSH2Hooks()
 	VSH2_UNHOOK(OnBossDealDamage_OnHitCloakedSpy);
 	VSH2_UNHOOK(OnBossDealDamage_OnHitShield);
 
+	VSH2_UNHOOK(OnBossTakeDamage);
 	VSH2_UNHOOK(OnBossTakeDamage_OnStabbed);
 	VSH2_UNHOOK(OnBossTakeDamage_OnTelefragged);
 	VSH2_UNHOOK(OnBossTakeDamage_OnSwordTaunt);
@@ -147,8 +154,14 @@ void ConfigEvent_OnTouchPlayer(const VSH2Player victim, const VSH2Player attacke
 	{
 		ConfigSys.Params.SetValue("toucher", attacker);
 		ConfigSys.Params.SetValue("victim", victim);
-		ConfigEvent_ExecuteWeapons(attacker.index, CET_TouchPlayer);
+		ConfigEvent_ExecuteWeapons(attacker, attacker.index, CET_TouchPlayer);
 	}
+}
+
+void ConfigEvent_OnMinionInitialized(const VSH2Player minion, const VSH2Player vsh2_owner)
+{
+	// ./cfg_impl/modules/zombie.sp
+	ConfigEvent_Zombie_Init(minion, vsh2_owner);
 }
 
 /**
@@ -274,6 +287,12 @@ void ConfigEvent_OnBossPickUpItem(const VSH2Player player, const char item[64])
 	}
 }
 
+void ConfigEvent_OnVariablesReset(const VSH2Player player)
+{
+	// ./cfg_impl/modules/zombie.sp
+	player.SetPropAny("bIsZombie", false);
+}
+
 /**
  * Keys:
  * [in] "medic": the medic's userid
@@ -291,7 +310,7 @@ void ConfigEvent_OnUberDeployed(const VSH2Player medic, const VSH2Player patient
 	{
 		ConfigSys.Params.SetValue("medic", medic);
 		ConfigSys.Params.SetValue("patient", patient);
-		ConfigEvent_ExecuteWeapons(medic.index, CET_UberDeploy);
+		ConfigEvent_ExecuteWeapons(medic, medic.index, CET_UberDeploy);
 	}
 }
 
@@ -312,7 +331,7 @@ void ConfigEvent_OnUberLoop(const VSH2Player medic, const VSH2Player patient)
 	{
 		ConfigSys.Params.SetValue("medic", medic);
 		ConfigSys.Params.SetValue("patient", patient);
-		ConfigEvent_ExecuteWeapons(medic.index, CET_UberLoop);
+		ConfigEvent_ExecuteWeapons(medic, medic.index, CET_UberLoop);
 	}
 }
 
@@ -333,7 +352,7 @@ void ConfigEvent_OnLastPlayer(const VSH2Player boss, const VSH2Player attacker)
 	{
 		ConfigSys.Params.SetValue("player", attacker);
 		ConfigSys.Params.SetValue("boss", boss);
-		ConfigEvent_ExecuteWeapons(attacker.index, CET_OnLastPlayer);
+		ConfigEvent_ExecuteWeapons(attacker, attacker.index, CET_OnLastPlayer);
 	}
 }
 
@@ -368,7 +387,7 @@ void ConfigEvent_OnPrepRedTeam(const VSH2Player player)
 	if (ConfigEvent_ShouldExecuteWeapons(CET_PrepRedTeam))
 	{
 		ConfigSys.Params.SetValue("player", player);
-		ConfigEvent_ExecuteWeapons(player.index, CET_PrepRedTeam);
+		ConfigEvent_ExecuteWeapons(player, player.index, CET_PrepRedTeam);
 	}
 }
 
@@ -391,6 +410,11 @@ void ConfigEvent_OnPlayerHurt(const VSH2Player player, const VSH2Player victim, 
 
 void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 {
+	int player_index = player.index;
+	if (!IsPlayerAlive(player_index))
+		return;
+
+	ConfigEvent_Zombie_Think(player, player_index);
 	if (ConfigEvent_ShouldExecuteGlobals(CET_RedPlayerThink))
 	{
 		ConfigSys.Params.SetValue("player", player);
@@ -399,7 +423,7 @@ void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 	if (ConfigEvent_ShouldExecuteWeapons(CET_RedPlayerThink))
 	{
 		ConfigSys.Params.SetValue("player", player);
-		ConfigEvent_ExecuteWeapons(player.index, CET_RedPlayerThink);
+		ConfigEvent_ExecuteWeapons(player, player.index, CET_RedPlayerThink);
 	}
 }
 
@@ -451,7 +475,7 @@ Action ConfigEvent_OnPlayerTakeFallDamage(
 		ConfigSys.Params.SetValue("attacker", attacker);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_PlayerTakeFallDamage);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_PlayerTakeFallDamage);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -505,7 +529,7 @@ Action ConfigEvent_OnPlayerClimb(const VSH2Player player, const int weapon, floa
 		ConfigSys.Params.SetValue("upwardvel", upwardvel);
 		ConfigSys.Params.SetValue("health", health);
 		ConfigSys.Params.SetValue("attack_delay", attackdelay);
-		switch (ConfigEvent_ExecuteWeapons(player.index, CET_PlayerClimb))
+		switch (ConfigEvent_ExecuteWeapons(player, player.index, CET_PlayerClimb))
 		{
 			case Plugin_Changed:
 			{
@@ -537,7 +561,7 @@ Action ConfigEvent_OnBannerDeployed(const VSH2Player owner, const BannerType ban
 	{
 		ConfigSys.Params.SetValue("owner", owner);
 		ConfigSys.Params.SetValue("type", banner);
-		ConfigEvent_ExecuteWeapons(owner.index, CET_BannerDeployed);
+		ConfigEvent_ExecuteWeapons(owner, owner.index, CET_BannerDeployed);
 	}
 	return Plugin_Continue;
 }
@@ -562,7 +586,7 @@ Action ConfigEvent_OnBannerEffect(const VSH2Player player, const VSH2Player owne
 		ConfigSys.Params.SetValue("owner", owner);
 		ConfigSys.Params.SetValue("type", banner);
 		ConfigSys.Params.SetValue("player", player);
-		ConfigEvent_ExecuteWeapons(owner.index, CET_BannerEffect);
+		ConfigEvent_ExecuteWeapons(owner, owner.index, CET_BannerEffect);
 	}
 	return Plugin_Continue;
 }
@@ -604,7 +628,7 @@ Action ConfigEvent_OnUberLoopEnd(const VSH2Player medic, const VSH2Player target
 	if (ConfigEvent_ShouldExecuteWeapons(CET_UberLoopEnd))
 	{
 		ConfigSys.Params.SetValue("patient", target);
-		Action ret = ConfigEvent_ExecuteWeapons(medic.index, CET_UberLoopEnd);
+		Action ret = ConfigEvent_ExecuteWeapons(medic, medic.index, CET_UberLoopEnd);
 
 		switch (ret)
 		{
@@ -634,7 +658,7 @@ void ConfigEvent_OnRedPlayerThinkPost(const VSH2Player player)
 	if (ConfigEvent_ShouldExecuteWeapons(CET_RedPlayerThinkPost))
 	{
 		ConfigSys.Params.SetValue("player", player);
-		ConfigEvent_ExecuteWeapons(player.index, CET_RedPlayerThinkPost);
+		ConfigEvent_ExecuteWeapons(player, player.index, CET_RedPlayerThinkPost);
 	}
 }
 
@@ -678,7 +702,7 @@ Action ConfigEvent_OnRedPlayerHUD(const VSH2Player player, char hud_text[PLAYER_
 	if (ConfigEvent_ShouldExecuteWeapons(CET_RedPlayerHUD))
 	{
 		ConfigSys.Params.SetValue("player", player);
-		Action ret = ConfigEvent_ExecuteWeapons(player.index, CET_RedPlayerHUD);
+		Action ret = ConfigEvent_ExecuteWeapons(player, player.index, CET_RedPlayerHUD);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -734,7 +758,7 @@ Action ConfigEvent_OnRedPlayerCrits(const VSH2Player player, int& crit_flags)
 		ConfigSys.Params.SetValue("player", player);
 		ConfigSys.Params.SetValue("crit_flags", crit_flags);
 
-		Action ret = ConfigEvent_ExecuteWeapons(player.index, CET_RedPlayerCrits);
+		Action ret = ConfigEvent_ExecuteWeapons(player, player.index, CET_RedPlayerCrits);
 		switch (ret)
 		{
 			case Plugin_Continue: { }

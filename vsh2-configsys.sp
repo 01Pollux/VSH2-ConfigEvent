@@ -1,6 +1,8 @@
 #include <sdktools>
+#include <sdkhooks>
 #include <vsh2>
 #include <cfgmap>
+#tryinclude <tf2attributes>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -12,6 +14,8 @@
 
 #include "cfg_impl/formula_parser.sp"
 #include "cfg_impl/modules.sp"
+
+#include "cfg_impl/vsh2_stocks.inc"
 
 public Plugin myinfo =
 {
@@ -50,4 +54,20 @@ public void OnLibraryRemoved(const char[] lib_name)
 		ConfigEvent_UnloadVSH2Hooks();
 		ConfigEvent_Unload();
 	}
+}
+
+public void NextFrame_InitVSH2Player(int client)
+{
+	if (LibraryExists("VSH2"))
+	{
+		VSH2Player player = VSH2Player(client);
+
+		// ./cfg_impl/modules/zombie.sp
+		player.SetPropAny("bIsZombie", false);
+	}
+}
+
+public void OnClientPutInServer(int client)
+{
+	RequestFrame(NextFrame_InitVSH2Player, client);
 }

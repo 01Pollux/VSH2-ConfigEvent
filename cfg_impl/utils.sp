@@ -124,3 +124,11 @@ static stock float ComputeShakeAmplitude(const float center[3], const float shak
 
 	return distance <= radius ? (amplitude * (1.0 - (distance / radius))) : -1.0;
 }
+
+Action RemoveEnt(Handle timer, any entid)
+{
+	int ent = EntRefToEntIndex(entid);
+	if (IsValidEntity(ent))
+		RemoveEntity(ent);
+	return Plugin_Continue;
+}

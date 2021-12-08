@@ -290,7 +290,7 @@ static void GetEmitSoundInfo(EventMap args, int client, ConfigEvent_EmitSoundInf
 	if (!args.GetInt("pitch", info.Pitch, 2))
 		info.Pitch = SND_CHANGEPITCH;
 	bool tmp;
-	if (args.GetBool("origin", tmp) && tmp)
+	if (args.GetBool("origin", tmp, false) && tmp)
 		GetClientAbsOrigin(client, info.Origin);
 	else info.Origin = NULL_VECTOR;
 	if (!args.GetInt("follow", info.Follow))

@@ -6,4 +6,5 @@
 #include "cfg_impl/modules/health.sp"
 #include "cfg_impl/modules/sounds.sp"
 #include "cfg_impl/modules/downloads.sp"
+#include "cfg_impl/modules/zombie.sp"
 //#include "cfg_impl/modules/print_to_server.sp"

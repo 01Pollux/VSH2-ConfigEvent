@@ -33,7 +33,7 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 	char hp_tmp[8]; IntToString(my_health, hp_tmp, sizeof(hp_tmp));
 	ReplaceString(health_str, health_size, "%h%", hp_tmp);
 
-	int new_health = view_as<int>(ParseFormula(health_str, calling_player.GetPropInt("iDamage")));
+	int new_health = RoundToNearest(ParseFormula(health_str, calling_player.GetPropInt("iDamage")));
 	int max_health;
 	if (!args.GetInt("clamp", max_health) || max_health <= 0)
 		max_health = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", .element = calling_player_idx);
@@ -105,7 +105,6 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 	int max_health;
 	if (!args.GetInt("clamp", max_health))
 		max_health = -1;
-	int copy_max_health = max_health;
 	char hp_tmp[8];
 
 	for (int i = 1; i <= MaxClients; i++)
@@ -146,10 +145,11 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 		FormatEx(copy_health_str, health_size, health_str);
 		ReplaceString(copy_health_str, health_size, "%h%", hp_tmp);
 
+		int copy_max_health = max_health;
 		if (copy_max_health == -1)
 			copy_max_health = GetEntProp(resource_ent, Prop_Send, "m_iMaxHealth", .element = i);
 		
-		int new_health = view_as<int>(ParseFormula(copy_health_str, cur_target.GetPropInt("iDamage")));
+		int new_health = RoundToNearest(ParseFormula(copy_health_str, cur_target.GetPropInt("iDamage")));
 		if (new_health > copy_max_health)
 			new_health = copy_max_health;
 			

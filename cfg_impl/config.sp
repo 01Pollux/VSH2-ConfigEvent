@@ -97,7 +97,13 @@ void ConfigEvent_Unload()
 				for (int j = cur_event.Length - 1; j >= 0; j--)
 				{
 					cur_event.GetArray(j, event_info);
-					DeleteCfg(event_info.Arguments);
+
+					int ref_count;
+					event_info.Arguments.GetValue("__ref_count__", ref_count);
+					if (!--ref_count)
+						DeleteCfg(event_info.Arguments);
+					else
+						event_info.Arguments.SetValue("__ref_count__", ref_count);
 				}
 				delete cur_event;
 			}
@@ -187,6 +193,15 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 					}
 					event_info.Arguments = new EventMap(section, myself);
 
+					// disallow external use of '__ref_count__'
+					int ref_count;
+					if (event_info.Arguments.GetValue("__ref_count__", ref_count))
+					{
+						event_info.Arguments.SetValue("__ref_count__", 0);
+						continue;
+					}
+
+					// Iterate through our weapon indexes "xx, yy" 'weapon_ids'
 					for (int weapon_i = 0; weapon_i < entries; weapon_i++)
 					{
 						int weapon_id;
@@ -200,6 +215,7 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 						}
 
 						event_info.ItemID = weapon_id;
+						event_info.Arguments.SetValue("__ref_count__", event_info.Arguments.GetValue("__ref_count__", ref_count) ? ref_count + 1 : 1);
 						cur_event.PushArray(event_info);
 					}
 				}
@@ -281,7 +297,7 @@ bool ConfigEvent_ShouldExecuteWeapons(ConfigEventType_t type)
 	else return false;
 }
 
-Action ConfigEvent_ExecuteWeapons(int client, ConfigEventType_t type)
+Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType_t type)
 {
 	ArrayList cur_event = ConfigSys.WeaponEvents[type];
 	ConfigWeaponEvent_t event_info;
@@ -298,6 +314,7 @@ Action ConfigEvent_ExecuteWeapons(int client, ConfigEventType_t type)
 	}
 
 	Action highest_ret = Plugin_Continue;
+	bool is_minion = player.bIsMinion;
 	for (int i = cur_event.Length - 1; i >= 0; i--)
 	{
 		cur_event.GetArray(i, event_info);
@@ -317,6 +334,11 @@ Action ConfigEvent_ExecuteWeapons(int client, ConfigEventType_t type)
 			if (!has_slot)
 				continue;
 		}
+
+		// Disallow minions from executing weapon's callbacks,
+		bool minion_can_execute;
+		if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || (!minion_can_execute && is_minion))
+			continue;
 
 		Call_StartFunction(null, event_info.Procedure);
 		Call_PushCell(event_info.Arguments);

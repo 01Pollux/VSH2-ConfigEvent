@@ -44,7 +44,7 @@ Action ConfigEvent_OnBossDealDamage(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BossDealDamage);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BossDealDamage);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -92,7 +92,7 @@ Action ConfigEvent_OnBossDealDamage_OnStomp(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnStomp);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnStomp);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -140,7 +140,7 @@ Action ConfigEvent_OnBossDealDamage_OnHitDefBuff(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnHitDebuff);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnHitDebuff);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -188,7 +188,7 @@ Action ConfigEvent_OnBossDealDamage_OnHitCritMmmph(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnHitCritMmph);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnHitCritMmph);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -236,7 +236,7 @@ Action ConfigEvent_OnBossDealDamage_OnHitMedic(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnHitMedic);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnHitMedic);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -284,7 +284,7 @@ Action ConfigEvent_OnBossDealDamage_OnHitDeadRinger(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnDeadRinger);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnDeadRinger);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -332,7 +332,7 @@ Action ConfigEvent_OnBossDealDamage_OnHitCloakedSpy(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnCloakedSpy);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnCloakedSpy);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -380,7 +380,7 @@ Action ConfigEvent_OnBossDealDamage_OnHitShield(
 		ConfigSys.Params.SetValue("victim", victim);
 		ConfigSys.Params.SetValue("inflictor", inflictor);
 		ConfigSys.Params.SetValue("damage", damage);
-		Action ret = ConfigEvent_ExecuteWeapons(victim.index, CET_BDD_OnHitShield);
+		Action ret = ConfigEvent_ExecuteWeapons(victim, victim.index, CET_BDD_OnHitShield);
 		switch (ret)
 		{
 			case Plugin_Continue: { }
