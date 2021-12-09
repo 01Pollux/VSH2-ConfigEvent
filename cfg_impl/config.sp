@@ -99,11 +99,11 @@ void ConfigEvent_Unload()
 					cur_event.GetArray(j, event_info);
 
 					int ref_count;
-					event_info.Arguments.GetValue("__ref_count__", ref_count);
+					event_info.Arguments.GetInt("__ref_count__", ref_count);
 					if (!--ref_count)
 						DeleteCfg(event_info.Arguments);
 					else
-						event_info.Arguments.SetValue("__ref_count__", ref_count);
+						event_info.Arguments.SetInt("__ref_count__", ref_count);
 				}
 				delete cur_event;
 			}
@@ -195,10 +195,9 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 
 					// disallow external use of '__ref_count__'
 					int ref_count;
-					if (event_info.Arguments.GetValue("__ref_count__", ref_count))
+					if (event_info.Arguments.GetInt("__ref_count__", ref_count))
 					{
-						event_info.Arguments.SetValue("__ref_count__", 0);
-						continue;
+						event_info.Arguments.SetInt("__ref_count__", 0);
 					}
 
 					// Iterate through our weapon indexes "xx, yy" 'weapon_ids'
@@ -215,9 +214,10 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 						}
 
 						event_info.ItemID = weapon_id;
-						event_info.Arguments.SetValue("__ref_count__", event_info.Arguments.GetValue("__ref_count__", ref_count) ? ref_count + 1 : 1);
+						
 						cur_event.PushArray(event_info);
 					}
+					event_info.Arguments.SetInt("__ref_count__", entries);
 				}
 
 				if (!cur_event.Length)
