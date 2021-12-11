@@ -25,6 +25,12 @@ public Plugin myinfo =
 	version		= "1.0.0"
 };
 
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
+{
+	CreateNative("VSH2CfgEvent.Refresh", Native_Refresh);
+	CreateNative("VSH2CfgEvent.GetParams", Native_GetCurrentParams);
+}
+
 public void OnPluginStart()
 {
 	RegAdminCmd("vsh2_cfgevent_reload", OnReloadConfig, ADMFLAG_ROOT, "Reload VSH2-Configsystem");
@@ -70,4 +76,17 @@ public void NextFrame_InitVSH2Player(int client)
 public void OnClientPutInServer(int client)
 {
 	RequestFrame(NextFrame_InitVSH2Player, client);
+}
+
+
+any Native_Refresh(Handle plugin, int numParams)
+{
+	ConfigEvent_Unload();
+	ConfigEvent_Load();
+	return 0;
+}
+
+any Native_GetCurrentParams(Handle plugin, int numParams)
+{
+	return ConfigSys.Params;
 }

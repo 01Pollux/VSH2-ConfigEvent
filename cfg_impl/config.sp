@@ -46,6 +46,7 @@ typedef ConfigWeaponEvent_Proc = function void(EventMap args, ConfigEventType_t 
 enum struct ConfigWeaponEvent_t
 {
 	EventMap Arguments;
+	Handle Plugin;
 	ConfigWeaponEvent_Proc Procedure;
 	int	 ItemID;
 }
@@ -54,6 +55,7 @@ typedef ConfigGlobalEvent_Proc = function void(EventMap args, ConfigEventType_t 
 enum struct ConfigGlobalEvent_t
 {
 	EventMap Arguments;
+	Handle Plugin;
 	ConfigGlobalEvent_Proc Procedure;
 }
 
@@ -133,6 +135,7 @@ void ConfigEvent_Unload()
 void ConfigEvent_ParseWeapons(ConfigMap weapons)
 {
 	StringMapSnapshot weapon_iter = weapons.Snapshot();
+	Handle myself = GetMyHandle();
 
 	for (int weapon_iter_i = weapon_iter.Length - 1; weapon_iter_i >= 0; weapon_iter_i--)
 	{
@@ -170,8 +173,6 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 					ConfigSys.WeaponEvents[type] = cur_event = new ArrayList(sizeof(ConfigWeaponEvent_t));
 				
 				ConfigWeaponEvent_t event_info;
-				Handle myself = GetMyHandle();
-
 				for (int event_info_i = event_sec.Size - 1; event_info_i >= 0; event_info_i--)
 				{
 					ConfigMap section = event_sec.GetIntSection(event_info_i);
@@ -185,18 +186,33 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 					char[] function_name = new char[function_name_size];
 					section.Get("procedure", function_name, function_name_size);
 
-					event_info.Procedure = view_as<ConfigWeaponEvent_Proc>(GetFunctionByName(null, function_name));
+					// check if the module is imported externally
+					int plugin_name_size = section.GetSize("module");
+					event_info.Plugin = myself;
+					if (plugin_name_size)
+					{
+						char[] plugin_name = new char[plugin_name_size];
+						section.Get("module", plugin_name, plugin_name_size);
+						if (!(event_info.Plugin = FindPluginByFile(plugin_name)))
+						{
+							LogError("[VSH2 CfgEvent] Plugin doesn't exists \"weapons::%s::%s::%s\".", key, event_key, function_name);
+							continue;
+						}
+					}
+
+					event_info.Procedure = view_as<ConfigWeaponEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name));
 					if (event_info.Procedure == INVALID_FUNCTION)
 					{
 						LogError("[VSH2 CfgEvent] Function doesn't exists \"weapons::%s::%s::%s\".", key, event_key, function_name);
 						continue;
 					}
-					event_info.Arguments = new EventMap(section, myself);
+					event_info.Arguments = new EventMap(section, event_info.Plugin);
 
 					// disallow external use of '__ref_count__'
 					int ref_count;
 					if (event_info.Arguments.GetInt("__ref_count__", ref_count))
 					{
+						LogError("[VSH2 CfgEvent] Invalid access to '__ref_count__' key in \"weapons::%s::%s::%s\".", key, event_key, function_name);
 						event_info.Arguments.SetInt("__ref_count__", 0);
 					}
 
@@ -234,6 +250,7 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 {
 	StringMapSnapshot globals_iter = globals.Snapshot();
 	ConfigGlobalEvent_t event_info;
+	Handle myself = GetMyHandle();
 
 	for (int globals_iter_i = globals_iter.Length - 1; globals_iter_i >= 0; globals_iter_i--)
 	{
@@ -253,8 +270,6 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 		if (!cur_global_size)
 			continue;
 		
-		Handle myself = GetMyHandle();
-
 		ArrayList cur_event = ConfigSys.GlobalEvents[type];
 		if (!cur_event)
 			ConfigSys.GlobalEvents[type] = cur_event = new ArrayList(sizeof(ConfigGlobalEvent_t));
@@ -268,14 +283,28 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 			int function_name_size = event_sec.GetSize("procedure");
 			char[] function_name = new char[function_name_size];
 			event_sec.Get("procedure", function_name, function_name_size);
-			
-			event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(myself, function_name));
-			if (event_info.Procedure == INVALID_FUNCTION)
+
+			// check if the module is imported externally
+			int plugin_name_size = event_sec.GetSize("module");
+			event_info.Plugin = myself;
+			if (plugin_name_size)
+			{
+				char[] plugin_name = new char[plugin_name_size];
+				event_sec.Get("module", plugin_name, plugin_name_size);
+				if (!(event_info.Plugin = FindPluginByFile(plugin_name)))
+				{
+					LogError("[VSH2 CfgEvent] Plugin doesn't exists \"globals::%s::%s\".",  event_key, function_name);
+					continue;
+				}
+			}
+
+			if (!(event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name))))
 			{
 				LogError("[VSH2 CfgEvent] Function doesn't exists \"globals::%s::%s\".", event_key, function_name);
 				continue;
 			}
-			event_info.Arguments = new EventMap(event_sec, myself);
+
+			event_info.Arguments = new EventMap(event_sec, event_info.Plugin);
 			cur_event.PushArray(event_info);
 		}
 
@@ -340,7 +369,7 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 		if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || (!minion_can_execute && is_minion))
 			continue;
 
-		Call_StartFunction(null, event_info.Procedure);
+		Call_StartFunction(event_info.Plugin, event_info.Procedure);
 		Call_PushCell(event_info.Arguments);
 		Call_PushCell(type);
 		Action ret;
@@ -374,7 +403,7 @@ Action ConfigEvent_ExecuteGlobals(ConfigEventType_t type)
 	{
 		cur_event.GetArray(i, event_info);
 
-		Call_StartFunction(null, event_info.Procedure);
+		Call_StartFunction(event_info.Plugin, event_info.Procedure);
 		Call_PushCell(event_info.Arguments);
 		Call_PushCell(type);
 		Action ret;

@@ -411,7 +411,7 @@ void ConfigEvent_OnPlayerHurt(const VSH2Player player, const VSH2Player victim, 
 void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 {
 	int player_index = player.index;
-	if (!IsPlayerAlive(player_index))
+	if (!player_index || !IsPlayerAlive(player_index))
 		return;
 
 	ConfigEvent_Zombie_Think(player, player_index);
