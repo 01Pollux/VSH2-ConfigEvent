@@ -38,7 +38,7 @@
 					{
 						"<enum>"
 						{
-							"id"	"25"
+							"id"	"25"	//Bleed cond 流血
 							"value" "999.0"
 						}
 					}
@@ -61,6 +61,21 @@
 
 							"particle"	"ghost_smoke"
 						}
+					}
+				}
+			}
+		}
+		"133"	//Gunboats 炮艇
+		{
+			"falldamage"
+			{
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_WriteParams"
+					"<enum>"
+					{
+						"name"	"damage"
+						"value"	"0.5 * damage"
 					}
 				}
 			}
