@@ -17,5 +17,3 @@ public Action ConfigEvent_AddClip(EventMap args, ConfigEventType_t event_type)
 
   return Plugin_Continue;
 }
-
-}
