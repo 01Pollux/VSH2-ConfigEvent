@@ -1,4 +1,4 @@
-#include <tf2wearables>
+//#include <tf2wearables>
 //https://github.com/nosoop/sourcemod-tf2wearables/blob/master/addons/sourcemod/scripting/include/tf2wearables.inc
 #include <weapondata>
 //https://forums.alliedmods.net/showthread.php?t=262695
@@ -10,7 +10,7 @@ public Action ConfigEvent_AddClip(EventMap args, ConfigEventType_t event_type)
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-  int iTarget = TF2_GetPlayerLoadoutSlot(calling_player_idx, args.GetInt("slot", slot), false);
+  int iTarget = GetIndexOfWeaponSlot(calling_player_idx, args.GetInt("slot", slot));
   if (iTarget <= 0 || !IsValidEdict(iTarget))
 		return Plugin_Continue;
 
