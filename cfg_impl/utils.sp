@@ -52,7 +52,15 @@ int CountCharInString(const char[] str, char c)
 
 #define MAX_SHAKE_AMPLITUDE 16.0
 
-void ScreenShakeOne(int client, float amplitude, float frequency, float duration, ShakeCommand_t command, const char[] sound = "", bool airshake = true)
+void ScreenShakeOne(
+	int client,
+	float amplitude,
+	float frequency,
+	float duration,
+	ShakeCommand_t command,
+	const char[] sound = "",
+	bool airshake = true
+)
 {
 	if (!airshake && command == SHAKE_START && GetEntityFlags(client) & ~FL_ONGROUND)
 		return;
@@ -68,7 +76,16 @@ void ScreenShakeOne(int client, float amplitude, float frequency, float duration
 	TransmitShakeEvent(client, amplitude, frequency, duration, command);
 }
 
-void ScreenShakeAll(const float center[3], float amplitude, float frequency, float duration, float radius, ShakeCommand_t command, const char[] sound, bool airshake = true)
+void ScreenShakeAll(
+	const float center[3],
+	float amplitude,
+	float frequency,
+	float duration,
+	float radius,
+	ShakeCommand_t command,
+	const char[] sound,
+	bool airshake = true
+)
 {
 	if (amplitude > MAX_SHAKE_AMPLITUDE)
 		amplitude = MAX_SHAKE_AMPLITUDE;
@@ -131,4 +148,31 @@ Action RemoveEnt(Handle timer, any entid)
 	if (IsValidEntity(ent))
 		RemoveEntity(ent);
 	return Plugin_Continue;
+}
+
+stock void TF2_Explode(
+	int attacker = -1,
+	float origin[3],
+	float damage,
+	float radius,
+	const char[] explode_particle,
+	const char[] sound
+)
+{
+	int bomb = CreateEntityByName("tf_generic_bomb");
+	if (bomb != -1)
+	{
+		DispatchKeyValueVector(bomb, "origin", origin);
+		DispatchKeyValueFloat(bomb, "damage", damage);
+		DispatchKeyValueFloat(bomb, "radius", radius);
+		DispatchKeyValue(bomb, "health", "1");
+		DispatchKeyValue(bomb, "explode_particle", explode_particle);
+		DispatchKeyValue(bomb, "sound", sound);
+		DispatchSpawn(bomb);
+
+		if (attacker == -1)
+			AcceptEntityInput(bomb, "Detonate");
+		else
+			SDKHooks_TakeDamage(bomb, 0, attacker, 9999.0);
+	}
 }

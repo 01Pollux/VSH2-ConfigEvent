@@ -8,39 +8,7 @@ enum struct ConfigSys_t
 }
 ConfigSys_t ConfigSys;
 
-methodmap EventMap < ConfigMap
-{
-	public EventMap(ConfigMap cfg, Handle myself)
-	{
-		return view_as<EventMap>(cfg.Clone(myself));
-	}
-
-	public bool GetTargetEx(const char[] vsh2_target, const char[] target, int& calling_player_idx, VSH2Player& calling_player)
-	{
-		char target_str[12];
-		// grab the calling player instance
-		// 'vsh2player' and 'target' required and we can't execute the function without it
-		if (!this.Get(vsh2_target, target_str, sizeof(target_str)) && !this.Get(target, target_str, sizeof(target_str)))
-			return false;
-		
-		ConfigSys.Params.GetValue(target_str, calling_player);
-		if (target_str[0] == 'v')
-		{
-			calling_player_idx = view_as<int>(calling_player);
-			calling_player = calling_player_idx == -1 ? view_as<VSH2Player>(0) : VSH2Player(calling_player_idx);
-		}
-		else
-		{
-			calling_player_idx = calling_player ? calling_player.index : -1;
-		}
-		return true;
-	}
-
-	public bool GetTarget(int& calling_player_idx, VSH2Player& calling_player)
-	{
-		return this.GetTargetEx("vsh2target", "target", calling_player_idx, calling_player);
-	}
-}
+#include "cfg_impl/target.sp"
 
 typedef ConfigWeaponEvent_Proc = function void(EventMap args, ConfigEventType_t type);
 enum struct ConfigWeaponEvent_t

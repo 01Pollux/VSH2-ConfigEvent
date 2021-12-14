@@ -60,6 +60,8 @@ enum ConfigEventType_t
 	CET_PlayerTakeFallDamage,
 	CET_RedPlayerThinkPost,
 
+	CET_ProjectileTouch,
+
 	CET_Count
 }
 
@@ -123,7 +125,9 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"playerclimb",
 		"playercrits",
 		"falldamage",
-		"thinkpost"
+		"thinkpost",
+
+		"projectile_touch"
 	};
 
 	for (int i = 0; i < sizeof(event_names); i++)
