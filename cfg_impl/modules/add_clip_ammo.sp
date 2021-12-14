@@ -5,26 +5,26 @@ public Action ConfigEvent_AddClip(EventMap args, ConfigEventType_t event_type)
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-  int iAmount = args.GetInt("amount");
-  int iSlot = args.GetInt("slot", slot);
-  float flDuration = args.GetFloat("duration");
+  int amount = args.GetInt("amount");
+  int slot = args.GetInt("slot", slot);
+  float duration = args.GetFloat("duration");
 
-  int iClip = GetClip(calling_player_idx, iSlot);
-  SetClip(calling_player_idx, iSlot, iClip+iAmount);
+  int clip = GetClip(calling_player_idx, slot);
+  SetClip(calling_player_idx, slot, clip+amount);
 
-  if (flDuration >= 0.0)
-		CreateTimer(flDuration, Timer_ResetClip, iClip, iSlot, calling_player_idx);
+  if (duration >= 0.0)
+		CreateTimer(duration, Timer_ResetClip, clip, slot, calling_player_idx);
 
   return Plugin_Continue;
 }
 
-public Action Timer_ResetClip(Handle hTimer, int iClip, int iSlot, int calling_player_idx)
+public Action Timer_ResetClip(Handle hTimer, int clip, int slot, int calling_player_idx)
 {
-  int iCurrentClip = GetClip(calling_player_idx, iSlot);
-  if (iCurrentClip > iClip)
-    iCurrentClip = iClip;
+  int currentclip = GetClip(calling_player_idx, slot);
+  if (currentclip > clip)
+    currentclip = clip;
 
-  SetClip(calling_player_idx, iSlot, iCurrentClip);
+  SetClip(calling_player_idx, slot, currentclip);
 }
 
 public Action ConfigEvent_AddAmmo(EventMap args, ConfigEventType_t event_type)
@@ -34,15 +34,15 @@ public Action ConfigEvent_AddAmmo(EventMap args, ConfigEventType_t event_type)
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-  int iAmount = args.GetInt("amount");
-  int iSlot = args.GetInt("slot", slot);
+  int amount = args.GetInt("amount");
+  int slot = args.GetInt("slot", slot);
 
-  int iAmmo = GetAmmo(calling_player_idx, iSlot);
-  int iNewAmmo = iAmmo + iAmount;
-  int iMaxAmmo = GetMaxAmmo(calling_player_idx, iSlot)
-  if (iNewAmmo > iMaxAmmo)
-    iNewAmmo = iMaxAmmo;
+  int ammo = GetAmmo(calling_player_idx, slot);
+  int newammo = ammo + amount;
+  int maxammo = GetMaxAmmo(calling_player_idx, slot)
+  if (newammo > maxammo)
+    newammo = maxammo;
 
-  SetAmmo(calling_player_idx, args.GetInt("slot", slot), iNewAmmo);
+  SetAmmo(calling_player_idx, args.GetInt("slot", slot), newammo);
   return Plugin_Continue;
 }

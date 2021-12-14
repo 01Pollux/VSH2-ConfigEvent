@@ -11,6 +11,7 @@
 #include "cfg_impl/utils.sp"
 #include "cfg_impl/config.sp"
 #include "cfg_impl/vsh2hooks.sp"
+#include "cfg_impl/sdkhooks.sp"
 
 #include "cfg_impl/formula_parser.sp"
 #include "cfg_impl/modules.sp"
