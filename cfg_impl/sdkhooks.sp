@@ -9,9 +9,14 @@ public void OnEntityCreated(int entity, const char[] classname)
   }
 }
 
+/**
+ * Keys:
+ * [in] "projectile": projectile entity index
+ * [in] "toucher": toucher entity index actually idk where to use it
+ */
 public Action OnProjectileTouch(int projectile, int toucher)
 {
-	if (VSH2GameMode.GetPropInt(iRoundState) !== StateRunning)	return Plugin_Continue;
+	if (VSH2GameMode.GetPropInt(iRoundState) != StateRunning)	return Plugin_Continue;
 
 	int client = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
 	if (0 < client <= MaxClients && IsClientInGame(client) && VSH2Player(client).GetPropInt("bIsBoss"))	return Plugin_Continue;
