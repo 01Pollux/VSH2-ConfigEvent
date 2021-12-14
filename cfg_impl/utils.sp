@@ -12,7 +12,7 @@ enum
 	TF2WeaponSlot_MaxWeapons
 }
 
-enum ConfigEventParam_t 
+enum ConfigEventParam_t
 {
 	CEP_Cell,
 	CEP_CellRef,
@@ -32,6 +32,14 @@ enum ShakeCommand_t
 	SHAKE_FREQUENCY,		// Modifies the frequency of an active screen shake for all players within the radius.
 	SHAKE_START_RUMBLEONLY,	// Starts a shake effect that only rumbles the controller, no screen effect.
 	SHAKE_START_NORUMBLE	// Starts a shake that does NOT rumble the controller.
+};
+
+enum FlamethrowerState
+{
+	FlamethrowerState_Idle = 0,
+	FlamethrowerState_StartFiring,
+	FlamethrowerState_Firing,
+	FlamethrowerState_Airblast,
 };
 
 #define AREA_COND_MY_TEAM		(1 << 0)
@@ -116,7 +124,7 @@ static stock void TransmitShakeEvent(int client, float amplitude, float frequenc
 {
 	if (amplitude > 0.0 || command == SHAKE_STOP)
 	{
-		if (command)	
+		if (command)
 			amplitude = 0.0;
 
 		BfWrite shake_msg = UserMessageToBfWrite(StartMessageOne("Shake", client, 1));
@@ -176,3 +184,17 @@ stock void TF2_Explode(
 			SDKHooks_TakeDamage(bomb, 0, attacker, 9999.0);
 	}
 }
+
+/* stock int TF2_GetItemInSlot(int client, int slot)
+{
+	int weapon = GetPlayerWeaponSlot(client, slot);
+	if (!IsValidEdict(weapon))
+	{
+		//If weapon not found in slot, check if it a wearable
+		int wearable = SDK_GetEquippedWearable(client, slot);
+		if (IsValidEdict(wearable))
+			weapon = wearable;
+	}
+
+	return weapon;
+} */

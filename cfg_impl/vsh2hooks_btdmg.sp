@@ -3,7 +3,7 @@
  * [in] "victim" : victim userid/vsh2player instance
  * [in] "player" : attacker's entity index
  * [in/out] "damage"
- * 
+ *
  * Return:
  * Plugin_Continue: ignore the new damage
  * default: rewrite the new damage, returning 'Plugin_Handled' will halt function execution for weapons
@@ -23,13 +23,17 @@ Action ConfigEvent_OnBossTakeDamage(
 {
 	if (0 < attacker <= MaxClients)
 	{
-		VSH2Player player = VSH2Player(attacker);
-		if (player.GetPropAny("bIsZombie"))
+		VSH2Player player = VSH2Player(attacker);	//player = attacker
+		if (player != victim)	//not a self damage
 		{
-			ConfigMap section = view_as<ConfigMap>(player.GetPropAny("_cfgsys_minion_section"));
-			float steal_hp; section.GetFloat("vampire", steal_hp);
-			if (steal_hp)
-				damage /= steal_hp;
+			ConfigEvent_AirBlast_OnTakeDamage(player, damage, weapon);
+			if (player.GetPropAny("bIsZombie"))
+			{
+				ConfigMap section = view_as<ConfigMap>(player.GetPropAny("_cfgsys_minion_section"));
+				float steal_hp; section.GetFloat("vampire", steal_hp);
+				if (steal_hp)
+					damage /= steal_hp;
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -808,7 +812,7 @@ Action ConfigEvent_OnBossAirShotProj(
  * [in] "victim"
  * [in] "attacker"
  * [in/out] "damage"
- * 
+ *
  * Return:
  * Plugin_Continue: ignore the new params
  * Plugin_Changed: rewrite the params and don't do vsh2's internal damage calculations
@@ -851,7 +855,7 @@ Action ConfigEvent_OnBossTakeDamage_OnTriggerHurt(
 		switch (ret)
 		{
 			case Plugin_Continue: { }
-			default: 
+			default:
 			{
 				ConfigSys.Params.GetValue("damage", damage);
 				return ret;
