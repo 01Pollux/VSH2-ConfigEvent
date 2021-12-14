@@ -18,7 +18,7 @@ public Action OnProjectileTouch(int projectile, int toucher)
 {
 	if (VSH2GameMode.GetPropInt(iRoundState) != StateRunning)	return Plugin_Continue;
 
-	int client = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
+	int client = GetOwner(projectile);
 	if (0 < client <= MaxClients && IsClientInGame(client) && VSH2Player(client).GetPropInt("bIsBoss"))	return Plugin_Continue;
 
 	int weapon = GetEntPropEnt(projectile, Prop_Send, "m_hOriginalLauncher");	//There also similar m_hLauncher
@@ -39,6 +39,6 @@ public Action OnProjectileTouch(int projectile, int toucher)
 			ConfigEvent_ExecuteWeapons(VSH2Player(client), client, CET_ProjectileTouch);
 		}
 	}
-	
+
 	return Plugin_Continue;
 }
