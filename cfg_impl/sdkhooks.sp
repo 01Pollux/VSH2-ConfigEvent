@@ -39,7 +39,6 @@ public Action OnProjectileTouch(int projectile, int toucher)
 			ConfigEvent_ExecuteWeapons(VSH2Player(client), client, CET_ProjectileTouch);
 		}
 	}
-}
-
+	
 	return Plugin_Continue;
 }
