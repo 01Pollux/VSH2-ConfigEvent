@@ -117,8 +117,8 @@ void ConfigEvent_AirBlast_Button(VSH2Player player, int &buttons)
   "vsh2target"	"player"
   //"target"		"player"
 
-  // n : percentage of airblast
-  "string"		"Airblast: n%"
+  // %f : percentage of airblast
+  "string"		"Airblast: %f%"
 }
 */
 
@@ -138,9 +138,9 @@ void ConfigEvent_AirBlast_HUD(EventMap args, ConfigEventType_t event_type)
     int abhud_size = args.GetSize("string");
     char[] abhud_str = new char[abhud_size];
     args.Get("string", abhud_str, abhud_size);
-    ReplaceString(abhud_str, abhud_size, "%n", percentage);
+    ReplaceString(abhud_str, abhud_size, "%f", percentage);
+    ConfigSys.Params.SetString("new_text", abhud_str);
   }
-  //how to output "new_text" with "string"
 }
 
 stock float GetAirblastPercentage(int client)

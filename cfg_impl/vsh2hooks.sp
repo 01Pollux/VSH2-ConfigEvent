@@ -291,6 +291,8 @@ void ConfigEvent_OnVariablesReset(const VSH2Player player)
 {
 	// ./cfg_impl/modules/zombie.sp
 	player.SetPropAny("bIsZombie", false);
+	//./cfg_impl/modules/airblast.sp
+	player.SetPropAny("bIsAirBlastLimited", false);
 }
 
 /**
