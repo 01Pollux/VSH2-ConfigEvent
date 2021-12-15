@@ -91,14 +91,8 @@ void ConfigEvent_AirBlast_Think(VSH2Player player)
 			g_nTagsAirblastState[client] = state;
 		}
 	}
-}
 
-void ConfigEvent_AirBlast_Button(VSH2Player player, int &buttons)
-{
-  if (!player.GetPropAny("bIsAirBlastLimited"))
-		return;
-
-  int client = player.index;
+  buttons = GetClientButtons(client);
   //Prevent clients holding m2 while airblast in cooldown
 	if (buttons & IN_ATTACK2 && g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] < g_iTagsAirblastRequirement[client])
 	{
@@ -160,6 +154,7 @@ void ConfigEvent_AirBlast_HUD(EventMap args, ConfigEventType_t event_type)
     ReplaceString(abhud_str, abhud_size, "%f", percentage);
     ConfigSys.Params.SetString("new_text", abhud_str);
   }
+  return Plugin_Changed;
 }
 
 stock float GetAirblastPercentage(int client)

@@ -12,7 +12,6 @@
 #include "cfg_impl/config.sp"
 #include "cfg_impl/vsh2hooks.sp"
 #include "cfg_impl/sdkhooks.sp"
-#include "cfg_impl/sdktools.sp"
 
 #include "cfg_impl/formula_parser.sp"
 #include "cfg_impl/modules.sp"
