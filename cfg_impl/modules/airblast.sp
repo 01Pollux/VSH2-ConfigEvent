@@ -4,6 +4,25 @@ static FlamethrowerState g_nTagsAirblastState[MAXPLAYERS+1];
 #define SOUND_METERFULL		"player/recharged.wav"
 PrecacheSound(SOUND_METERFULL);
 
+/*
+"<enum>"
+{
+  // limit pyro's airblast until it deals certain damage (use this only when round begins/player spawns. like "prep_redteam")
+  "procedure"  "ConfigEvent_AirBlast"
+
+  // depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
+  // 'target' will assume the 'player' is an entity index
+  // while 'vsh2target' will assume the 'player' is a client userid
+  "vsh2target"	"player"
+  //"target"		"player"
+
+  //damage required to recharge airblast
+  "damage"  "400"
+  //charged when add
+  "start" "400"
+}
+*/
+
 public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
 {
   int calling_player_idx;
@@ -11,8 +30,8 @@ public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-  g_iTagsAirblastRequirement[calling_player_idx] = args.GetInt("damage", -1);
-  g_iTagsAirblastDamage[calling_player_idx] = args.GetInt("start", 0);
+  args.GetInt("damage", g_iTagsAirblastRequirement[calling_player_idx]);
+  args.GetInt("start", g_iTagsAirblastDamage[calling_player_idx]);
 
   if (g_iTagsAirblastRequirement[calling_player_idx] > g_iTagsAirblastDamage[calling_player_idx])
   	SetEntPropFloat(iTarget, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime());	//3 years
@@ -24,7 +43,7 @@ public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
 
 void ConfigEvent_AirBlast_OnTakeDamage(VSH2Player player, float damage, int weapon)
 {
-  if (!player.GetPropAny("bIsAirBlastLimited"))
+  if (!player.GetPropAny("bIsAirBlastLimited")) //player is the attacker
 		return;
 
   int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
@@ -108,7 +127,7 @@ void ConfigEvent_AirBlast_Button(VSH2Player player, int &buttons)
 /*
 "<enum>"
 {
-  // process airblast hud
+  // process airblast hud. for event type "playerhud" only
   "procedure"  "ConfigEvent_AirBlast_HUD"
 
   // depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
