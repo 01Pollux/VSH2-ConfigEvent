@@ -415,6 +415,7 @@ void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 		return;
 
 	ConfigEvent_Zombie_Think(player, player_index);
+	ConfigEvent_AirBlast_Think(player);
 	if (ConfigEvent_ShouldExecuteGlobals(CET_RedPlayerThink))
 	{
 		ConfigSys.Params.SetValue("player", player);
@@ -433,7 +434,7 @@ void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
  * [in/out] "attacker"
  * [in/out] "inflictor"
  * [in/out] "damage"
- * 
+ *
  * Return:
  * Plugin_Continue: ignore the new params
  * Plugin_Changed: rewrite the params and don't do vsh2's internal damage calculations
@@ -460,7 +461,7 @@ Action ConfigEvent_OnPlayerTakeFallDamage(
 		switch (ret)
 		{
 			case Plugin_Continue: { }
-			default: 
+			default:
 			{
 				ConfigSys.Params.GetValue("attacker", attacker);
 				ConfigSys.Params.GetValue("inflictor", inflictor);
@@ -479,7 +480,7 @@ Action ConfigEvent_OnPlayerTakeFallDamage(
 		switch (ret)
 		{
 			case Plugin_Continue: { }
-			default: 
+			default:
 			{
 				ConfigSys.Params.GetValue("attacker", attacker);
 				ConfigSys.Params.GetValue("inflictor", inflictor);
@@ -497,7 +498,7 @@ Action ConfigEvent_OnPlayerTakeFallDamage(
  * [in/out] "upwardvel"
  * [in/out] "health"
  * [in/out] "attackdelay"
- * 
+ *
  * Return:
  * Plugin_Continue: ignore the new params
  * Plugin_Changed: rewritethe params
@@ -609,7 +610,7 @@ Action ConfigEvent_OnUberLoopEnd(const VSH2Player medic, const VSH2Player target
 		ConfigSys.Params.SetValue("medic", medic);
 		ConfigSys.Params.SetValue("patient", target);
 		Action ret = ConfigEvent_ExecuteGlobals(CET_UberLoopEnd);
-		
+
 		switch (ret)
 		{
 			case Plugin_Continue: { }
@@ -620,7 +621,7 @@ Action ConfigEvent_OnUberLoopEnd(const VSH2Player medic, const VSH2Player target
 					reset_charge = tmp;
 				if (ret == Plugin_Changed)
 					reset_charge += tmp;
-				else 
+				else
 					reset_charge = tmp;
 			}
 		}
@@ -640,7 +641,7 @@ Action ConfigEvent_OnUberLoopEnd(const VSH2Player medic, const VSH2Player target
 					reset_charge = tmp;
 				if (ret == Plugin_Changed)
 					reset_charge += tmp;
-				else 
+				else
 					reset_charge = tmp;
 			}
 		}
@@ -769,6 +770,6 @@ Action ConfigEvent_OnRedPlayerCrits(const VSH2Player player, int& crit_flags)
 			}
 		}
 	}
-	
+
 	return Plugin_Continue;
 }

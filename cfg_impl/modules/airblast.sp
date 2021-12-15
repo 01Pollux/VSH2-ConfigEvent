@@ -26,25 +26,75 @@ void ConfigEvent_AirBlast_OnTakeDamage(VSH2Player player, float damage, int weap
 	if (primary == INVALID_ENT_REFERENCE)
 		return;
 
-	if (g_iTagsAirblastRequirement[iAttacker] > 0 && primary == weapon)
+  int attacker = player.index;
+	if (g_iTagsAirblastRequirement[attacker] > 0 && primary == weapon)
 	{
-		bool bFull = (g_iTagsAirblastDamage[player.index] >= g_iTagsAirblastRequirement[player.index]);
-		g_iTagsAirblastDamage[player.index] += RoundToNearest(damage);
+		bool full = (g_iTagsAirblastDamage[attacker] >= g_iTagsAirblastRequirement[attacker]);
+		g_iTagsAirblastDamage[attacker] += RoundToNearest(damage);
 
-		if (g_iTagsAirblastDamage[player.index] >= g_iTagsAirblastRequirement[player.index])
+		if (g_iTagsAirblastDamage[attacker] >= g_iTagsAirblastRequirement[attacker])
 		{
-			g_iTagsAirblastDamage[player.index] = g_iTagsAirblastRequirement[player.index];
+			g_iTagsAirblastDamage[attacker] = g_iTagsAirblastRequirement[attacker];
 
-			if (!bFull)
+			if (!full)
 			{
-				EmitSoundToClient(player.index, SOUND_METERFULL);	//Alert player meter is fully
+				EmitSoundToClient(attacker, SOUND_METERFULL);	//Alert player meter is fully
 				SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 0.0);	//Allow airblast to be used
 			}
 		}
   }
 }
 
-stock float GetAirblastPercentage(int client) //I can't leave those vars. But since you can use stock anywhere.
+void ConfigEvent_AirBlast_Think(VSH2Player player)
+{
+  int client = player.index
+  if (g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] >= g_iTagsAirblastRequirement[client])
+	{
+		//Detect if airblast is used, and reset if so
+		int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
+		if (primary > MaxClients)
+		{
+			FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeapostate"));
+			if (state != g_nTagsAirblastState[client] && state == FlamethrowerState_Airblast)
+			{
+				g_iTagsAirblastDamage[client] = 0;	//Reset damage
+				SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime());	//3 years
+			}
+
+			g_nTagsAirblastState[client] = state;
+		}
+	}
+}
+
+void ConfigEvent_AirBlast_Button(VSH2Player player, int &buttons)
+{
+  int client = player.index;
+  //Prevent clients holding m2 while airblast in cooldown
+	if (buttons & IN_ATTACK2 && g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] < g_iTagsAirblastRequirement[client])
+	{
+		int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
+		int activewep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if (activewep > MaxClients && primary == activewep)
+			buttons &= ~IN_ATTACK2;
+
+		//Change the m_iWeaponState to a proper value after the airblast to prevent the visual bug
+		if (g_nTagsAirblastState[client] == FlamethrowerState_Airblast)
+		{
+			if (buttons & IN_ATTACK)
+			{
+				g_nTagsAirblastState[client] = FlamethrowerState_Firing;
+				SetEntProp(primary, Prop_Send, "m_iWeaponState", FlamethrowerState_Firing);
+			}
+			else
+			{
+				g_nTagsAirblastState[client] = FlamethrowerState_Idle;
+				SetEntProp(primary, Prop_Send, "m_iWeaponState", FlamethrowerState_Idle);
+			}
+		}
+	}
+}
+
+stock float GetAirblastPercentage(int client)
 {
 	if (g_iTagsAirblastRequirement[client] <= 0)
 		return -1.0;
