@@ -72,6 +72,8 @@ public void NextFrame_InitVSH2Player(int client)
 
 		// ./cfg_impl/modules/zombie.sp
 		player.SetPropAny("bIsZombie", false);
+		//./cfg_impl/modules/airblast.sp
+		player.SetPropAny("bIsAirBlastLimited", false);
 	}
 }
 

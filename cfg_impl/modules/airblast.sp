@@ -18,10 +18,15 @@ public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
   	SetEntPropFloat(iTarget, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime());	//3 years
   else
   	SetEntPropFloat(iTarget, Prop_Send, "m_flNextSecondaryAttack", 0.0);
+
+  player.SetPropAny("bIsAirBlastLimited", true);
 }
 
 void ConfigEvent_AirBlast_OnTakeDamage(VSH2Player player, float damage, int weapon)
 {
+  if (!player.GetPropAny("bIsAirBlastLimited"))
+		return;
+
   int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
 	if (primary == INVALID_ENT_REFERENCE)
 		return;
@@ -47,6 +52,9 @@ void ConfigEvent_AirBlast_OnTakeDamage(VSH2Player player, float damage, int weap
 
 void ConfigEvent_AirBlast_Think(VSH2Player player)
 {
+  if (!player.GetPropAny("bIsAirBlastLimited"))
+		return;
+
   int client = player.index
   if (g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] >= g_iTagsAirblastRequirement[client])
 	{
@@ -68,6 +76,9 @@ void ConfigEvent_AirBlast_Think(VSH2Player player)
 
 void ConfigEvent_AirBlast_Button(VSH2Player player, int &buttons)
 {
+  if (!player.GetPropAny("bIsAirBlastLimited"))
+		return;
+
   int client = player.index;
   //Prevent clients holding m2 while airblast in cooldown
 	if (buttons & IN_ATTACK2 && g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] < g_iTagsAirblastRequirement[client])
@@ -92,6 +103,44 @@ void ConfigEvent_AirBlast_Button(VSH2Player player, int &buttons)
 			}
 		}
 	}
+}
+
+/*
+"<enum>"
+{
+  // process airblast hud
+  "procedure"  "ConfigEvent_AirBlast_HUD"
+
+  // depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
+  // 'target' will assume the 'player' is an entity index
+  // while 'vsh2target' will assume the 'player' is a client userid
+  "vsh2target"	"player"
+  //"target"		"player"
+
+  // n : percentage of airblast
+  "string"		"Airblast: n%"
+}
+*/
+
+void ConfigEvent_AirBlast_HUD(EventMap args, ConfigEventType_t event_type)
+{
+  int calling_player_idx;
+	VSH2Player calling_player;
+	if (!args.GetTarget(calling_player_idx, calling_player))
+		return Plugin_Continue;
+
+  if (!calling_player.GetPropAny("bIsAirBlastLimited"))
+		return Plugin_Continue;
+
+  float percentage = RoundToFloor(GetAirblastPercentage(calling_player_idx) * 100.0);
+  if (percentage >= 0.0)
+  {
+    int abhud_size = args.GetSize("string");
+    char[] abhud_str = new char[abhud_size];
+    args.Get("string", abhud_str, abhud_size);
+    ReplaceString(abhud_str, abhud_size, "%n", percentage);
+  }
+  //how to output "new_text" with "string"
 }
 
 stock float GetAirblastPercentage(int client)

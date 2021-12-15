@@ -19,7 +19,7 @@ public Action OnPlayerRunCmd(int client,int &buttons,int &impulse, float vel[3],
 /*
 * Keys:
 * [in] "player": player userid/vsh2player instance
-* [in] "button": button that player use
+* [in/out?] "button": button that player use
 */
 
 void ConfigEvent_OnButton(const VSH2Player player, int &buttons)
