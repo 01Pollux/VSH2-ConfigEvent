@@ -34,6 +34,14 @@ enum ShakeCommand_t
 	SHAKE_START_NORUMBLE	// Starts a shake that does NOT rumble the controller.
 };
 
+enum FlamethrowerState
+{
+	FlamethrowerState_Idle = 0,
+	FlamethrowerState_StartFiring,
+	FlamethrowerState_Firing,
+	FlamethrowerState_Airblast,
+};
+
 #define AREA_COND_MY_TEAM		(1 << 0)
 #define AREA_COND_OTHER_TEAM	(1 << 1)
 #define AREA_COND_MY_MINIONS	(1 << 2)
