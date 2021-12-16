@@ -12,7 +12,7 @@ enum
 	TF2WeaponSlot_MaxWeapons
 }
 
-enum ConfigEventParam_t 
+enum ConfigEventParam_t
 {
 	CEP_Cell,
 	CEP_CellRef,
@@ -116,7 +116,7 @@ static stock void TransmitShakeEvent(int client, float amplitude, float frequenc
 {
 	if (amplitude > 0.0 || command == SHAKE_STOP)
 	{
-		if (command)	
+		if (command)
 			amplitude = 0.0;
 
 		BfWrite shake_msg = UserMessageToBfWrite(StartMessageOne("Shake", client, 1));
