@@ -31,7 +31,7 @@ public Action ConfigEvent_ManageSelfTFCond(EventMap args, ConfigEventType_t even
 		}
 	}
 	*/
-	
+
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
@@ -46,7 +46,7 @@ public Action ConfigEvent_ManageSelfTFCond(EventMap args, ConfigEventType_t even
 	{
 		ConfigMap cond = conditions.GetIntSection(i);
 		TFCond id; cond.GetInt("id", view_as<int>(id));
-		
+
 		if (add_cond)
 		{
 			float duration; cond.GetFloat("duration", duration);
@@ -69,7 +69,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 	{
 		// add or remove TFCond to a range of people
 		"procedure"  "ConfigEvent_ManageAreaTFCond"
-		
+
 		// depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
 		// 'target' will assume the 'player' is an entity index
 		// while 'vsh2target' will assume the 'player' is a client userid
@@ -81,7 +81,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 		// 1 << 2 = target my minions
 		// 1 << 3 = target other minions
 		"flags"			"101"		// target my team and my minions only
-		
+
 		"distance"		"<800.0"	// less than 800.0 HU
 		//"distance"	"800.0"		// less than 800.0 HU
 		//"distance"	">800.0"	// more than 800.0 HU
@@ -122,7 +122,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 	ConfigMap conditions = args.GetSection("conditions");
 	int conds_size = conditions.Size;
 	bool add_cond; args.GetBool("add", add_cond, false);
-	
+
 	// Grab the conditions and their durations
 	TFCond[] conds = new TFCond[conds_size];
 	float[] durations = new float[conds_size];
@@ -137,7 +137,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 		cond.GetInt("id", view_as<int>(conds[i]));
 		if (!add_cond)
 			continue;
-		
+
 		cond.GetFloat("duration", durations[i]);
 		if (cond.Get("damage_add", distance_str, sizeof(distance_str)))
 			durations[i] += ParseFormula(distance_str, calling_player.GetPropInt("iDamage"));
@@ -151,7 +151,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 	{
 		if (!IsClientInGame(i) || !IsPlayerAlive(i) || i == calling_player_idx)
 			continue;
-		
+
 		if (GetClientTeam(i) == player_team)
 		{
 			if (!(target_flags & AREA_COND_MY_TEAM))
@@ -159,7 +159,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 		}
 		else if (!(target_flags & AREA_COND_OTHER_TEAM))
 			continue;
-		
+
 		VSH2Player cur_target = VSH2Player(i);
 		if (cur_target.bIsMinion)
 		{
@@ -171,7 +171,7 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 			else if (!(target_flags & AREA_COND_OTHER_MINIONS))
 				continue;
 		}
-		
+
 		GetClientAbsOrigin(i, target_pos);
 		if (GetVectorDistance(player_pos, target_pos) > distance)
 		{
@@ -188,5 +188,73 @@ public Action ConfigEvent_ManageAreaTFCond(EventMap args, ConfigEventType_t even
 		}
 	}
 
+	return Plugin_Continue;
+}
+
+public Action ConfigEvent_ManagePatientTFCond(EventMap args, ConfigEventType_t event_type)
+{
+	/*
+	"<enum>"
+	{
+		// add or remove TFCond to patient (medic only)
+		"procedure"  "ConfigEvent_ManagePatientTFCond"
+
+		// depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
+		// 'target' will assume the 'player' is an entity index
+		// while 'vsh2target' will assume the 'player' is a client userid
+		"vsh2target"	"player"
+		//"target"		"player"
+
+		"add"			"true"
+
+		"conditions"
+		{
+			"<enum>"
+			{
+				"id"		"3"
+				"duration"  "2.0"
+			}
+			"<enum>"
+			{
+				"id"			"3"
+				// similar to   "2.0 + (n / 1000.0) * 30.0"
+				"damage_add"	"(n / 1000.0) * 30.0" // where n is the client's damage
+				"duration"		"2.0"
+			}
+		}
+	}
+	*/
+
+	int calling_player_idx;
+	VSH2Player calling_player;
+	if (!args.GetTarget(calling_player_idx, calling_player))
+		return Plugin_Continue;
+
+	int patient = GetHealingTarget(calling_player_idx);
+	if (patient == -1 || !IsClientInGame(patient))
+		return Plugin_Continue;
+
+	ConfigMap conditions = args.GetSection("conditions");
+	char extra_add[32];
+
+	bool add_cond; args.GetBool("add", add_cond, false);
+
+	for (int i = conditions.Size - 1; i >= 0; i--)
+	{
+		ConfigMap cond = conditions.GetIntSection(i);
+		TFCond id; cond.GetInt("id", view_as<int>(id));
+
+		if (add_cond)
+		{
+			float duration; cond.GetFloat("duration", duration);
+			if (cond.Get("damage_add", extra_add, sizeof(extra_add)))
+				duration += ParseFormula(extra_add, VSH2Player(patient).GetPropInt("iDamage"));
+			TF2_AddCondition(patient, id, duration);
+		}
+		else
+		{
+			TF2_RemoveCondition(patient, id);
+		}
+	}
 	return Plugin_Continue;
 }
