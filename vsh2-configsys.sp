@@ -12,6 +12,7 @@
 #include "cfg_impl/config.sp"
 #include "cfg_impl/vsh2hooks.sp"
 #include "cfg_impl/sdkhooks.sp"
+#include "cfg_impl/console.sp"
 
 #include "cfg_impl/formula_parser.sp"
 #include "cfg_impl/modules.sp"
@@ -35,6 +36,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public void OnPluginStart()
 {
 	RegAdminCmd("vsh2_cfgevent_reload", OnReloadConfig, ADMFLAG_ROOT, "Reload VSH2-Configsystem");
+
+	AddCommandListener(Console_EurakaTeleportCommand, "eureka_teleport");
 }
 
 static stock Action OnReloadConfig(int client, int argc)
