@@ -12,7 +12,7 @@ enum
 	TF2WeaponSlot_MaxWeapons
 }
 
-enum ConfigEventParam_t 
+enum ConfigEventParam_t
 {
 	CEP_Cell,
 	CEP_CellRef,
@@ -116,7 +116,7 @@ static stock void TransmitShakeEvent(int client, float amplitude, float frequenc
 {
 	if (amplitude > 0.0 || command == SHAKE_STOP)
 	{
-		if (command)	
+		if (command)
 			amplitude = 0.0;
 
 		BfWrite shake_msg = UserMessageToBfWrite(StartMessageOne("Shake", client, 1));
@@ -174,5 +174,27 @@ stock void TF2_Explode(
 			AcceptEntityInput(bomb, "Detonate");
 		else
 			SDKHooks_TakeDamage(bomb, 0, attacker, 9999.0);
+	}
+}
+
+stock int TF2_GetHealingTarget(int client) {
+	char classname[64];
+	TF2_GetCurrentWeaponClass(client, classname, sizeof(classname));
+
+	if(StrEqual(classname, "CWeaponMedigun"))	{
+		int index = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(GetEntProp(index, Prop_Send, "m_bHealing") == 1) {
+			return GetEntPropEnt(index, Prop_Send, "m_hHealingTarget");
+		}
+	}
+
+	return -1;
+}
+
+stock TF2_GetCurrentWeaponClass(int client, char[] name, int maxlength) {
+	if(client > 0) {
+		new index = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if (index > 0)
+			GetEntityNetClass(index, name, maxlength);
 	}
 }
