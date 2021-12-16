@@ -231,7 +231,7 @@ public Action ConfigEvent_ManagePatientTFCond(EventMap args, ConfigEventType_t e
 		return Plugin_Continue;
 
 	int patient = GetHealingTarget(calling_player_idx);
-	if (patient == -1 && !IsClientInGame(patient))
+	if (patient == -1 || !IsClientInGame(patient))
 		return Plugin_Continue;
 
 	ConfigMap conditions = args.GetSection("conditions");
