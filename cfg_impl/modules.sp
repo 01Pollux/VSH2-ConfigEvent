@@ -9,4 +9,5 @@
 #include "cfg_impl/modules/zombie.sp"
 #include "cfg_impl/modules/add_clip_ammo.sp"
 #include "cfg_impl/modules/explode.sp"
+#include "cfg_impl/modules/airblast.sp"
 //#include "cfg_impl/modules/print_to_server.sp"

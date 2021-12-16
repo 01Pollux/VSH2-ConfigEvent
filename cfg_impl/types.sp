@@ -52,7 +52,7 @@ enum ConfigEventType_t
 	CET_BossAirshotProj,
 	CET_BannerDeployed,
 	CET_BannerEffect,
-	
+
 	CET_RedPlayerThink,
 	CET_RedPlayerHUD,
 	CET_PlayerClimb,
@@ -61,6 +61,7 @@ enum ConfigEventType_t
 	CET_RedPlayerThinkPost,
 
 	CET_ProjectileTouch,
+	CET_PlayerButton,
 
 	CET_Count
 }
@@ -69,7 +70,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 {
 	static const char event_names[][] = {
 		"downloads",
-		
+
 		"player_touch",
 		"boss_building_touch",
 		"player_killed",
@@ -128,6 +129,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"thinkpost",
 
 		"projectile_touch"
+		"playerbutton"
 	};
 
 	for (int i = 0; i < sizeof(event_names); i++)
