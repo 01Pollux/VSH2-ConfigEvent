@@ -230,7 +230,7 @@ public Action ConfigEvent_ManagePatientTFCond(EventMap args, ConfigEventType_t e
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-	int patient = TF2_GetHealingTarget(calling_player_idx);
+	int patient = GetHealingTarget(calling_player_idx);
 	if (patient == -1 && !IsClientInGame(patient))
 		return Plugin_Continue;
 

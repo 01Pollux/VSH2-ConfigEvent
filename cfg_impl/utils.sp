@@ -176,25 +176,3 @@ stock void TF2_Explode(
 			SDKHooks_TakeDamage(bomb, 0, attacker, 9999.0);
 	}
 }
-
-stock int TF2_GetHealingTarget(int client) {
-	char classname[64];
-	TF2_GetCurrentWeaponClass(client, classname, sizeof(classname));
-
-	if(StrEqual(classname, "CWeaponMedigun"))	{
-		int index = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(GetEntProp(index, Prop_Send, "m_bHealing") == 1) {
-			return GetEntPropEnt(index, Prop_Send, "m_hHealingTarget");
-		}
-	}
-
-	return -1;
-}
-
-stock TF2_GetCurrentWeaponClass(int client, char[] name, int maxlength) {
-	if(client > 0) {
-		new index = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if (index > 0)
-			GetEntityNetClass(index, name, maxlength);
-	}
-}
