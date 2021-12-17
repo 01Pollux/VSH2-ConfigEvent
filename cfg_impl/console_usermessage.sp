@@ -1,31 +1,16 @@
-public Action Console_EurakaTeleportCommand(int client, const char[] command, int args)
-{
-  if (!IsValidClient(client) && VSH2Player(client).GetPropAny(bIsBoss) && VSH2GameMode.GetPropInt("iRoundState") != StateRunning)
-    return Plugin_Continue;
-
-  OnClientRunEurakaTeleportCmd(client);
-
-  return Plugin_Continue;
-}
-
 /** when engi run the euraka effect command
  * Keys:
  * [in] "player": player userid/vsh2player instance
  * return Plugin_Handled to stop the command being processed
  */
-void OnClientRunEurakaTeleportCmd(int client)
+public Action Console_EurakaTeleportCommand(int client, const char[] command, int args)
 {
+  if (!IsValidClient(client) && VSH2Player(client).GetPropAny(bIsBoss) && VSH2GameMode.GetPropInt("iRoundState") != StateRunning)
+    return Plugin_Continue;
+
   VSH2Player vsh2client = VSH2Player(client);
-  if (ConfigEvent_ShouldExecuteGlobals(CET_EurakaTeleportCmd))
-	{
-		ConfigSys.Params.SetValue("player", vsh2client);
-		ConfigEvent_ExecuteGlobals(CET_EurakaTeleportCmd);
-	}
-	if (ConfigEvent_ShouldExecuteWeapons(CET_EurakaTeleportCmd))
-	{
-		ConfigSys.Params.SetValue("player", vsh2client);
-		ConfigEvent_ExecuteWeapons(vsh2client, client, CET_EurakaTeleportCmd);
-	}
+
+  //Need help about make event type CET_EurakaTeleportCmd. Need to return Plugin_Handled.
 }
 
 /*
