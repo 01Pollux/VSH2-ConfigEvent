@@ -54,11 +54,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 				ConfigSys.Params.GetValue(element[1], prop_element);
 			else prop_element = StringToInt(element);
 		}
-		if (!var_sec.GetInt("element", prop_element))
-		{
-			if (!var_sec.GetInt("@element", prop_element))
-				prop_element = 4;
-		}
+		
 
 		PropType prop_type;
 		{
@@ -154,11 +150,6 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			if (element[0] == '@')
 				ConfigSys.Params.GetValue(element[1], prop_element);
 			else prop_element = StringToInt(element);
-		}
-		if (!var_sec.GetInt("element", prop_element))
-		{
-			if (!var_sec.GetInt("@element", prop_element))
-				prop_element = 4;
 		}
 
 		PropType prop_type;
