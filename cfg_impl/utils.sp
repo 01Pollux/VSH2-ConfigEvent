@@ -12,17 +12,13 @@ enum
 	TF2WeaponSlot_MaxWeapons
 }
 
-enum ConfigEventParam_t
+enum FlamethrowerState
 {
-	CEP_Cell,
-	CEP_CellRef,
-	CEP_Float,
-	CEP_FloatRef,
-	CEP_Array,
-	CEP_ArrayRef,
-	CEP_String
-//	CEP_StringRef
-}
+	FlamethrowerState_Idle = 0,
+	FlamethrowerState_StartFiring,
+	FlamethrowerState_Firing,
+	FlamethrowerState_Airblast,
+};
 
 enum ShakeCommand_t
 {
@@ -34,12 +30,24 @@ enum ShakeCommand_t
 	SHAKE_START_NORUMBLE	// Starts a shake that does NOT rumble the controller.
 };
 
-enum FlamethrowerState
+enum ConfigEvent_ParamType_t
 {
-	FlamethrowerState_Idle = 0,
-	FlamethrowerState_StartFiring,
-	FlamethrowerState_Firing,
-	FlamethrowerState_Airblast,
+	// "int"
+	PT_Int,
+	// "float"
+	PT_Float,
+	// "string"
+	PT_String,
+	// "bool"
+	PT_Bool,
+	// "object"
+	PT_Object,
+	// "char"
+	PT_Char,
+	// "entity"
+	PT_Entity,
+	// "vector"
+	PT_Vector
 };
 
 #define AREA_COND_MY_TEAM		(1 << 0)
@@ -183,4 +191,26 @@ stock void TF2_Explode(
 		else
 			SDKHooks_TakeDamage(bomb, 0, attacker, 9999.0);
 	}
+}
+
+stock ConfigEvent_ParamType_t GetTypeFromName(ConfigMap data)
+{
+	static const char types[][] = {
+		"int",
+		"float",
+		"string",
+		"bool",
+		"object",
+		"char",
+		"entity",
+		"vector"
+	};
+
+	char type[8]; data.Get("type", type, sizeof(type));
+	for(int i = 0; i < sizeof(types); i++)
+	{
+		if (!strcmp(type, types[i]))
+			return view_as<ConfigEvent_ParamType_t>(i);
+	}
+	return PT_Int;
 }

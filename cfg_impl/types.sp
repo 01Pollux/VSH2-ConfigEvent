@@ -61,7 +61,6 @@ enum ConfigEventType_t
 	CET_RedPlayerThinkPost,
 
 	CET_ProjectileTouch,
-	CET_PlayerButton,
 
 	CET_Count
 }
@@ -129,7 +128,6 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"thinkpost",
 
 		"projectile_touch"
-		"playerbutton"
 	};
 
 	for (int i = 0; i < sizeof(event_names); i++)
