@@ -2,7 +2,7 @@ static bool bIsEukuraEffectCD[MAXPLAYERS+1];
 
 public Action ConfigEvent_BlockCommand(EventMap args, ConfigEventType_t event_type)
 {
-  int calling_player_idx;
+	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
@@ -16,7 +16,7 @@ public Action ConfigEvent_BlockCommand(EventMap args, ConfigEventType_t event_ty
 
 public Action ConfigEvent_StartCoolDown(EventMap args, ConfigEventType_t event_type)
 {
-  int calling_player_idx;
+	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
