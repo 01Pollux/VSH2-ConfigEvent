@@ -61,8 +61,8 @@ enum ConfigEventType_t
 	CET_RedPlayerThinkPost,
 
 	CET_ProjectileTouch,
-	CET_EurakaTeleport,
-	CET_EurakaTeleported,
+	CET_EurakaTeleportCmd,
+	CET_EurakaTeleportFin,
 
 	CET_Count
 }
