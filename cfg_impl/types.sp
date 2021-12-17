@@ -130,7 +130,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"thinkpost",
 
 		"projectile_touch"
-		"eureka_teleport"
+		"eureka_teleport",
 		"eureka_teleported"
 	};
 
