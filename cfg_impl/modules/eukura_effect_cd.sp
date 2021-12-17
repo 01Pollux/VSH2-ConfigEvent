@@ -11,6 +11,7 @@ public Action ConfigEvent_BlockCommand(EventMap args, ConfigEventType_t event_ty
   {
     return Plugin_Handled;  //block the 'eukura_teleport' from being processed
   }
+  return Plugin_Continue;
 }
 
 public Action ConfigEvent_StartCoolDown(EventMap args, ConfigEventType_t event_type)
