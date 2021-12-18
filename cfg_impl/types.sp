@@ -31,6 +31,7 @@ enum ConfigEventType_t
 	CET_BDD_OnCloakedSpy,
 	CET_BDD_OnHitShield,
 
+	CET_BTD_OnTakeDamage,
 	CET_BTD_OnStabbed,
 	CET_BTD_OnTelefragged,
 	CET_BTD_OnSwordTaunt,
@@ -100,6 +101,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"bdg_cloaked_spy",
 		"bdg_shield_hit",
 
+		"btd_takedamage",
 		"btd_stab",
 		"btd_telefrag",
 		"btd_decapitation",

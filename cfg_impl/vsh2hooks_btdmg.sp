@@ -34,6 +34,20 @@ Action ConfigEvent_OnBossTakeDamage(
 				if (steal_hp)
 					damage /= steal_hp;
 			}
+			if (ConfigEvent_ShouldExecuteGlobals(CET_BTD_OnTakeDamage))
+			{
+				ConfigSys.Params.SetValue("player", player);
+				ConfigSys.Params.SetValue("victim", victim);
+				ConfigSys.Params.SetValue("damage", damage);
+				ConfigEvent_ExecuteGlobals(CET_BTD_OnTakeDamage);
+			}
+			if (ConfigEvent_ShouldExecuteWeapons(CET_BTD_OnTakeDamage))
+			{
+				ConfigSys.Params.SetValue("player", player);
+				ConfigSys.Params.SetValue("victim", victim);
+				ConfigSys.Params.SetValue("damage", damage);
+				ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnTakeDamage);
+			}
 		}
 	}
 	return Plugin_Continue;

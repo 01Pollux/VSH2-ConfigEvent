@@ -11,4 +11,6 @@
 #include "cfg_impl/modules/add_clip_ammo.sp"
 #include "cfg_impl/modules/explode.sp"
 #include "cfg_impl/modules/airblast.sp"
+#include "cfg_impl/modules/eureka_effect_cd.sp"
+#include "cfg_impl/modules/sandman.sp"
 //#include "cfg_impl/modules/print_to_server.sp"
