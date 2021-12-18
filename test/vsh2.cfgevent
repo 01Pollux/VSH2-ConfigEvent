@@ -80,5 +80,41 @@
 				}
 			}
 		}
+		"589"	//Eureka Effect 传送扳手
+		{
+			"eureka_teleport"
+			{
+				"<enum>"
+				{
+					"procedure"		"ConfigEvent_BlockCommand"	//only block if in cooldown
+					"vsh2target"	"player"
+				}
+			}
+			"eureka_teleported"
+			{
+				"<enum>"
+				{
+					"procedure"		"ConfigEvent_StartCoolDown"
+					"vsh2target"	"player"
+
+					"cooldown"		"45.0"	//45 seconds to set bIsEukuraEffectCD to false
+				}
+				"<enum>"
+				{
+					"procedure"		"ConfigEvent_MakeStun"
+					"vsh2target"	"player"
+
+					"duration"		"6.0"
+					"flags"		"110"	//TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_LIMITMOVEMENT
+				}
+				"<enum>"
+				{
+					"procedure"		"ConfigEvent_SetGlow"
+					"vsh2target"	"player"
+
+					"duration"		"6.0"
+				}
+			}
+		}
 	}
 }
