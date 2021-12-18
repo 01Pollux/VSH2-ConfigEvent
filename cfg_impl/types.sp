@@ -63,6 +63,7 @@ enum ConfigEventType_t
 	CET_ProjectileTouch,
 	CET_EurakaTeleportCmd,
 	CET_EurakaTeleportFin,
+	CET_AimAtEnemy,
 
 	CET_Count
 }
@@ -131,7 +132,8 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 
 		"projectile_touch",
 		"eureka_teleport",
-		"eureka_teleported"
+		"eureka_teleported",
+		"aimimg_enemy"
 	};
 
 	for (int i = 0; i < sizeof(event_names); i++)
