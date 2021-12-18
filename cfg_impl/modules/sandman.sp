@@ -26,11 +26,14 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
     float fClientEyePosition[3];
     GetClientAbsOrigin(attacker, fClientEyePosition);
     GetClientAbsOrigin(client, fClientLocation);
+
     float fDistance[3];
     MakeVectorFromPoints(fClientLocation, fClientEyePosition, fDistance);
     float dist = GetVectorLength(fDistance);
+
     float duration;
-    bool bIsBigBonk = false;
+    int flags = TF_STUNFLAGS_SMALLBONK;
+
     switch (RoundToFloor(dist / 128))
     {
         case 0: { /* do nothing */ }
@@ -79,16 +82,11 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
         default:
         {
           duration = 7.0;
-          bIsBigBonk = true;
+          flags = TF_STUNFLAGS_BIGBONK;
         }
     }
-    if (duration > 0.0)
-    {
-        if (!bIsBigBonk)
-        {
-            TF2_StunPlayer(victim.index, duration, 0.0, TF_STUNFLAGS_SMALLBONK, calling_player_idx);
-        }
-        TF2_StunPlayer(victim.index, duration, 0.0, TF_STUNFLAGS_BIGBONK, calling_player_idx);
-    }
+
+    if (duration)
+        TF2_StunPlayer(victim.index, duration, 0.0, flags, calling_player_idx);
     return Plugin_Continue;
 }
