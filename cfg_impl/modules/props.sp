@@ -111,6 +111,9 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			"prop"  "m_iHealth"
 			"datamap"   "false" // Prop_Data
 			"value" "my_var"
+
+			// "min"	""
+			// "max"	""
 		}
 	}
 	*/
@@ -163,6 +166,13 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		{
 			any val;
 			ConfigSys.Params.GetValue(out_name, val);
+
+			int clamp;
+			if (var_sec.GetInt("min", clamp) && clamp > val)
+				val = clamp;
+			if (var_sec.GetInt("max", clamp) && clamp < val)
+				val = clamp;
+
 			SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
 		}
 		case PT_Float:

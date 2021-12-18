@@ -214,3 +214,13 @@ stock ConfigEvent_ParamType_t GetTypeFromName(ConfigMap data)
 	}
 	return PT_Int;
 }
+
+stock void ClampValue(any& val, const any min, const any max)
+{
+	if (val < min)
+		val = min;
+	if (val > max)
+		val = max;
+}
+
+#define Plugin_SkipN		999
