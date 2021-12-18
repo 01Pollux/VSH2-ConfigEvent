@@ -418,7 +418,6 @@ void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 
 	ConfigEvent_Zombie_Think(player, player_index);
 	ConfigEvent_AirBlast_Think(player);
-	ConfigEvent_OnAimEnemy(player, player_index);
 	if (ConfigEvent_ShouldExecuteGlobals(CET_RedPlayerThink))
 	{
 		ConfigSys.Params.SetValue("player", player);
@@ -428,35 +427,6 @@ void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 	{
 		ConfigSys.Params.SetValue("player", player);
 		ConfigEvent_ExecuteWeapons(player, player.index, CET_RedPlayerThink);
-	}
-}
-
-/**
- * Keys:
- * [in] "player" : aimer's userid/vsh2player instance
- * [in] "target" : target's userid/vsh2player instance
- */
-void ConfigEvent_OnAimEnemy(const VSH2Player player, const int player_index)
-{
-	int aimtarget = GetClientAimTarget(player_index, true);
-	if (aimtarget < 0)
-		return;
-
-	VSH2Player target = VSH2Player(aimtarget);
-	if (!target.GetPropInt("bIsBoss") && !target.GetPropAny("bIsMinion"))	//aiming at redplayer
-		return;
-
-	if (ConfigEvent_ShouldExecuteGlobals(CET_AimAtEnemy))
-	{
-		ConfigSys.Params.SetValue("player", player);
-		ConfigSys.Params.SetValue("target", target);
-		ConfigEvent_ExecuteGlobals(CET_AimAtEnemy);
-	}
-	if (ConfigEvent_ShouldExecuteWeapons(CET_AimAtEnemy))
-	{
-		ConfigSys.Params.SetValue("player", player);
-		ConfigSys.Params.SetValue("target", target);
-		ConfigEvent_ExecuteWeapons(player, player.index, CET_AimAtEnemy);
 	}
 }
 
