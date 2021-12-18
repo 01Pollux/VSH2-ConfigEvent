@@ -76,7 +76,7 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	float duration; args.GetFloat("duration", duration);
 
 	int weapon = GetIndexOfWeaponSlot(calling_player_idx, slot);
-	SetEntProp(weapon, Prop_Send, "m_flEnergy", clip, _, 0);
+	SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
 
 	if (duration >= 0.0)
 	{
@@ -96,10 +96,10 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 	int max = data.ReadCell();
 	int weapon = data.ReadCell();
 
-	int currentclip = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy", 0);
+	int currentclip = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
 	if (currentclip > max)
 		currentclip = max;
 
-	SetEntProp(weapon, Prop_Send, "m_flEnergy", currentclip, _, 0);
+	SetEntProp(weapon, Prop_Send, "m_flEnergy", currentclip);
 	delete data;
 }
