@@ -191,7 +191,7 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 
 						if (weapon_ids[weapon_i][0] == '*' && !weapon_ids[weapon_i][1])
 							weapon_id = -1;
-						else if ((weapon_id = StringToInt(weapon_ids[weapon_i])) <= 0)
+						else if (StringToIntEx(weapon_ids[weapon_i], weapon_id)) <= 0)
 						{
 							LogError("[VSH2 CfgEvent] Bad weapon id was passed \"weapons::%s::%s\".", key, event_key);
 							continue;
@@ -315,7 +315,7 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 	for (int i = cur_event.Length - 1; i >= 0; i--)
 	{
 		cur_event.GetArray(i, event_info);
-		if (event_info.ItemID)
+		if (event_info.ItemID !=-1)
 		{
 			bool has_slot = false;
 
