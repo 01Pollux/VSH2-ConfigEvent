@@ -60,7 +60,7 @@ enum ConfigEventType_t
 	CET_BossAirshotProj,
 	CET_BannerDeployed,
 	CET_BannerEffect,
-	
+
 	CET_RedPlayerThink,
 	CET_RedPlayerHUD,
 	CET_PlayerClimb,
@@ -69,6 +69,8 @@ enum ConfigEventType_t
 	CET_RedPlayerThinkPost,
 
 	CET_ProjectileTouch,
+	CET_EurakaTeleportCmd,
+	CET_EurakaTeleportFin,
 
 	CET_Count
 }
@@ -109,7 +111,7 @@ methodmap EventMap < ConfigMap
 		// 'vsh2player' and 'target' required and we can't execute the function without it
 		if (!this.Get(vsh2_target, target_str, sizeof(target_str)) && !this.Get(target, target_str, sizeof(target_str)))
 			return false;
-		
+
 		VSH2CfgEvent.GetParams().GetValue(target_str, calling_player);
 		if (target_str[0] == 'v')
 		{
@@ -195,7 +197,7 @@ methodmap EventMap < ConfigMap
 			if (!(targets_names = this.GetSection(target)))
 				return 0;
 		}
-		
+
 		int written_targets;
 		char target_str[12];
 
@@ -207,14 +209,14 @@ methodmap EventMap < ConfigMap
 				if (is_vsh2target)
 				{
 					calling_player_idx[written_targets] = view_as<int>(calling_player[written_targets]);
-					calling_player[written_targets] = calling_player_idx[written_targets] == -1 ? 
+					calling_player[written_targets] = calling_player_idx[written_targets] == -1 ?
 						view_as<VSH2Player>(0) : VSH2Player(calling_player_idx[written_targets]);
 				}
-				else 
+				else
 				{
 					calling_player_idx[written_targets] = calling_player[written_targets] ? calling_player[written_targets].index : -1;
 				}
-				
+
 				++written_targets;
 			}
 		}
@@ -247,7 +249,7 @@ methodmap EventMap < ConfigMap
 		// grab the target entity index
 		if (!this.Get(target, target_str, sizeof(target_str)))
 			return false;
-		
+
 		return VSH2CfgEvent.GetParams().GetValue(target_str, target_ent_index);
 	}
 
@@ -301,7 +303,7 @@ methodmap EventMap < ConfigMap
 		// grab the target entity index
 		if (!(targets_names = this.GetSection(target)))
 			return 0;
-		
+
 		int written_targets;
 		char target_str[12];
 
