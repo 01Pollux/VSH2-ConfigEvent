@@ -104,7 +104,6 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		
 		"<enum>"
 		{
-			"name"	"my_string"
 			"type"	"int"
 			// "size"		"4" 
 			// "element"	"0"
@@ -134,10 +133,10 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		var_sec.Get("prop", prop_name, prop_name_size);
 
 		int out_name_size;
-		if (!var_sec.GetInt("prop", out_name_size))
+		if (!var_sec.GetInt("value", out_name_size))
 			out_name_size = 48;
 		char[] out_name = new char[out_name_size];
-		var_sec.Get("prop", out_name, out_name_size);
+		var_sec.Get("value", out_name, out_name_size);
 
 		int prop_size;
 		if (!var_sec.GetInt("size", prop_size))
