@@ -46,7 +46,7 @@ Action ConfigEvent_OnBossTakeDamage(
 				ConfigSys.Params.SetValue("player", player);
 				ConfigSys.Params.SetValue("victim", victim);
 				ConfigSys.Params.SetValue("damage", damage);
-				ConfigEvent_ExecuteWeapons(CET_BTD_OnTakeDamage);
+				ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnTakeDamage);
 			}
 		}
 	}

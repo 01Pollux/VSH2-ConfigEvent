@@ -21,7 +21,7 @@
 
 public Plugin myinfo =
 {
-	name		 = "VSH2 Config Event",
+	name		= "VSH2 Config Event",
 	author		= "01Pollux, HotoCocoaco",
 	description	= "Manage VSH2's events with config",
 	version		= "1.0.0"

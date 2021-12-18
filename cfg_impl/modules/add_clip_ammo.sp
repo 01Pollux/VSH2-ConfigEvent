@@ -11,16 +11,15 @@ public Action ConfigEvent_AddClip(EventMap args, ConfigEventType_t event_type)
 	float duration; args.GetFloat("duration", duration);
 
 	int clip = GetClip(calling_player_idx, slot);
-	SetClip(calling_player_idx, slot, clip+amount);
+	SetClip(calling_player_idx, slot, clip + amount);
 
 	if (duration >= 0.0)
 	{
 		DataPack data;
 		CreateDataTimer(duration, Timer_ResetClip, data);
-		data.WriteCell(clip);
 		data.WriteCell(max);
 		data.WriteCell(slot);
-		data.WriteCell(calling_player_idx);
+		data.WriteCell(calling_player);
 	}
 
 	return Plugin_Continue;
@@ -30,17 +29,22 @@ public Action Timer_ResetClip(Handle hTimer, DataPack data)
 {
 	data.Reset();
 
-	int clip = data.ReadCell();
 	int max = data.ReadCell();
 	int slot = data.ReadCell();
-	int calling_player_idx = data.ReadCell();
+	VSH2Player calling_player = data.ReadCell();
 
-	int currentclip = GetClip(calling_player_idx, slot);
-	if (currentclip > max)
-		currentclip = max;
+	int calling_player_idx = calling_player.index;
+	if (calling_player_idx)
+	{
+		int currentclip = GetClip(calling_player_idx, slot);
+		if (currentclip > max)
+			currentclip = max;
 
-	SetClip(calling_player_idx, slot, currentclip);
+		SetClip(calling_player_idx, slot, currentclip);
+	}
 	delete data;
+
+	return Plugin_Continue;
 }
 
 public Action ConfigEvent_AddAmmo(EventMap args, ConfigEventType_t event_type)
@@ -76,14 +80,17 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	float duration; args.GetFloat("duration", duration);
 
 	int weapon = GetIndexOfWeaponSlot(calling_player_idx, slot);
-	SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
-
-	if (duration >= 0.0)
+	if (IsValidEntity(weapon))
 	{
-		DataPack data;
-		CreateDataTimer(duration, Timer_ResetClipEnergy, data);
-		date.WriteCell(max);
-		data.WriteCell(weapon);
+		SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
+
+		if (duration >= 0.0)
+		{
+			DataPack data;
+			CreateDataTimer(duration, Timer_ResetClipEnergy, data);
+			data.WriteFloat(max);
+			data.WriteCell(EntIndexToEntRef(weapon));
+		}
 	}
 
 	return Plugin_Continue;
@@ -93,13 +100,19 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 {
 	data.Reset();
 
-	int max = data.ReadCell();
-	int weapon = data.ReadCell();
+	float max = data.ReadFloat();
+	int weapon = EntRefToEntIndex(data.ReadCell());
 
-	int currentclip = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
-	if (currentclip > max)
-		currentclip = max;
+	if (IsValidEntity(weapon))
+	{
+		float cur_energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
+		if (cur_energy > max)
+			cur_energy = max;
 
-	SetEntProp(weapon, Prop_Send, "m_flEnergy", currentclip);
+		SetEntProp(weapon, Prop_Send, "m_flEnergy", cur_energy);
+	}
+	
 	delete data;
+
+	return Plugin_Continue;
 }

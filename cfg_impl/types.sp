@@ -101,7 +101,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"bdg_cloaked_spy",
 		"bdg_shield_hit",
 
-		"btd_takedamage"
+		"btd_takedamage",
 		"btd_stab",
 		"btd_telefrag",
 		"btd_decapitation",

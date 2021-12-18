@@ -9,7 +9,8 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
             "<enum>"
             {
                 "procedure" "ConfigEvent_SandManStun"
-                "vsh2player" "victim"
+                "vsh2player" "plater"
+                "victim"    "victim"
                 //Change the vars in cfg_impl/modules/sandman.sp if need.
             }
         }
@@ -17,20 +18,21 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
 
     */
 
-    int calling_player_idx;
-    VSH2Player calling_player;
-    if (!args.GetTarget(calling_player_idx, calling_player))
+    int attacker;
+    VSH2Player vsh2attacker;
+    if (!args.GetTarget(attacker, vsh2attacker))
         return Plugin_Continue;
 
-    float fClientLocation[3];
-    float fClientEyePosition[3];
-    GetClientAbsOrigin(attacker, fClientEyePosition);
-    GetClientAbsOrigin(client, fClientLocation);
+    int victim;
+    VSH2Player vsh2victim;
+    if (!args.GetTargetEx("vsh2victim", "victim", victim, vsh2victim))
+        return Plugin_Continue;
 
-    float fDistance[3];
-    MakeVectorFromPoints(fClientLocation, fClientEyePosition, fDistance);
-    float dist = GetVectorLength(fDistance);
+    float attacker_pos[3], victim_pos[3];
+    GetClientAbsOrigin(victim, attacker_pos);
+    GetClientAbsOrigin(victim, victim_pos);
 
+    float dist = GetVectorDistance(victim_pos, attacker_pos);
     float duration;
     int flags = TF_STUNFLAGS_SMALLBONK;
 
@@ -46,7 +48,7 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
         // 384 <= dist < 512
         case 2, 3:
         {
-            duration = 2.0
+            duration = 2.0;
         }
         // 512 <= dist < 640
         // 640 <= dist < 768
@@ -87,6 +89,6 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
     }
 
     if (duration)
-        TF2_StunPlayer(victim.index, duration, 0.0, flags, calling_player_idx);
+        TF2_StunPlayer(victim, duration, 0.0, flags, calling_player_idx);
     return Plugin_Continue;
 }

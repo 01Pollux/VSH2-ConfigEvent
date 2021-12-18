@@ -187,18 +187,14 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 					// Iterate through our weapon indexes "xx, yy" 'weapon_ids'
 					for (int weapon_i = 0; weapon_i < entries; weapon_i++)
 					{
-						int weapon_id;
-
 						if (weapon_ids[weapon_i][0] == '*' && !weapon_ids[weapon_i][1])
-							weapon_id = -1;
-						else if (StringToIntEx(weapon_ids[weapon_i], weapon_id)) <= 0)
+							event_info.ItemID = -1;
+						else if (StringToIntEx(weapon_ids[weapon_i], event_info.ItemID) <= 0)
 						{
 							LogError("[VSH2 CfgEvent] Bad weapon id was passed \"weapons::%s::%s\".", key, event_key);
 							continue;
 						}
 
-						event_info.ItemID = weapon_id;
-						
 						cur_event.PushArray(event_info);
 					}
 					event_info.Arguments.SetInt("__ref_count__", entries);
