@@ -129,7 +129,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"falldamage",
 		"thinkpost",
 
-		"projectile_touch"
+		"projectile_touch",
 		"eureka_teleport",
 		"eureka_teleported"
 	};
