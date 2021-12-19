@@ -296,37 +296,18 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 	ConfigWeaponEvent_t event_info;
 
 	// grab the weapon id to check if we have it to execute the event
-	int weapons[TF2WeaponSlot_MaxWeapons];
-	for(int slot; slot < TF2WeaponSlot_MaxWeapons; slot++)
-	{
-		int weapon = GetPlayerWeaponSlot(client, slot);
-		if (weapon == -1)
-			continue;
-		
-		weapons[slot] = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	}
+	int weapon = GetActiveWep(client);
+	if (weapon == -1)
+		return Plugin_Continue;
 
 	Action highest_ret = Plugin_Continue;
 	bool is_minion = player.bIsMinion;
-	for (int i = cur_event.Length - 1; i >= 0; i--)
+	int event_size = cur_event.Length;
+	for (int i = 0; i < event_size; i++)
 	{
 		cur_event.GetArray(i, event_info);
-		if (event_info.ItemID !=-1)
-		{
-			bool has_slot = false;
-
-			for (int slot = 0; slot < sizeof(weapons); slot++)
-			{
-				if (weapons[slot] == event_info.ItemID)
-				{
-					has_slot = true;
-					break;
-				}
-			}
-			
-			if (!has_slot)
-				continue;
-		}
+		if (event_info.ItemID != -1 && event_info.ItemID != weapon)
+			continue;
 
 		// Disallow minions from executing weapon's callbacks,
 		bool minion_can_execute;
@@ -338,10 +319,19 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 		Call_PushCell(type);
 		Action ret;
 		Call_Finish(ret);
-		if (ret > highest_ret)
+		if (ret < view_as<Action>(Plugin_SkipN))
 		{
-			if ((highest_ret = ret) >= Plugin_Stop)
-				break;
+			if (ret > highest_ret)
+			{
+				if ((highest_ret = ret) >= Plugin_Stop)
+					break;
+			}
+		}
+		else
+		{
+			int skip_delta = view_as<int>(ret) - Plugin_SkipN * 2;
+			i += skip_delta;
+			ClampValue(i, 0, event_size - 1);
 		}
 	}
 	return highest_ret;
@@ -363,7 +353,8 @@ Action ConfigEvent_ExecuteGlobals(ConfigEventType_t type)
 	ConfigGlobalEvent_t event_info;
 
 	Action highest_ret = Plugin_Continue;
-	for (int i = cur_event.Length - 1; i >= 0; i--)
+	int event_size = cur_event.Length;
+	for (int i = 0; i < event_size; i++)
 	{
 		cur_event.GetArray(i, event_info);
 
@@ -372,10 +363,19 @@ Action ConfigEvent_ExecuteGlobals(ConfigEventType_t type)
 		Call_PushCell(type);
 		Action ret;
 		Call_Finish(ret);
-		if (ret > highest_ret)
+		if (ret < view_as<Action>(Plugin_SkipN))
 		{
-			if ((highest_ret = ret) >= Plugin_Stop)
-				break;
+			if (ret > highest_ret)
+			{
+				if ((highest_ret = ret) >= Plugin_Stop)
+					break;
+			}
+		}
+		else
+		{
+			int skip_delta = view_as<int>(ret) - Plugin_SkipN * 2;
+			i += skip_delta;
+			ClampValue(i, 0, event_size - 1);
 		}
 	}
 	return highest_ret;

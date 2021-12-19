@@ -112,7 +112,9 @@ methodmap EventMap < ConfigMap
 		if (!this.Get(vsh2_target, target_str, sizeof(target_str)) && !this.Get(target, target_str, sizeof(target_str)))
 			return false;
 
-		VSH2CfgEvent.GetParams().GetValue(target_str, calling_player);
+		if (!VSH2CfgEvent.GetParams().GetValue(target_str, calling_player))
+			return false;
+
 		if (target_str[0] == 'v')
 		{
 			calling_player_idx = view_as<int>(calling_player);
