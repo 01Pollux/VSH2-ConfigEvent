@@ -79,7 +79,7 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	int slot; args.GetInt("slot", slot);
 	float duration; args.GetFloat("duration", duration);
 
-	int weapon = GetIndexOfWeaponSlot(calling_player_idx, slot);
+	int weapon = GetPlayerWeaponSlot(calling_player_idx, slot);
 	if (IsValidEntity(weapon))
 	{
 		SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
@@ -111,7 +111,7 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 
 		SetEntProp(weapon, Prop_Send, "m_flEnergy", cur_energy);
 	}
-	
+
 	delete data;
 
 	return Plugin_Continue;
