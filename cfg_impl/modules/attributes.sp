@@ -8,8 +8,8 @@ public Action ConfigEvent_AddAttribPlayer(EventMap args, ConfigEventType_t event
 		return Plugin_Continue;
 
     char name[PLATFORM_MAX_PATH] = args.GetString("name"); //check items_game.txt for attributes
-    float value = args.GetFloat("value");
-    float duration = args.GetFloat("duration");
+    float value; args.GetFloat("value",value);
+    float duration; args.GetFloat("duration", duration);
         if (!duration)
             duration = -1.0;    //cannot automatically remove
 
@@ -25,10 +25,11 @@ public Action ConfigEvent_SetAttribWep(EventMap args, ConfigEventType_t event_ty
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-    int index = args.GetInt("index");
-    float value = args.GetFloat("value");
-    float duration = args.GetFloat("duration"); //0.0 means do not reset
-    int weapon = GetPlayerWeaponSlot(calling_player_idx, args.GetInt("slot"));
+    int index; args.GetInt("index", index);
+    float value; args.GetFloat("value", value);
+    float duration; args.GetFloat("duration", duration); //0.0 means do not reset
+    int slot; args.GetInt("slot", slot);
+    int weapon = GetPlayerWeaponSlot(calling_player_idx, slot);
 
 
     if (IsValidEntity(weapon))
@@ -80,5 +81,23 @@ public Action Timer_ResetAttribWep(Handle hTimer, DataPack data)
 
     delete data;
 
+    return Plugin_Continue;
+}
+
+public Action ConfigEvent_RemoveAttribWep(EventMap args, ConfigEventType_t event_type)
+{
+    int calling_player_idx;
+	VSH2Player calling_player;
+	if (!args.GetTarget(calling_player_idx, calling_player))
+		return Plugin_Continue;
+
+    int index; args.GetInt("index", index);
+    int slot; args.GetInt("slot", slot);
+    int weapon = GetPlayerWeaponSlot(calling_player_idx, slot);
+    if (IsValidEntity(weapon))
+    {
+        TF2Attrib_RemoveByDefIndex(weapon, index);
+    }
+    
     return Plugin_Continue;
 }
