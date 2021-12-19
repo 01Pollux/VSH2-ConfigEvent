@@ -6,6 +6,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 	{
 		"procedure"  "ConfigEvent_GetProp"
 		
+		"vsh2target"	"player"
 		"<enum>"
 		{
 			"name"	"my_string"
@@ -30,17 +31,26 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 		if (!var_sec)
 			break;
 
+		int out_name_size;
+		if (!var_sec.GetInt("name", out_name_size))
+			out_name_size = 48;
+		char[] out_name = new char[out_name_size];
+		var_sec.Get("name", out_name, out_name_size);
+
+		ConfigEvent_ParamType_t type = GetTypeFromName(var_sec);
+		if (type == PT_VSH2)
+		{
+			char prop_name[64];
+			var_sec.Get("prop", prop_name, sizeof(prop_name));
+			ConfigSys.Params.SetValue(out_name, calling_player.GetPropAny(prop_name));
+			continue;
+		}
+
 		int prop_name_size;
 		if (!var_sec.GetInt("prop", prop_name_size))
 			prop_name_size = 48;
 		char[] prop_name = new char[prop_name_size]; 
 		var_sec.Get("prop", prop_name, prop_name_size);
-
-		int out_name_size;
-		if (!var_sec.GetInt("prop", out_name_size))
-			out_name_size = 48;
-		char[] out_name = new char[out_name_size];
-		var_sec.Get("prop", out_name, out_name_size);
 
 		int prop_size;
 		if (!var_sec.GetInt("size", prop_size))
@@ -62,7 +72,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 			prop_type = is_datamap ? Prop_Data : Prop_Send;
 		}
 
-		switch (GetTypeFromName(var_sec))
+		switch (type)
 		{
 		case PT_Bool, PT_Int, PT_Char:
 		{
@@ -102,15 +112,16 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 	{
 		"procedure"  "ConfigEvent_SetProp"
 		
+		"vsh2target"	"player"
 		"<enum>"
 		{
+			"name" "my_var"
 			"type"	"int"
 			// "size"		"4" 
 			// "element"	"0"
 			// "element"	"@my_var"
 			"prop"  "m_iHealth"
 			"datamap"   "false" // Prop_Data
-			"value" "my_var"
 		}
 	}
 	*/
@@ -126,17 +137,28 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		if (!var_sec)
 			break;
 
+		int out_name_size;
+		if (!var_sec.GetInt("name", out_name_size))
+			out_name_size = 48;
+		char[] out_name = new char[out_name_size];
+		var_sec.Get("name", out_name, out_name_size);
+
+		ConfigEvent_ParamType_t type = GetTypeFromName(var_sec);
+		if (type == PT_VSH2)
+		{
+			char prop_name[64];
+			var_sec.Get("prop", prop_name, sizeof(prop_name));
+			any val;
+			if (ConfigSys.Params.GetValue(out_name, val))
+				VSH2Player(calling_player_idx).SetPropAny(prop_name, val);
+			continue;
+		}
+
 		int prop_name_size;
 		if (!var_sec.GetInt("prop", prop_name_size))
 			prop_name_size = 48;
 		char[] prop_name = new char[prop_name_size]; 
 		var_sec.Get("prop", prop_name, prop_name_size);
-
-		int out_name_size;
-		if (!var_sec.GetInt("value", out_name_size))
-			out_name_size = 48;
-		char[] out_name = new char[out_name_size];
-		var_sec.Get("value", out_name, out_name_size);
 
 		int prop_size;
 		if (!var_sec.GetInt("size", prop_size))
@@ -157,38 +179,37 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			prop_type = is_datamap ? Prop_Data : Prop_Send;
 		}
 
-		switch (GetTypeFromName(var_sec))
+		switch (type)
 		{
 		case PT_Bool, PT_Int, PT_Char:
 		{
 			any val;
-			ConfigSys.Params.GetValue(out_name, val);
-			SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+			if (ConfigSys.Params.GetValue(out_name, val))
+				SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
 		}
 		case PT_Float:
 		{
 			float val;
-			ConfigSys.Params.GetValue(out_name, val);
-			SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+			if (ConfigSys.Params.GetValue(out_name, val))
+				SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
 		}
 		case PT_Vector:
 		{
 			float vec[3];
-			ConfigSys.Params.GetArray(out_name, vec, sizeof(vec));
-			SetEntPropVector(calling_player_idx, prop_type, prop_name, vec, prop_element);
+			if (ConfigSys.Params.GetArray(out_name, vec, sizeof(vec)))
+				SetEntPropVector(calling_player_idx, prop_type, prop_name, vec, prop_element);
 		}
 		case PT_Entity:
 		{
 			int entity;
-			ConfigSys.Params.GetValue(out_name, entity);
-			if (entity != -1)
+			if (ConfigSys.Params.GetValue(out_name, entity))
 				SetEntPropEnt(calling_player_idx, prop_type, prop_name, entity, prop_element);
 		}
 		case PT_String:
 		{
 			char[] out_val = new char[prop_size];
-			ConfigSys.Params.GetString(out_name, out_val, prop_size);
-			SetEntPropString(calling_player_idx, prop_type, prop_name, out_val, prop_element);
+			if (ConfigSys.Params.GetString(out_name, out_val, prop_size))
+				SetEntPropString(calling_player_idx, prop_type, prop_name, out_val, prop_element);
 		}
 		}
 	}

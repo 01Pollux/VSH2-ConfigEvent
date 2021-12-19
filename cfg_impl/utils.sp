@@ -32,6 +32,8 @@ enum ShakeCommand_t
 
 enum ConfigEvent_ParamType_t
 {
+	// "vsh2"
+	PT_VSH2,
 	// "int"
 	PT_Int,
 	// "float"
