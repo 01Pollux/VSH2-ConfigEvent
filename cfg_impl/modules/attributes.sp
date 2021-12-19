@@ -33,14 +33,14 @@ public Action ConfigEvent_SetAttribWep(EventMap args, ConfigEventType_t event_ty
 
     if (IsValidEntity(weapon))
     {
-        bool bFound = false;
+        bool attrib_exists = false;
         float o_value;
         Address attrib_address = TF2Attrib_GetByDefIndex(weapon, index);    //Address_Null if attribute doesn't exist
         int attrib = TF2Attrib_GetDefIndex(attrib_address);
         if (attrib == index)    //weapon has the attrib before being add. need to get original value.
         {
             float o_value = TF2Attrib_GetValue(attrib_address);
-            bFound = true;
+            attrib_exists = true;
         }
         TF2Attrib_SetByDefIndex(weapon, index, value);
         TF2Attrib_ClearCache(weapon);
@@ -51,7 +51,7 @@ public Action ConfigEvent_SetAttribWep(EventMap args, ConfigEventType_t event_ty
             data.ReadCell(EntIndexToEntRef(weapon));
             data.ReadCell(index);
             data.ReadCell(bFound);
-                if (bFound)
+                if (attrib_exists)
                     data.ReadFloat(o_value);
         }
     }
@@ -64,13 +64,13 @@ public Action Timer_ResetAttribWep(Handle hTimer, DataPack data)
 
     int weapon = EntRefToEntIndex(data.ReadCell());
     int index = data.ReadCell();
-    bool bFound = data.ReadCell();
-    if (bFound)
+    bool attrib_exists = data.ReadCell();
+    if (attrib_exists)
         float o_value = data.ReadFloat();
 
     if (IsValidEntity(weapon))
     {
-        if (bFound)
+        if (attrib_exists)
             TF2Attrib_SetByDefIndex(weapon, index, o_value);
         else
             TF2Attrib_RemoveByDefIndex(weapon, index);
