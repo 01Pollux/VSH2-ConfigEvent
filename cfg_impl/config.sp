@@ -296,15 +296,9 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 	ConfigWeaponEvent_t event_info;
 
 	// grab the weapon id to check if we have it to execute the event
-	int weapons[TF2WeaponSlot_MaxWeapons];
-	for(int slot; slot < TF2WeaponSlot_MaxWeapons; slot++)
-	{
-		int weapon = GetPlayerWeaponSlot(client, slot);
-		if (weapon == -1)
-			continue;
-		
-		weapons[slot] = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-	}
+	int weapon = GetActiveWep(client);
+	if (weapon == -1)
+		return Plugin_Continue;
 
 	Action highest_ret = Plugin_Continue;
 	bool is_minion = player.bIsMinion;
@@ -312,22 +306,8 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 	for (int i = 0; i < event_size; i++)
 	{
 		cur_event.GetArray(i, event_info);
-		if (event_info.ItemID !=-1)
-		{
-			bool has_slot = false;
-
-			for (int slot = 0; slot < sizeof(weapons); slot++)
-			{
-				if (weapons[slot] == event_info.ItemID)
-				{
-					has_slot = true;
-					break;
-				}
-			}
-			
-			if (!has_slot)
-				continue;
-		}
+		if (event_info.ItemID != -1 && event_info.ItemID != weapon)
+			continue;
 
 		// Disallow minions from executing weapon's callbacks,
 		bool minion_can_execute;

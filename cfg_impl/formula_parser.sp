@@ -40,83 +40,89 @@ enum struct LexState {
 
 float ParseFormula(const char[] formula, const int players)
 {
-	LexState ls;
-	GetToken(ls, formula);
-	return ParseAddExpr(ls, formula, players + 0.0);
+	float vals[4];
+	vals[0] = players + 0.0;
+	vals[1] = players + 0.0;
+	vals[2] = players + 0.0;
+	vals[3] = players + 0.0;
+	return ParseFormulaEx(formula, "nNxX", vals, sizeof(vals));
 }
 
-float ParseAddExpr(LexState ls, const char[] formula, const float n)
+float ParseFormulaEx(const char[] formula, const char[] tokens, const float[] values, int token_size)
 {
-	float val = ParseMulExpr(ls, formula, n);
+	LexState ls;
+	GetToken(ls, formula, tokens, values, token_size);
+	return ParseAddExpr(ls, formula, tokens, values, token_size);
+}
+
+float ParseAddExpr(LexState ls, const char[] formula, const char[] tokens, const float[] values, int token_size)
+{
+	float val = ParseMulExpr(ls, formula, tokens, values, token_size);
 	if( ls.tok.tag==TokenPlus ) {
-		GetToken(ls, formula);
-		float a = ParseAddExpr(ls, formula, n);
+		GetToken(ls, formula, tokens, values, token_size);
+		float a = ParseAddExpr(ls, formula, tokens, values, token_size);
 		return val + a;
 	} else if( ls.tok.tag==TokenSub ) {
-		GetToken(ls, formula);
-		float a = ParseAddExpr(ls, formula, n);
+		GetToken(ls, formula, tokens, values, token_size);
+		float a = ParseAddExpr(ls, formula, tokens, values, token_size);
 		return val - a;
 	}
 	return val;
 }
 
-float ParseMulExpr(LexState ls, const char[] formula, const float n)
+float ParseMulExpr(LexState ls, const char[] formula, const char[] tokens, const float[] values, int token_size)
 {
-	float val = ParsePowExpr(ls, formula, n);
+	float val = ParsePowExpr(ls, formula, tokens, values, token_size);
 	if( ls.tok.tag==TokenMul ) {
-		GetToken(ls, formula);
-		float m = ParseMulExpr(ls, formula, n);
+		GetToken(ls, formula, tokens, values, token_size);
+		float m = ParseMulExpr(ls, formula, tokens, values, token_size);
 		return val * m;
 	} else if( ls.tok.tag==TokenDiv ) {
-		GetToken(ls, formula);
-		float m = ParseMulExpr(ls, formula, n);
+		GetToken(ls, formula, tokens, values, token_size);
+		float m = ParseMulExpr(ls, formula, tokens, values, token_size);
 		return val / m;
 	}
 	return val;
 }
 
-float ParsePowExpr(LexState ls, const char[] formula, const float n)
+float ParsePowExpr(LexState ls, const char[] formula, const char[] tokens, const float[] values, int token_size)
 {
-	float val = ParseFactor(ls, formula, n);
+	float val = ParseFactor(ls, formula, tokens, values, token_size);
 	if( ls.tok.tag==TokenPow ) {
-		GetToken(ls, formula);
-		float e = ParsePowExpr(ls, formula, n);
+		GetToken(ls, formula, tokens, values, token_size);
+		float e = ParsePowExpr(ls, formula, tokens, values, token_size);
 		float p = Pow(val, e);
 		return p;
 	}
 	return val;
 }
 
-float ParseFactor(LexState ls, const char[] formula, const float n)
+float ParseFactor(LexState ls, const char[] formula, const char[] tokens, const float[] values, int token_size)
 {
 	switch( ls.tok.tag ) {
-		case TokenNum: {
+		case TokenNum, TokenVar: {
 			float f = ls.tok.val;
-			GetToken(ls, formula);
+			GetToken(ls, formula, tokens, values, token_size);
 			return f;
 		}
-		case TokenVar: {
-			GetToken(ls, formula);
-			return n;
-		}
 		case TokenLParen: {
-			GetToken(ls, formula);
-			float f = ParseAddExpr(ls, formula, n);
+			GetToken(ls, formula, tokens, values, token_size);
+			float f = ParseAddExpr(ls, formula, tokens, values, token_size);
 			if( ls.tok.tag != TokenRParen ) {
-				LogError("VSH2/FF2 :: expected ')' bracket but got '%s'", ls.tok.lexeme);
+				LogError("[VSH2 CfgEvent] :: expected ')' bracket but got '%s'", ls.tok.lexeme);
 				return 0.0;
 			}
-			GetToken(ls, formula);
+			GetToken(ls, formula, tokens, values, token_size);
 			return f;
 		}
 		case TokenLBrack: {
-			GetToken(ls, formula);
-			float f = ParseAddExpr(ls, formula, n);
+			GetToken(ls, formula, tokens, values, token_size);
+			float f = ParseAddExpr(ls, formula, tokens, values, token_size);
 			if( ls.tok.tag != TokenRBrack ) {
-				LogError("VSH2/FF2 :: expected ']' bracket but got '%s'", ls.tok.lexeme);
+				LogError("[VSH2 CfgEvent] :: expected ']' bracket but got '%s'", ls.tok.lexeme);
 				return 0.0;
 			}
-			GetToken(ls, formula);
+			GetToken(ls, formula, tokens, values, token_size);
 			return f;
 		}
 	}
@@ -132,7 +138,7 @@ bool LexOctal(LexState ls, const char[] formula)
 			}
 			default: {
 				ls.tok.lexeme[ls.tok.size++] = formula[ls.i++];
-				LogError("VSH2/FF2 :: invalid octal literal: '%s'", ls.tok.lexeme);
+				LogError("[VSH2 CfgEvent] :: invalid octal literal: '%s'", ls.tok.lexeme);
 				return false;
 			}
 		}
@@ -151,7 +157,7 @@ bool LexHex(LexState ls, const char[] formula)
 			}
 			default: {
 				ls.tok.lexeme[ls.tok.size++] = formula[ls.i++];
-				LogError("VSH2/FF2 :: invalid hex literal: '%s'", ls.tok.lexeme);
+				LogError("[VSH2 CfgEvent] :: invalid hex literal: '%s'", ls.tok.lexeme);
 				return false;
 			}
 		}
@@ -169,7 +175,7 @@ bool LexDec(LexState ls, const char[] formula)
 			}
 			case '.': {
 				if( lit_flags & dot_flag ) {
-					LogError("VSH2/FF2 :: extra dot in decimal literal");
+					LogError("[VSH2 CfgEvent] :: extra dot in decimal literal");
 					return false;
 				}
 				ls.tok.lexeme[ls.tok.size++] = formula[ls.i++];
@@ -177,7 +183,7 @@ bool LexDec(LexState ls, const char[] formula)
 			}
 			default: {
 				ls.tok.lexeme[ls.tok.size++] = formula[ls.i++];
-				LogError("VSH2/FF2 :: invalid decimal literal: '%s'", ls.tok.lexeme);
+				LogError("[VSH2 CfgEvent] :: invalid decimal literal: '%s'", ls.tok.lexeme);
 				return false;
 			}
 		}
@@ -185,7 +191,7 @@ bool LexDec(LexState ls, const char[] formula)
 	return true;
 }
 
-void GetToken(LexState ls, const char[] formula)
+void GetToken(LexState ls, const char[] formula, const char[] tokens, const float[] values, int token_size)
 {
 	int len = strlen(formula);
 	Token empty;
@@ -277,14 +283,17 @@ void GetToken(LexState ls, const char[] formula)
 				ls.tok.tag = TokenPow;
 				return;
 			}
-			case 'x', 'n', 'X', 'N': {
-				ls.tok.lexeme[ls.tok.size++] = formula[ls.i++];
-				ls.tok.tag = TokenVar;
-				return;
-			}
 			default: {
+				char tok = formula[ls.i];
 				ls.tok.lexeme[ls.tok.size++] = formula[ls.i++];
-				LogError("VSH2/FF2 :: invalid formula token '%s'.", ls.tok.lexeme);
+				for( int i = 0; i < token_size; i++ ) {
+					if( tokens[i]==tok ) {
+						ls.tok.tag = TokenVar;
+						ls.tok.val = values[i];
+						return;
+					}
+				}
+				LogError("[VSH2 CfgEvent] :: invalid formula token '%s'.", ls.tok.lexeme);
 				return;
 			}
 		}

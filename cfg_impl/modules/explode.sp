@@ -1,6 +1,17 @@
 public Action ConfigEvent_Explode(EventMap args, ConfigEventType_t event_type)
 {
-
+	/*
+	// ConfigEvent_Explode();
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_Explode"
+		"vsh2target" "player"
+		"damage"	"25.0"
+		"radius"	"25.0"
+		"sound"		"..."
+		"particle"		"..."
+	}
+	*/
 	int calling_player_idx;
 	VSH2Player calling_player;
 	int explode_target;
@@ -31,7 +42,6 @@ public Action ConfigEvent_Explode(EventMap args, ConfigEventType_t event_type)
 
 	float origin[3];
 	GetEntPropVector(explode_target, Prop_Send, "m_vecOrigin", origin);
-	//DoExplosion(client, damage, radius, origin); //DoExplosion cannot be used to rocketjump
 	TF2_Explode(calling_player_idx, origin, damage, radius, particle, sound);
 
 	return Plugin_Continue;

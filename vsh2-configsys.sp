@@ -2,7 +2,7 @@
 #include <sdkhooks>
 #include <vsh2>
 #include <cfgmap>
-#tryinclude <tf2attributes>
+#include <tf2attributes>
 
 #pragma semicolon 1
 #pragma newdecls required
