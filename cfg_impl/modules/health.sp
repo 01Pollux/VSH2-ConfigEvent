@@ -17,9 +17,10 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 		"health"		"%h% + (n / 1000.0) * 30.0 + 15.0"
 		// <=0.0 to clamp it to current max health
 		"clamp"		 "300"
+		"min"		"1"	//if health is lower than this set to min health.
 	}
 	*/
-	
+
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
@@ -40,6 +41,10 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 
 	if (new_health > max_health)
 		new_health = max_health;
+
+	int min_health; args.GetInt("min", min_health);
+	if (new_health < min_health)
+		new_health = min_health;
 
 	SetEntProp(calling_player_idx, Prop_Send, "m_iHealth", new_health);
 	return Plugin_Continue;
@@ -64,7 +69,7 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 		// 1 << 2 = target my minions
 		// 1 << 3 = target other minions
 		"flags"			"101"		// target my team and my minions only
-		
+
 		"distance"		"<800.0"	// less than 800.0 HU
 		//"distance"	"800.0"		// less than 800.0 HU
 		//"distance"	">800.0"	// more than 800.0 HU
@@ -111,7 +116,7 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 	{
 		if (!IsClientInGame(i) || !IsPlayerAlive(i) || i == calling_player_idx)
 			continue;
-		
+
 		if (GetClientTeam(i) == player_team)
 		{
 			if (!(target_flags & AREA_COND_MY_TEAM))
@@ -119,7 +124,7 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 		}
 		else if (!(target_flags & AREA_COND_OTHER_TEAM))
 			continue;
-		
+
 		VSH2Player cur_target = VSH2Player(i);
 		if (cur_target.bIsMinion)
 		{
@@ -131,7 +136,7 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 			else if (!(target_flags & AREA_COND_OTHER_MINIONS))
 				continue;
 		}
-		
+
 		GetClientAbsOrigin(i, target_pos);
 		if (GetVectorDistance(player_pos, target_pos) > distance)
 		{
@@ -148,11 +153,11 @@ public Action ConfigEvent_ManageAreaHeal(EventMap args, ConfigEventType_t event_
 		int copy_max_health = max_health;
 		if (copy_max_health == -1)
 			copy_max_health = GetEntProp(resource_ent, Prop_Send, "m_iMaxHealth", .element = i);
-		
+
 		int new_health = RoundToNearest(ParseFormula(copy_health_str, cur_target.GetPropInt("iDamage")));
 		if (new_health > copy_max_health)
 			new_health = copy_max_health;
-			
+
 		SetEntProp(i, Prop_Send, "m_iHealth", new_health);
 	}
 
