@@ -7,6 +7,8 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 		"procedure"  "ConfigEvent_GetProp"
 		
 		"vsh2target"	"player"
+		// "target"		"entity"
+
 		"<enum>"
 		{
 			"name"	"my_string"
@@ -14,17 +16,22 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 			// "size"		"4" 
 			// "element"	"0"
 			// "element"	"@my_var"
+			// "resource"	"false"
 			"prop"  "m_iHealth"
 			"datamap"   "false" // Prop_Data
 		}
 	}
 	*/
-	int calling_player_idx;
-	VSH2Player calling_player;
-	if (!args.GetTarget(calling_player_idx, calling_player))
-		return Plugin_Continue;
+	int calling_ent_index;
+	{
+		VSH2Player dummy_vsh2player;
+		if (!args.GetTarget(calling_ent_index, dummy_vsh2player) && !args.GetTargetEnt(calling_ent_index))
+			return Plugin_Continue;
+	}
 	
 	int args_count = args.Size;
+	int resource_ent;
+
 	for (int var_i = 0; var_i < args_count; ++var_i)
 	{
 		ConfigMap var_sec = args.GetIntSection(var_i);
@@ -42,7 +49,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 		{
 			char prop_name[64];
 			var_sec.Get("prop", prop_name, sizeof(prop_name));
-			ConfigSys.Params.SetValue(out_name, calling_player.GetPropAny(prop_name));
+			ConfigSys.Params.SetValue(out_name, VSH2Player(calling_ent_index).GetPropAny(prop_name));
 			continue;
 		}
 
@@ -72,30 +79,43 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 			prop_type = is_datamap ? Prop_Data : Prop_Send;
 		}
 
+		bool is_resource;
+		{
+			if (var_sec.GetBool("resource", is_resource) && is_resource && !resource_ent)
+				resource_ent = GetPlayerResourceEntity();
+		}
+
 		switch (type)
 		{
 		case PT_Bool, PT_Int, PT_Char:
 		{
-			ConfigSys.Params.SetValue(out_name, GetEntProp(calling_player_idx, prop_type, prop_name, prop_size, prop_element));
+			ConfigSys.Params.SetValue(
+				out_name,
+				GetEntProp(is_resource ? resource_ent : calling_ent_index, prop_type, prop_name, prop_size, prop_element)
+			);
 		}
 		case PT_Float:
 		{
-			ConfigSys.Params.SetValue(out_name, GetEntPropFloat(calling_player_idx, prop_type, prop_name, prop_element));
+			ConfigSys.Params.SetValue(
+				out_name,
+				GetEntPropFloat(is_resource ? resource_ent : calling_ent_index, prop_type, prop_name, prop_element)
+			);
 		}
 		case PT_Vector:
 		{
-			float vec[3]; GetEntPropVector(calling_player_idx, prop_type, prop_name, vec, prop_element);
+			float vec[3]; GetEntPropVector(is_resource ? resource_ent : calling_ent_index, prop_type, prop_name, vec, prop_element);
 			ConfigSys.Params.SetArray(out_name, vec, sizeof(vec));
 		}
 		case PT_Entity:
 		{
-			int entity = GetEntPropEnt(calling_player_idx, prop_type, prop_name, prop_element);
+			int entity = GetEntPropEnt(is_resource ? resource_ent : calling_ent_index, prop_type, prop_name, prop_element);
 			if (entity != -1)
 				ConfigSys.Params.SetValue(out_name, entity);
 		}
 		case PT_String:
 		{
-			char[] out_val = new char[prop_size]; GetEntPropString(calling_player_idx, prop_type, prop_name, out_val, prop_size, prop_element);
+			char[] out_val = new char[prop_size];
+			GetEntPropString(is_resource ? resource_ent : calling_ent_index, prop_type, prop_name, out_val, prop_size, prop_element);
 			ConfigSys.Params.SetString(out_name, out_val);
 		}
 		}
@@ -111,8 +131,10 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_SetProp"
-		
+
 		"vsh2target"	"player"
+		// "target"		"entity"
+
 		"<enum>"
 		{
 			"name" "my_var"
@@ -120,6 +142,7 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			// "size"		"4" 
 			// "element"	"0"
 			// "element"	"@my_var"
+			// "resource"	"false"
 			"prop"  "m_iHealth"
 			"datamap"   "false" // Prop_Data
 
@@ -128,12 +151,16 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		}
 	}
 	*/
-	int calling_player_idx;
-	VSH2Player calling_player;
-	if (!args.GetTarget(calling_player_idx, calling_player))
-		return Plugin_Continue;
-	
+	int calling_ent_index;
+	{
+		VSH2Player dummy_vsh2player;
+		if (!args.GetTarget(calling_ent_index, dummy_vsh2player) && !args.GetTargetEnt(calling_ent_index))
+			return Plugin_Continue;
+	}
+
 	int args_count = args.Size;
+	int resource_ent;
+
 	for (int var_i = 0; var_i < args_count; ++var_i)
 	{
 		ConfigMap var_sec = args.GetIntSection(var_i);
@@ -182,6 +209,12 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			prop_type = is_datamap ? Prop_Data : Prop_Send;
 		}
 
+		bool is_resource;
+		{
+			if (var_sec.GetBool("resource", is_resource) && is_resource && !resource_ent)
+				resource_ent = GetPlayerResourceEntity();
+		}
+
 		switch (type)
 		{
 		case PT_Bool, PT_Int, PT_Char:
@@ -195,7 +228,7 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 				if (var_sec.GetInt("max", clamp) && clamp < val)
 					val = clamp;
 
-				SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+				SetEntProp(is_resource ? resource_ent : calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
 			}
 		}
 		case PT_Float:
@@ -209,26 +242,26 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 				if (var_sec.GetFloat("max", clamp) && clamp < val)
 					val = clamp;
 
-				SetEntPropFloat(calling_player_idx, prop_type, prop_name, val, prop_element);
+				SetEntPropFloat(is_resource ? resource_ent : calling_player_idx, prop_type, prop_name, val, prop_element);
 			}
 		}
 		case PT_Vector:
 		{
 			float vec[3];
 			if (ConfigSys.Params.GetArray(out_name, vec, sizeof(vec)))
-				SetEntPropVector(calling_player_idx, prop_type, prop_name, vec, prop_element);
+				SetEntPropVector(is_resource ? resource_ent : calling_player_idx, prop_type, prop_name, vec, prop_element);
 		}
 		case PT_Entity:
 		{
 			int entity;
 			if (ConfigSys.Params.GetValue(out_name, entity))
-				SetEntPropEnt(calling_player_idx, prop_type, prop_name, entity, prop_element);
+				SetEntPropEnt(is_resource ? resource_ent : calling_player_idx, prop_type, prop_name, entity, prop_element);
 		}
 		case PT_String:
 		{
 			char[] out_val = new char[prop_size];
 			if (ConfigSys.Params.GetString(out_name, out_val, prop_size))
-				SetEntPropString(calling_player_idx, prop_type, prop_name, out_val, prop_element);
+				SetEntPropString(is_resource ? resource_ent : calling_player_idx, prop_type, prop_name, out_val, prop_element);
 		}
 		}
 	}

@@ -364,6 +364,42 @@ public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_ty
 }
 
 
+public Action ConfigEvent_WriteReturn(EventMap args, ConfigEventType_t event_type)
+{
+	/*
+	// ConfigEvent_WriteReturn(...);
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_WriteReturn"
+		
+		"return"		"continue"
+		// "return"		"changed"
+		// "return"		"handled"
+		// "return"		"stop"
+	}
+	*/
+	
+	char return_names[][] = {
+		"continue",
+		"changed",
+		"handled",
+		"stop"
+	};
+
+	int return_str_size = args.GetSize("return");
+	if (!return_str_size)
+		return Plugin_Continue;
+	char[] return_str = new char[return_str_size];
+	args.Get("return", return_str, return_str_size);
+
+	for (int i = 0; i < sizeof(return_names); i++)
+	{
+		if (!strcmp(return_names[i], return_str))
+			return view_as<Action>(i);
+	}
+	return Plugin_Continue;
+}
+
 public Action ConfigEvent_ParseForumla(EventMap args, ConfigEventType_t event_type)
 {
 	/*
@@ -375,11 +411,10 @@ public Action ConfigEvent_ParseForumla(EventMap args, ConfigEventType_t event_ty
 		"<enum>"
 		{
 			// int my_n = 10;
-			// const char[] other_string = "12 + 10 ^ 10 + 0 + 9.0 + n"; // where n == my_n
+			// const char[] other_string = "12 + 10 ^ 10 + 0 + 9.0";
 			"name"		"my_val"
 			"from"		"@other_string"
-			//"from"	"12 + 10 ^ 10 + 0 + 9.0 + n"
-			"var"		"my_n"	// fetch an allocated variable
+			//"from"	"12 + 10 ^ 10 + 0 + 9.0"
 			"truncate"	"true"
 		}
 	}
@@ -412,18 +447,7 @@ public Action ConfigEvent_ParseForumla(EventMap args, ConfigEventType_t event_ty
 
 static void ConfigEvent_ParseForumla_Internal(ConfigMap var_sec, const char[] from_str)
 {
-	any n_var;
-	{
-		int var_name_size = var_sec.GetSize("name");
-		if (var_name_size)
-		{
-			char[] var_name = new char[var_name_size];
-			var_sec.Get("var", var_name, var_name_size);
-			ConfigSys.Params.GetValue(var_name, n_var);
-		}
-	}
-
-	any val = ParseFormula(from_str, n_var);
+	any val = ParseFormulaEx(from_str, "", view_as<float>({ 0.0 }), 0);
 	bool trucate;
 	if (var_sec.GetBool("truncate", trucate, false) && trucate)
 		val = RoundToFloor(val);
@@ -432,6 +456,4 @@ static void ConfigEvent_ParseForumla_Internal(ConfigMap var_sec, const char[] fr
 	char[] val_name = new char[val_name_size];
 	var_sec.Get("name", val_name, val_name_size);
 	ConfigSys.Params.SetValue(val_name, val);
-
-	PrintToServer("%s = %i", val_name, val);
 }

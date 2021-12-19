@@ -69,13 +69,30 @@
 		{
 			"falldamage"
 			{
+				// ConfigEvent_FormatParams(...);
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_WriteParams"
+					"procedure"  "ConfigEvent_FormatParams"
+					
 					"<enum>"
 					{
-						"name"	"damage"
-						"value"	"0.5 * damage"
+						"name"	"damage_str"
+						"value"	"0.5 * {0}"
+						"size"	"32"
+						"args"
+						{
+							"<enum>"	"f@damage"				// 0
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_ParseForumla"
+					
+					"<enum>"
+					{
+						"name"		"damage"
+						"from"		"@damage_str"
 					}
 				}
 			}
@@ -120,12 +137,34 @@
 		{
 			"btd_takedamage"
 			{
+				// ConfigEvent_GetProp(...);
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_GetProp"
+					
+					"vsh2target"	"player"
+
+					"<enum>"
+					{
+						"name"	"iCurHealth"
+						"type"	"int"
+						"prop"  "m_iHealth"
+					}
+				}
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ManageSelfHeal"
 					"vsh2target"	"player"
 
-					"health"	"%h% + 5"
+					"health"
+					{
+						"formula"	"H + 5"
+						"<enum>"
+						{
+							"token"	"H"
+							"value"	"iCurHealth"
+						}
+					}
 					"clamp"		 "199"
 				}
 			}
