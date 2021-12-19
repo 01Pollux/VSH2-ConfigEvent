@@ -89,6 +89,6 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
     }
 
     if (duration)
-        TF2_StunPlayer(victim, duration, 0.0, flags, calling_player_idx);
+        TF2_StunPlayer(victim, duration, 0.0, flags, attacker);
     return Plugin_Continue;
 }

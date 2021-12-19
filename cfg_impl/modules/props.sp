@@ -122,6 +122,9 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			// "element"	"@my_var"
 			"prop"  "m_iHealth"
 			"datamap"   "false" // Prop_Data
+
+			// "min"	""
+			// "max"	""
 		}
 	}
 	*/
@@ -185,13 +188,29 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		{
 			any val;
 			if (ConfigSys.Params.GetValue(out_name, val))
+			{
+				int clamp;
+				if (var_sec.GetInt("min", clamp) && clamp > val)
+					val = clamp;
+				if (var_sec.GetInt("max", clamp) && clamp < val)
+					val = clamp;
+
 				SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+			}
 		}
 		case PT_Float:
 		{
 			float val;
 			if (ConfigSys.Params.GetValue(out_name, val))
-				SetEntProp(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+			{
+				float clamp;
+				if (var_sec.GetFloat("min", clamp) && clamp > val)
+					val = clamp;
+				if (var_sec.GetFloat("max", clamp) && clamp < val)
+					val = clamp;
+
+				SetEntPropFloat(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+			}
 		}
 		case PT_Vector:
 		{

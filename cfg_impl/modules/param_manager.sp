@@ -179,6 +179,7 @@ public Action ConfigEvent_AllocateParams(EventMap args, ConfigEventType_t event_
 	return Plugin_Continue;
 }
 
+
 public Action ConfigEvent_EraseParams(EventMap args, ConfigEventType_t event_type)
 {
 	/*
@@ -213,6 +214,7 @@ public Action ConfigEvent_EraseParams(EventMap args, ConfigEventType_t event_typ
 
 	return Plugin_Continue;
 }
+
 
 public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_type)
 {
