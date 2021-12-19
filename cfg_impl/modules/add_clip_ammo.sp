@@ -1,5 +1,18 @@
 public Action ConfigEvent_AddClip(EventMap args, ConfigEventType_t event_type)
 {
+	/*
+	// ConfigEvent_AddClip();
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_AddClip"
+		"vsh2target" "player"
+
+		"amount"	""
+		"max"		""
+		"slot"		""
+		"duration"	""
+	}
+	*/
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
@@ -17,9 +30,9 @@ public Action ConfigEvent_AddClip(EventMap args, ConfigEventType_t event_type)
 	{
 		DataPack data;
 		CreateDataTimer(duration, Timer_ResetClip, data);
+		data.WriteCell(calling_player);
 		data.WriteCell(max);
 		data.WriteCell(slot);
-		data.WriteCell(calling_player);
 	}
 
 	return Plugin_Continue;
@@ -29,13 +42,13 @@ public Action Timer_ResetClip(Handle hTimer, DataPack data)
 {
 	data.Reset();
 
-	int max = data.ReadCell();
-	int slot = data.ReadCell();
 	VSH2Player calling_player = data.ReadCell();
-
 	int calling_player_idx = calling_player.index;
+
 	if (calling_player_idx)
 	{
+		int max = data.ReadCell();
+		int slot = data.ReadCell();
 		int currentclip = GetClip(calling_player_idx, slot);
 		if (currentclip > max)
 			currentclip = max;
@@ -49,6 +62,17 @@ public Action Timer_ResetClip(Handle hTimer, DataPack data)
 
 public Action ConfigEvent_AddAmmo(EventMap args, ConfigEventType_t event_type)
 {
+	/*
+	// ConfigEvent_AddAmmo();
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_AddAmmo"
+		"vsh2target" "player"
+
+		"amount"	""
+		"slot"		""
+	}
+	*/
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
@@ -63,12 +87,25 @@ public Action ConfigEvent_AddAmmo(EventMap args, ConfigEventType_t event_type)
 	if (newammo > maxammo)
 		newammo = maxammo;
 
-	SetAmmo(calling_player_idx, args.GetInt("slot", slot), newammo);
+	SetAmmo(calling_player_idx, slot, newammo);
 	return Plugin_Continue;
 }
 
 public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_type)	//I want to use props.sp but it doens't support 'delay' right now.
 {
+	/*
+	// ConfigEvent_SetClipEnergy();
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_SetClipEnergy"
+		"vsh2target" "player"
+
+		"amount"	""
+		"max"		""
+		"slot"		""
+		"duration"	""
+	}
+	*/
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
@@ -88,8 +125,8 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 		{
 			DataPack data;
 			CreateDataTimer(duration, Timer_ResetClipEnergy, data);
-			data.WriteFloat(max);
 			data.WriteCell(EntIndexToEntRef(weapon));
+			data.WriteFloat(max);
 		}
 	}
 
@@ -100,11 +137,10 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 {
 	data.Reset();
 
-	float max = data.ReadFloat();
 	int weapon = EntRefToEntIndex(data.ReadCell());
-
 	if (IsValidEntity(weapon))
 	{
+		float max = data.ReadFloat();
 		float cur_energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
 		if (cur_energy > max)
 			cur_energy = max;

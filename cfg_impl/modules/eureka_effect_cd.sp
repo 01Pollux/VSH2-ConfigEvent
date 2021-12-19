@@ -12,6 +12,15 @@ public Action ConfigEvent_BlockCommand(EventMap args, ConfigEventType_t event_ty
 
 public Action ConfigEvent_StartCoolDown(EventMap args, ConfigEventType_t event_type)
 {
+	/*
+	// ConfigEvent_StartCoolDown();
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_StartCoolDown"
+		"vsh2target" "player"
+		"cooldown"	"25.0"
+	}
+	*/
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))

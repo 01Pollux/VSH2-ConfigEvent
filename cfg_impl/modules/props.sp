@@ -209,7 +209,7 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 				if (var_sec.GetFloat("max", clamp) && clamp < val)
 					val = clamp;
 
-				SetEntPropFloat(calling_player_idx, prop_type, prop_name, val, prop_size, prop_element);
+				SetEntPropFloat(calling_player_idx, prop_type, prop_name, val, prop_element);
 			}
 		}
 		case PT_Vector:

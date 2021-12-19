@@ -15,7 +15,6 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
             }
         }
     }
-
     */
 
     int attacker;
