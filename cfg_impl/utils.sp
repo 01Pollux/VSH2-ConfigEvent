@@ -226,3 +226,17 @@ stock void ClampValue(any& val, const any min, const any max)
 }
 
 #define Plugin_SkipN		999
+
+stock int TF2_GetItemInSlot(int client, int slot)
+{
+	int weapon = GetPlayerWeaponSlot(client, slot);
+	if (!IsValidEdict(weapon))
+	{
+		//If weapon not found in slot, check if it a wearable
+		int wearable = SDK_GetEquippedWearable(client, slot);
+		if (IsValidEdict(wearable))
+			weapon = wearable;
+	}
+
+	return weapon;
+}
