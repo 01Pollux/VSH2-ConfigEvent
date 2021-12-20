@@ -892,9 +892,13 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_AllocateParams"
-					"name"	"count"
-					"type"	"int"
-					"value"	"0"
+
+					"<enum>"
+					{
+						"name"	"count"
+						"type"	"int"
+						"value"	"0"
+					}
 				}
 			}
 			"btd_stab"
@@ -916,11 +920,22 @@
 				}
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"damage"
+						"type"	"float"
+						"value"	"0.0"
+					}
+				}
+				"<enum>"
+				{
 					"procedure"	"ConfigEvent_JumpIf"
 					"first"	"new_count"
 					"csecond"	"4"	//requirement
 					"operators"	"10101"	// Greater or equal. new_count >= 4
-					"skips"	"3"
+					"skips"	"2"
 				}
 				"<enum>"
 				{
