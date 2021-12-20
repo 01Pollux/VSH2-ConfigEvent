@@ -7,6 +7,32 @@
 	}
 	"weapons"
 	{
+		"773"	//Pretty Boy's Pocket Pistol 帅气男孩的袖珍手枪
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"	"%h% + 5"
+					"clamp"		 "199"
+				}
+			}
+		}
+		“44”	//Sandman 睡魔
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SandManStun"
+					"vsh2player"	"player"
+					"victim"	"victim"
+				}
+			}
+		}
 		"226"	//The Battalion's Backup 军队的支援
 		{
 			"banner_start"
@@ -65,18 +91,42 @@
 				}
 			}
 		}
-		"133"	//Gunboats 炮艇
+		"133"	//Gunboats 
 		{
 			"falldamage"
 			{
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_WriteParams"
+					"procedure"	"ConfigEvent_AllocateParams"
+
 					"<enum>"
 					{
-						"name"	"damage"
-						"value"	"0.5 * damage"
+						"name"	"fall_damage"
+						"type"	"float"
+						"value"	"damage"
 					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"new_fall_damage"
+						"from"	"n * 0.5"
+						"var"	""
+						"turncate"	"true"
+					}
+				}
+			}
+		}
+		"442"	//Righteous Bison 正义野牛
+		{
+			"think"
+			{
+				"<enum>"
+				{
+					"procedure"
 				}
 			}
 		}
@@ -113,20 +163,6 @@
 					"vsh2target"	"player"
 
 					"duration"		"6.0"
-				}
-			}
-		}
-		"773"	//Pretty Boy's Pocket Pistol 帅气男孩的袖珍手枪
-		{
-			"btd_takedamage"
-			{
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_ManageSelfHeal"
-					"vsh2target"	"player"
-
-					"health"	"%h% + 5"
-					"clamp"		 "199"
 				}
 			}
 		}
