@@ -16,4 +16,5 @@
 #include "cfg_impl/modules/aim_target.sp"
 #include "cfg_impl/modules/execution.sp"
 #include "cfg_impl/modules/attributes.sp"
+#include "cfg_impl/modules/rage.sp"
 //#include "cfg_impl/modules/print_to_server.sp"
