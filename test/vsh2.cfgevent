@@ -755,5 +755,49 @@
 				}
 			}
 		}
+		"171"	//Tribalman's Shiv 部落者刮刀
+		{
+			"playerclimb"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"delay_bool"
+						"value"	"false"
+						"size"	"4"
+					}
+					"<enum>"
+					{
+						"name"	"upwardvel_value"
+						"value"	"450.0"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"attackdelay"
+						"from"	"@delay_bool"
+					}
+
+					"<enum>"
+					{
+						"name"	"upwardvel"
+						"from"	"@upwardvel_value"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
 	}
 }
