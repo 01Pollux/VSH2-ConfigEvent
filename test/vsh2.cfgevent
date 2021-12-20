@@ -453,18 +453,28 @@
 			{
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_AllocateParams"
+					"procedure"	"ConfigEvent_GiveRage"
+					"vsh2target"	"victim"
 
-					"<enum>"
-					{
-						"name"	"rage_meter"
-						"type"	"float"
-						"value"	"@victim.flRAGE"
-					}
+					"damage"	"-200"
+				}
+			}
+		}
+		"528"	//Short Circuit 短路发生器
+		{
+			"projectile_touch"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_Explode"
+
+					"enttarget"	"projectile"
+					"damage"	"45.0"
+					"radius"	"120.0"
 				}
 				"<enum>"
 				{
-					""
+
 				}
 			}
 		}
