@@ -13,10 +13,37 @@
 			{
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
 					"procedure"	"ConfigEvent_ManageSelfHeal"
 					"vsh2target"	"player"
 
-					"health"	"%h% + 5"
+					"health"
+					{
+						"formula"	"A + B"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+						"<enum>"
+						{
+							"token"	"B"
+							"value"	"5"
+						}
+					}
 					"clamp"		 "199"
 				}
 			}
@@ -33,7 +60,7 @@
 				}
 			}
 		}
-		"226"	//The Battalion's Backup 军队的支援
+		"226"	//The Battalion's Backup 军队的支援 士兵
 		{
 			"banner_start"
 			{
@@ -91,7 +118,7 @@
 				}
 			}
 		}
-		"133"	//Gunboats
+		"133"	//Gunboats 炮艇
 		{
 			"falldamage"
 			{
@@ -147,17 +174,297 @@
 				{
 					"procedure"	"ConfigEvent_SetProp"
 					//"vsh2target"	"player"
-					"enttarget"		""
+					"enttarget"	"secondary"
+					"type"	"float"
+					"prop"	"m_flEnergy"
+					"datamap"	"false"
+					"value"	"100.0"
 				}
 			}
 		}
-		"442"	//Righteous Bison 正义野牛
+		//Pyro 火焰喷射器
+		"21, 208, 40, 215, 659, 741, 798, 807, 887, 896, 905, 914, 963, 972, 1146, 1178, 15005, 15017, 15030, 15034, 15049, 15054, 15066, 15067, 15068, 15089, 15090, 15115, 15141, 30474"
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"	"%h% + 2"
+					"clamp"		 "275"
+				}
+			}
+		}
+		"594"	//Phlogistinator 燃素喷射器
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"	"%h% + 1"
+					"clamp"		 "260"
+				}
+			}
+		}
+		//Demoman 爆破手
+		"131, 1144"	//Chargin' Targe 冲锋盾
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"player"
+
+					"add"	"true"
+					{
+						"<enum>"
+						{
+							"id"	"26"
+							"duration"	"4.0"
+						}
+					}
+				}
+			}
+		}
+		"406"	//Splendid Screen 辉煌护盾
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"victim"
+
+					"add"	"true"
+					{
+						"<enum>"
+						{
+							"id"	"127"
+							"duration"	"-1.0"
+						}
+					}
+				}
+			}
+		}
+		"1099"	//Tide Turner 力挽狂澜
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetAttribWep"
+					"vsh2target"	"player"
+
+					"attributes"
+					{
+						"<enum>"
+						{
+							"slot"	"2"
+							"index"	"778"
+							"value"	"0.75"
+							"duration"	"-1.0"
+						}
+					}
+				}
+			}
+		}
+		"307"	//Ullapool Caber 木柄手榴弹
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+					//"vsh2target"	"player"
+					"enttarget"	"melee"
+					"<enum>"
+					{
+						"name"	"modelscale"
+						"type"	"float"
+						"prop"	"m_flModelScale"
+						"value"	"3.0"
+					}
+				}
+			}
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_Explode"
+					"vsh2target"	"player"
+					"damage"	"0.0"
+					"radius"	"0.0"
+					"particle"	"fluidSmokeExpl_ring"
+					"sound"
+					{
+						"<enum>"	"ambient/explosions/explode_1.wav"
+						"<enum>"	"ambient/explosions/explode_2.wav"
+						"<enum>"	"ambient/explosions/explode_3.wav"
+						"<enum>"	"ambient/explosions/explode_4.wav"
+						"<enum>"	"ambient/explosions/explode_5.wav"
+						"<enum>"	"ambient/explosions/explode_6.wav"
+						"<enum>"	"ambient/explosions/explode_7.wav"
+						"<enum>"	"ambient/explosions/explode_8.wav"
+						"<enum>"	"ambient/explosions/explode_9.wav"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ForceSuicide"
+					"vsh2target"	"player"
+				}
+			}
+		}
+		"327"	//Claidheamh Mòr 摩尔巨剑
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"fChargeMeter"
+						"size"	"4"
+						"prop"	"m_flChargeMeter"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"formatted_value"
+						"value"	"{0} + 25.0"
+						"size"	"4"
+						"args"
+						{
+							"<enum>"	"fChargeMeter"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"final_chargemeter"
+						"from"	"@formatted_value"
+						"truncate"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"type"	"float"
+						"prop"	"m_flChargeMeter"
+						"datamap"	"false"
+						"value"	"final_chargemeter"
+					}
+				}
+			}
+		}
+		//Heavy 机枪手
+		"159, 433"	//Dalokohs Bar 达勒克斯巧克力块 (Addammo primay when consume)
 		{
 			"think"
 			{
 				"<enum>"
 				{
-					"procedure"
+					"procedure"	"ConfigEvent_GetProp"
+				}
+			}
+		}
+		"43"	//Killing Gloves of Boxing 杀戮拳击手套
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"add"	"true"
+					{
+						"vsh2target"	"player"
+						"id"	"56"
+						"duration"	"7.0"
+					}
+				}
+			}
+		}
+		"310"	//Warrior's Spirit 勇士之魂
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+					"health"
+					{
+						"formula"	"A + B"
+						"<enum>"
+						{
+							"token" "A"
+							"value"	"@iMyHealth"
+						}
+						"<enum>"
+						{
+							"token"	"B"
+							"value"	"75"
+						}
+					}
+					"clamp"	"500"
+				}
+			}
+		}
+		//Engineer 工程师
+		"588"	//Pomson 6000 歼灭者 6000
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"rage_meter"
+						"type"	"float"
+						"value"	"@victim.flRAGE"
+					}
+				}
+				"<enum>"
+				{
+					""
 				}
 			}
 		}
