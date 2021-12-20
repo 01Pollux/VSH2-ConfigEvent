@@ -668,5 +668,18 @@
 				}
 			}
 		}
+		"413"	//Solemn Vow 希波克拉底的塑像
+		{
+			"playerhud"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ViewRage"
+					"vsh2target"	"player"
+
+					""
+				}
+			}
+		}
 	}
 }
