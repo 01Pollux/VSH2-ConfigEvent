@@ -73,7 +73,7 @@
 				"<enum>"
 				{
 					"procedure"  "ConfigEvent_FormatParams"
-					
+
 					"<enum>"
 					{
 						"name"	"damage_str"
@@ -88,7 +88,7 @@
 				"<enum>"
 				{
 					"procedure"  "ConfigEvent_ParseForumla"
-					
+
 					"<enum>"
 					{
 						"name"		"damage"
@@ -126,10 +126,10 @@
 				}
 				"<enum>"
 				{
-					"procedure"		"ConfigEvent_SetGlow"
+					"procedure"		"ConfigEvent_SetClientGlow"
 					"vsh2target"	"player"
 
-					"duration"		"6.0"
+					"addtime"		"6.0"
 				}
 			}
 		}
@@ -141,7 +141,7 @@
 				"<enum>"
 				{
 					"procedure"  "ConfigEvent_GetProp"
-					
+
 					"vsh2target"	"player"
 
 					"<enum>"
