@@ -124,26 +124,15 @@
 			{
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_AllocateParams"
-
-					"<enum>"
-					{
-						"name"	"fall_damage"
-						"type"	"float"
-						"value"	"damage"
-					}
-				}
-				"<enum>"
-				{
 					"procedure"	"ConfigEvent_FormatParams"
 
 					"<enum>"
 					{
-						"name"	"final_fall_damage"
+						"name"	"damage_str"
 						"value"	"0.5 * {0}"
 						"size"	"128"
 						{
-							"<enum>"	"f@fall_damage"
+							"<enum>"	"f@damage"
 						}
 					}
 				}
@@ -154,7 +143,7 @@
 					"<enum>"
 					{
 						"name"	"damage"
-						"from"	"@final_fall_damage"
+						"from"	"@damage_str"
 						"truncate"	"false"
 					}
 				}
@@ -172,13 +161,13 @@
 			{
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_SetProp"
-					//"vsh2target"	"player"
-					"enttarget"	"secondary"
-					"type"	"float"
-					"prop"	"m_flEnergy"
-					"datamap"	"false"
-					"value"	"100.0"
+					"procedure"	"ConfigEvent_SetClipEnergy"
+					"vsh2target"	"player"
+
+					"ammount"	"100.0"
+					"max"	"100.0"
+					"slot"	"1"
+					"duration"	"-1.0"
 				}
 			}
 		}
@@ -474,7 +463,29 @@
 				}
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_DestroyEntity"
 
+					"enttarget"	"projectile"
+				}
+			}
+		}
+		"140, 1086, 30668"	//Wrangler 遥控手柄
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"player"
+					"add"	"true"
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"78"
+							"duration"	"-1.0"
+						}
+					}
 				}
 			}
 		}
@@ -514,6 +525,48 @@
 				}
 			}
 		}
+		//Medic 医生
+		"36"	//Blutsauger 吸血鬼针筒枪
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"
+					{
+						"formula"	"A + B"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+						"<enum>"
+						{
+							"token"	"B"
+							"value"	"5"
+						}
+					}
+					"clamp"		 "270"
+				}
+			}
+		}
 		"29, 211, 663, 796, 805, 885, 894, 903, 912, 961, 970, 15008, 15010, 15025, 15039, 15050, 15078, 15097, 15121, 15122, 15123, 15145, 15146"	//Stock Medigun
 		{
 			"think"
@@ -535,7 +588,7 @@
 				}
 			}
 		}
-		"35"	//The Kritzkrieg
+		"35"	//The Kritzkrieg 闪电战医疗枪
 		{
 			"think"
 			{
@@ -560,7 +613,7 @@
 				"<enum>"
 				{
 					"procedure"		"ConfigEvent_ManageSelfTFCond"
-					"vsh2target"	"player"
+					"vsh2target"	"medic"
 
 					"add"		"true"
 					"conditions"
@@ -569,6 +622,47 @@
 						{
 							"id"		"42"
 							"duration"		"8.0"
+						}
+					}
+				}
+			}
+			"uber_loop"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageAreaTFCond"
+					"vsh2target"	"medic"
+
+					"flags"	"1"
+					"distance"	"<250.0"
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"11"
+							"duration"	"3.0"
+						}
+					}
+				}
+			}
+		}
+		"411"	//Quick Fix 快速医疗枪
+		{
+			"uber_loop"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageAreaTFCond"
+					"vsh2target"	"medic"
+
+					"flags"	"1"
+					"distance"	"<300.0"
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"32"
+							"duration"	"5.0"
 						}
 					}
 				}
