@@ -799,5 +799,48 @@
 				}
 			}
 		}
+		"232"	//Bushwacka 灌木丛
+		{
+			"playerclimb"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"upwardvel_value"
+						"value"	"1000.0"
+					}
+
+					"<enum>"
+					{
+						"name"	"health_value"
+						"value"	"40"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"upwardvel"
+						"from"	"@upwardvel_value"
+					}
+					"<enum>"
+					{
+						"name"	"health"
+						"from"	"@health_value"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
 	}
 }
