@@ -35,6 +35,21 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+	GameData gamedata = new GameData("vsh2.configsys");
+
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayer::GetEquippedWearableForLoadoutSlot");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
+	if (!(SDKGetEquippedWearable = EndPrepSDKCall()))
+	{
+		delete gamedata;
+		SetFailState("Failed to create call to 'CTFPlayer::GetEquippedWearableForLoadoutSlot'");
+		return;
+	}
+
+	delete gamedata;
+
 	RegAdminCmd("vsh2_cfgevent_reload", OnReloadConfig, ADMFLAG_ROOT, "Reload VSH2-Configsystem");
 
 	AddCommandListener(Console_EurakaTeleportCommand, "eureka_teleport");
@@ -45,6 +60,18 @@ static stock Action OnReloadConfig(int client, int argc)
 {
 	ConfigEvent_Unload();
 	ConfigEvent_Load();
+	if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
+	{
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (IsClientInGame(i))
+			{
+				ConfigSys.Params.Clear();
+				ConfigSys.Params.SetValue("player", VSH2Player(i));
+				ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+			}
+		}
+	}
 	ReplyToCommand(client, "[VSH2 CfgEvent] Successfully reloaded config.");
 	return Plugin_Handled;
 }
@@ -75,8 +102,14 @@ public void NextFrame_InitVSH2Player(int client)
 
 		// ./cfg_impl/modules/zombie.sp
 		player.SetPropAny("bIsZombie", false);
-		//./cfg_impl/modules/airblast.sp
+		// ./cfg_impl/modules/airblast.sp
 		player.SetPropAny("bIsAirBlastLimited", false);
+
+		if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
+		{
+			ConfigSys.Params.SetValue("player", player);
+			ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+		}
 	}
 }
 
@@ -85,11 +118,22 @@ public void OnClientPutInServer(int client)
 	RequestFrame(NextFrame_InitVSH2Player, client);
 }
 
-
 any Native_Refresh(Handle plugin, int numParams)
 {
 	ConfigEvent_Unload();
 	ConfigEvent_Load();
+	if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
+	{
+		for (int i = 1; i <= MaxClients; i++)
+		{
+			if (IsClientInGame(i))
+			{
+				ConfigSys.Params.Clear();
+				ConfigSys.Params.SetValue("player", VSH2Player(i));
+				ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+			}
+		}
+	}
 	return 0;
 }
 

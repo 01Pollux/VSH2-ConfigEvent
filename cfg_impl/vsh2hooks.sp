@@ -293,6 +293,12 @@ void ConfigEvent_OnVariablesReset(const VSH2Player player)
 	player.SetPropAny("bIsZombie", false);
 	//./cfg_impl/modules/airblast.sp
 	player.SetPropAny("bIsAirBlastLimited", false);
+
+	if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
+	{
+		ConfigSys.Params.SetValue("player", player);
+		ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+	}
 }
 
 /**
