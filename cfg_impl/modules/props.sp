@@ -362,6 +362,43 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 	return Plugin_Continue;
 }
 
+public Action ConfigEvent_GetGameTime(EventMap args, ConfigEventType_t event_type)
+{
+	/*
+	// ConfigEvent_SetProp(...);
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_GetGameTime"
+		"name"		"out_name"
+
+		// time to add to the out_name
+		// "delta"		"@prop_name"
+		// "delta"		"0.0"
+	}
+	*/
+	int name_size = args.GetSize("name");
+	char[] name = new char[name_size];
+	args.Get("name", name, name_size);
+
+	int delta_name_size = args.GetSize("delta");
+	float time = GetGameTime();
+
+	if (delta_name_size)
+	{
+		float delta_time;
+		char[] delta_name = new char[delta_name_size];
+		delta.Get("name", delta_name, delta_name_size);
+		if (delta_name[0] == '@')
+			ConfigSys.Params.GetValue(delta_name[1], delta_time);
+		else delta_time = StringToFloat(delta_name);
+
+		time += delta_time;
+	}
+
+	ConfigSys.Params.SetValue(name, time);
+	return Plugin_Continue;
+}
+
 static CE_PropType GetConfigPropType(ConfigMap cfg)
 {
 	char types[][] = {
