@@ -137,13 +137,13 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 
 		"<enum>"
 		{
-			"name" "my_var"
 			"type"	"int"
 			// "size"		"4" 
 			// "element"	"0"
 			// "element"	"@my_var"
 			// "resource"	"false"
 			"prop"  "m_iHealth"
+			"value" "my_var"
 			"datamap"   "false" // Prop_Data
 
 			// "min"	""
@@ -168,10 +168,10 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 			break;
 
 		int out_name_size;
-		if (!var_sec.GetInt("name", out_name_size))
+		if (!var_sec.GetInt("value", out_name_size))
 			out_name_size = 48;
 		char[] out_name = new char[out_name_size];
-		var_sec.Get("name", out_name, out_name_size);
+		var_sec.Get("value", out_name, out_name_size);
 
 		ConfigEvent_ParamType_t type = GetTypeFromName(var_sec);
 		if (type == PT_VSH2)
