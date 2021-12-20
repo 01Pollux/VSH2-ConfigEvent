@@ -91,7 +91,7 @@
 				}
 			}
 		}
-		"133"	//Gunboats 
+		"133"	//Gunboats
 		{
 			"falldamage"
 			{
@@ -108,15 +108,46 @@
 				}
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"final_fall_damage"
+						"value"	"0.5 * {0}"
+						"size"	"128"
+						{
+							"<enum>"	"f@fall_damage"
+						}
+					}
+				}
+				"<eunm>"
+				{
 					"procedure"	"ConfigEvent_ParseForumla"
 
 					"<enum>"
 					{
-						"name"	"new_fall_damage"
-						"from"	"n * 0.5"
-						"var"	""
-						"turncate"	"true"
+						"name"	"damage"
+						"from"	"@final_fall_damage"
+						"truncate"	"false"
 					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
+		"442"	//Righteous Bison 正义野牛
+		{
+			"think"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+					//"vsh2target"	"player"
+					"enttarget"		""
 				}
 			}
 		}
