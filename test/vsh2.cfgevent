@@ -885,5 +885,97 @@
 				}
 			}
 		}
+		"225"	//Your Eternal Reward 永生的回报
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"count"
+						"type"	"int"
+						"value"	"0"
+					}
+				}
+			}
+			"btd_stab"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"new_count"
+						"value"	"{0} + 1"
+						"size"	"4"
+						"args"
+						{
+							"<enum>"	"count"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"damage"
+						"type"	"float"
+						"value"	"0.0"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"new_count"
+					"csecond"	"4"	//requirement
+					"operators"	"10101"	// Greater or equal. new_count >= 4
+					"skips"	"2"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"new_damage"
+						"value"	"6 * {0} + 666"
+						"size"	"16"
+						"args"
+						{
+							"<enum>"	"f@damage"
+						}
+					}
+					"<enum>"	//set the count back to zero
+					{
+						"name"	"count"
+						"value"	"0"
+						"size"	"4"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"damage"
+						"from"	"@new_damage"
+						"truncate"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
 	}
 }
