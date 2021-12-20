@@ -696,5 +696,64 @@
 				}
 			}
 		}
+		"752"	//Hitman's Heatmaker 职业杀手的手感
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+					"<enum>"
+					{
+						"name"	"rage_meter"
+						"vsh2target"	"player"
+						"type"	"float"
+						"prop"	"m_flRageMeter"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"formatted_value"
+						"value"	"{0} + 40.0"
+						"size"	"6"
+						"args"
+						{
+							"<enum>"	"rage_meter"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"final_rage_meter"
+						"from"	"@formatted_value"
+						"truncate"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+
+					"<enum>"
+					{
+						"vsh2target"
+						"type"	"float"
+						"size"	"6"
+						"prop"	"m_flRageMeter"
+						"datamap"	"false"
+						"value"	"final_rage_meter"
+						"max"	"100.0"
+					}
+				}
+			}
+		}
 	}
 }
