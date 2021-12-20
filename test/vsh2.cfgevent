@@ -32,16 +32,11 @@
 
 					"health"
 					{
-						"formula"	"A + B"
+						"formula"	"A + 5"
 						"<enum>"
 						{
 							"token"	"A"
 							"value"	"@iMyHealth"
-						}
-						"<enum>"
-						{
-							"token"	"B"
-							"value"	"5"
 						}
 					}
 					"clamp"		 "199"
@@ -92,7 +87,7 @@
 						"<enum>"
 						{
 							"id"	"25"	//Bleed cond 流血
-							"value" "999.0"
+							"value" "-1.0"
 						}
 					}
 
@@ -178,11 +173,33 @@
 			{
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
 					"procedure"	"ConfigEvent_ManageSelfHeal"
 					"vsh2target"	"player"
 
-					"health"	"%h% + 2"
-					"clamp"		 "275"
+					"health"
+					{
+						"formula"	"A + 2"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+					}
+					"clamp"		 "280"
 				}
 			}
 		}
@@ -192,11 +209,33 @@
 			{
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
 					"procedure"	"ConfigEvent_ManageSelfHeal"
 					"vsh2target"	"player"
 
-					"health"	"%h% + 1"
-					"clamp"		 "260"
+					"health"
+					{
+						"formula"	"A + 1"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+					}
+					"clamp"		 "280"
 				}
 			}
 		}
@@ -322,7 +361,8 @@
 					{
 						"vsh2target"	"player"
 						"name"	"fChargeMeter"
-						"size"	"4"
+						"type"	"float"
+						"size"	"5"
 						"prop"	"m_flChargeMeter"
 						"datamap"	"false"
 					}
@@ -338,7 +378,7 @@
 						"size"	"4"
 						"args"
 						{
-							"<enum>"	"fChargeMeter"
+							"<enum>"	"f@fChargeMeter"
 						}
 					}
 				}
@@ -419,16 +459,11 @@
 					"vsh2target"	"player"
 					"health"
 					{
-						"formula"	"A + B"
+						"formula"	"A + 75"
 						"<enum>"
 						{
 							"token" "A"
 							"value"	"@iMyHealth"
-						}
-						"<enum>"
-						{
-							"token"	"B"
-							"value"	"75"
 						}
 					}
 					"clamp"	"500"
@@ -551,16 +586,11 @@
 
 					"health"
 					{
-						"formula"	"A + B"
+						"formula"	"A + 5"
 						"<enum>"
 						{
 							"token"	"A"
 							"value"	"@iMyHealth"
-						}
-						"<enum>"
-						{
-							"token"	"B"
-							"value"	"5"
 						}
 					}
 					"clamp"		 "270"
@@ -707,6 +737,7 @@
 					{
 						"name"	"rage_meter"
 						"vsh2target"	"player"
+						"size"	"5"
 						"type"	"float"
 						"prop"	"m_flRageMeter"
 						"datamap"	"false"
@@ -723,7 +754,7 @@
 						"size"	"6"
 						"args"
 						{
-							"<enum>"	"rage_meter"
+							"<enum>"	"f@rage_meter"
 						}
 					}
 				}
@@ -761,34 +792,20 @@
 			{
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_FormatParams"
-
-					"<enum>"
+					"procedure"	"ConfigEvent_AllocateParams"
 					{
-						"name"	"delay_bool"
-						"value"	"false"
-						"size"	"4"
-					}
-					"<enum>"
-					{
-						"name"	"upwardvel_value"
-						"value"	"450.0"
-					}
-				}
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_ParseForumla"
-
-					"<enum>"
-					{
-						"name"	"attackdelay"
-						"from"	"@delay_bool"
-					}
-
-					"<enum>"
-					{
-						"name"	"upwardvel"
-						"from"	"@upwardvel_value"
+						"<enum>"
+						{
+							"name"	"attackdelay"
+							"type"	"bool"
+							"value"	"false"
+						}
+						"<enum>"
+						{
+							"name"	"upwardvel"
+							"type"	"float"
+							"value"	"450.0"
+						}
 					}
 				}
 				"<enum>"
@@ -805,33 +822,19 @@
 			{
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_FormatParams"
-
-					"<enum>"
-					{
-						"name"	"upwardvel_value"
-						"value"	"1000.0"
-					}
-
-					"<enum>"
-					{
-						"name"	"health_value"
-						"value"	"40"
-					}
-				}
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_ParseForumla"
+					"procedure"	"ConfigEvent_AllocateParams"
 
 					"<enum>"
 					{
 						"name"	"upwardvel"
-						"from"	"@upwardvel_value"
+						"type"	"float"
+						"value"	"1000.0"
 					}
 					"<enum>"
 					{
 						"name"	"health"
-						"from"	"@health_value"
+						"type"	"int"
+						"value"	"40"
 					}
 				}
 				"<enum>"
@@ -839,6 +842,46 @@
 					"procedure"	"ConfigEvent_WriteReturn"
 
 					"return"	"changed"
+				}
+			}
+		}
+		"401"	//Shahanshah 诸王之王
+		{
+			"playerclimb"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"upwardvel"
+						"type"	"float"
+						"value"	"500.0"
+					}
+				}
+			}
+		}
+		//Spy 间谍
+		"61, 1006"	//Ambassador 大使手枪
+		{
+			"btd_ambasssador"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"player"
+
+					"add"	"true"
+
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"32"
+							"duration"	"3.0"
+						}
+					}
 				}
 			}
 		}
