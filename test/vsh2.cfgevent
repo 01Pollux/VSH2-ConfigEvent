@@ -681,5 +681,20 @@
 				}
 			}
 		}
+		//Sniper 狙击手
+		"56, 1005, 1092"	//Huntsman 猎人短弓
+		{
+			"projectile_touch"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_Explode"
+
+					"enttarget"	"projectile"
+					"damage"	"45.0"
+					"radius"	"120.0"
+				}
+			}
+		}
 	}
 }
