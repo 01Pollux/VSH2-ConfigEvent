@@ -64,7 +64,7 @@ public Action ConfigEvent_EmitSound(EventMap args, ConfigEventType_t event_type)
 		//"filter"		 "group"	// only emit to group of people based on distance 'EmitSound'
 		//"filter"		 "all"	// emit to everyone 'EmitSoundToAll'
 
-		"type"			  "none"
+		"type"			  "generic"
 		//"type"			"game"
 		//"type"			"stop"
 		//"type"			"ambient"

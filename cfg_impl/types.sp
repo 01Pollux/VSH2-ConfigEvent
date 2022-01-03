@@ -65,6 +65,8 @@ enum ConfigEventType_t
 	CET_EurakaTeleportCmd,
 	CET_EurakaTeleportFin,
 
+	CET_ResetVSH2Vars,
+
 	CET_Count
 }
 
@@ -133,7 +135,9 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 
 		"projectile_touch",
 		"eureka_teleport",
-		"eureka_teleported"
+		"eureka_teleported",
+
+		"reset_vsh2player"
 	};
 
 	for (int i = 0; i < sizeof(event_names); i++)

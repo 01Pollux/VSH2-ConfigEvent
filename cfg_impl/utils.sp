@@ -32,8 +32,6 @@ enum ShakeCommand_t
 
 enum ConfigEvent_ParamType_t
 {
-	// "vsh2"
-	PT_VSH2,
 	// "int"
 	PT_Int,
 	// "float"
@@ -56,6 +54,10 @@ enum ConfigEvent_ParamType_t
 #define AREA_COND_OTHER_TEAM	(1 << 1)
 #define AREA_COND_MY_MINIONS	(1 << 2)
 #define AREA_COND_OTHER_MINIONS	(1 << 3)
+
+#define Plugin_SkipN		999
+
+Handle SDKGetEquippedWearable;
 
 int CountCharInString(const char[] str, char c)
 {
@@ -225,4 +227,16 @@ stock void ClampValue(any& val, const any min, const any max)
 		val = max;
 }
 
-#define Plugin_SkipN		999
+stock int TF2_GetItemInSlot(int client, int slot)
+{
+	int weapon = GetPlayerWeaponSlot(client, slot);
+	if (!IsValidEntity(weapon))
+	{
+		// If weapon not found in slot, check if it a wearable
+		weapon = SDKCall(SDKGetEquippedWearable, client, slot);
+		if (!IsValidEntity(weapon))
+			return -1;
+	}
+
+	return weapon;
+}

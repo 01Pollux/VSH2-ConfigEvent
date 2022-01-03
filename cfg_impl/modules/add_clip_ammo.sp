@@ -116,8 +116,8 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	int slot; args.GetInt("slot", slot);
 	float duration; args.GetFloat("duration", duration);
 
-	int weapon = GetPlayerWeaponSlot(calling_player_idx, slot);
-	if (IsValidEntity(weapon))
+	int weapon = TF2_GetItemInSlot(calling_player_idx, slot);
+	if (IsValidEdict(weapon))
 	{
 		SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
 
@@ -138,7 +138,7 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 	data.Reset();
 
 	int weapon = EntRefToEntIndex(data.ReadCell());
-	if (IsValidEntity(weapon))
+	if (IsValidEdict(weapon))
 	{
 		float max = data.ReadFloat();
 		float cur_energy = GetEntPropFloat(weapon, Prop_Send, "m_flEnergy");
