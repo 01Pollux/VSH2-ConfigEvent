@@ -7,7 +7,55 @@
 	}
 	"weapons"
 	{
-		"226"	//The Battalion's Backup 军队的支援
+		"773"	//Pretty Boy's Pocket Pistol 帅气男孩的袖珍手枪
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"
+					{
+						"formula"	"A + 5"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+					}
+					"clamp"		 "199"
+				}
+			}
+		}
+		“44”	//Sandman 睡魔
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SandManStun"
+					"vsh2player"	"player"
+					"victim"	"victim"
+				}
+			}
+		}
+		"226"	//The Battalion's Backup 军队的支援 士兵
 		{
 			"banner_start"
 			{
@@ -39,7 +87,7 @@
 						"<enum>"
 						{
 							"id"	"25"	//Bleed cond 流血
-							"value" "999.0"
+							"value" "-1.0"
 						}
 					}
 
@@ -72,27 +120,407 @@
 				// ConfigEvent_FormatParams(...);
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_FormatParams"
+					"procedure"	"ConfigEvent_FormatParams"
 
 					"<enum>"
 					{
 						"name"	"damage_str"
 						"value"	"0.5 * {0}"
-						"size"	"32"
+						"size"	"128"
+						{
+							"<enum>"	"f@damage"
+						}
+					}
+				}
+				"<eunm>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"damage"
+						"from"	"@damage_str"
+						"truncate"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
+		"442"	//Righteous Bison 正义野牛
+		{
+			"think"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetClipEnergy"
+					"vsh2target"	"player"
+
+					"ammount"	"100.0"
+					"max"	"100.0"
+					"slot"	"1"
+					"duration"	"-1.0"
+				}
+			}
+		}
+		//Pyro 火焰喷射器
+		"21, 208, 40, 215, 659, 741, 798, 807, 887, 896, 905, 914, 963, 972, 1146, 1178, 15005, 15017, 15030, 15034, 15049, 15054, 15066, 15067, 15068, 15089, 15090, 15115, 15141, 30474"
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"
+					{
+						"formula"	"A + 2"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+					}
+					"clamp"		 "280"
+				}
+			}
+		}
+		"594"	//Phlogistinator 燃素喷射器
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+
+					"health"
+					{
+						"formula"	"A + 1"
+						"<enum>"
+						{
+							"token"	"A"
+							"value"	"@iMyHealth"
+						}
+					}
+					"clamp"		 "280"
+				}
+			}
+		}
+		//Demoman 爆破手
+		"131, 1144"	//Chargin' Targe 冲锋盾
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"player"
+
+					"add"	"true"
+					{
+						"<enum>"
+						{
+							"id"	"26"
+							"duration"	"4.0"
+						}
+					}
+				}
+			}
+		}
+		"406"	//Splendid Screen 辉煌护盾
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"victim"
+
+					"add"	"true"
+					{
+						"<enum>"
+						{
+							"id"	"127"
+							"duration"	"-1.0"
+						}
+					}
+				}
+			}
+		}
+		"1099"	//Tide Turner 力挽狂澜
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetAttribWep"
+					"vsh2target"	"player"
+
+					"attributes"
+					{
+						"<enum>"
+						{
+							"slot"	"2"
+							"index"	"778"
+							"value"	"0.75"
+							"duration"	"-1.0"
+						}
+					}
+				}
+			}
+		}
+		"307"	//Ullapool Caber 木柄手榴弹
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+					//"vsh2target"	"player"
+					"enttarget"	"melee"
+					"<enum>"
+					{
+						"name"	"modelscale"
+						"type"	"float"
+						"prop"	"m_flModelScale"
+						"value"	"3.0"
+					}
+				}
+			}
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_Explode"
+					"vsh2target"	"player"
+					"damage"	"0.0"
+					"radius"	"0.0"
+					"particle"	"fluidSmokeExpl_ring"
+					"sound"
+					{
+						"<enum>"	"ambient/explosions/explode_1.wav"
+						"<enum>"	"ambient/explosions/explode_2.wav"
+						"<enum>"	"ambient/explosions/explode_3.wav"
+						"<enum>"	"ambient/explosions/explode_4.wav"
+						"<enum>"	"ambient/explosions/explode_5.wav"
+						"<enum>"	"ambient/explosions/explode_6.wav"
+						"<enum>"	"ambient/explosions/explode_7.wav"
+						"<enum>"	"ambient/explosions/explode_8.wav"
+						"<enum>"	"ambient/explosions/explode_9.wav"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ForceSuicide"
+					"vsh2target"	"player"
+				}
+			}
+		}
+		"327"	//Claidheamh Mòr 摩尔巨剑
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"fChargeMeter"
+						"type"	"float"
+						"size"	"5"
+						"prop"	"m_flChargeMeter"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"formatted_value"
+						"value"	"{0} + 25.0"
+						"size"	"4"
 						"args"
 						{
-							"<enum>"	"f@damage"				// 0
+							"<enum>"	"f@fChargeMeter"
 						}
 					}
 				}
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_ParseForumla"
+					"procedure"	"ConfigEvent_ParseForumla"
 
 					"<enum>"
 					{
-						"name"		"damage"
-						"from"		"@damage_str"
+						"name"	"final_chargemeter"
+						"from"	"@formatted_value"
+						"truncate"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"type"	"float"
+						"prop"	"m_flChargeMeter"
+						"datamap"	"false"
+						"value"	"final_chargemeter"
+					}
+				}
+			}
+		}
+		//Heavy 机枪手
+		"159, 433"	//Dalokohs Bar 达勒克斯巧克力块 (Addammo primay when consume)
+		{
+			"think"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+				}
+			}
+		}
+		"43"	//Killing Gloves of Boxing 杀戮拳击手套
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"add"	"true"
+					{
+						"vsh2target"	"player"
+						"id"	"56"
+						"duration"	"7.0"
+					}
+				}
+			}
+		}
+		"310"	//Warrior's Spirit 勇士之魂
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfHeal"
+					"vsh2target"	"player"
+					"health"
+					{
+						"formula"	"A + 75"
+						"<enum>"
+						{
+							"token" "A"
+							"value"	"@iMyHealth"
+						}
+					}
+					"clamp"	"500"
+				}
+			}
+		}
+		//Engineer 工程师
+		"588"	//Pomson 6000 歼灭者 6000
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GiveRage"
+					"vsh2target"	"victim"
+
+					"damage"	"-200"
+				}
+			}
+		}
+		"528"	//Short Circuit 短路发生器
+		{
+			"projectile_touch"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_Explode"
+
+					"enttarget"	"projectile"
+					"damage"	"45.0"
+					"radius"	"120.0"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_DestroyEntity"
+
+					"enttarget"	"projectile"
+				}
+			}
+		}
+		"140, 1086, 30668"	//Wrangler 遥控手柄
+		{
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"player"
+					"add"	"true"
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"78"
+							"duration"	"-1.0"
+						}
 					}
 				}
 			}
@@ -133,7 +561,8 @@
 				}
 			}
 		}
-		"773"	//Pretty Boy's Pocket Pistol 帅气男孩的袖珍手枪
+		//Medic 医生
+		"36"	//Blutsauger 吸血鬼针筒枪
 		{
 			"btd_takedamage"
 			{
@@ -153,19 +582,33 @@
 				}
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_GetProp"
+
+					"<enum>"
+					{
+						"vsh2target"	"player"
+						"name"	"iMyHealth"
+						"type"	"int"
+						"size"	"4"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
 					"procedure"	"ConfigEvent_ManageSelfHeal"
 					"vsh2target"	"player"
 
 					"health"
 					{
-						"formula"	"H + 5"
+						"formula"	"A + 5"
 						"<enum>"
 						{
-							"token"	"H"
-							"value"	"iCurHealth"
+							"token"	"A"
+							"value"	"@iMyHealth"
 						}
 					}
-					"clamp"		 "199"
+					"clamp"		 "270"
 				}
 			}
 		}
@@ -190,7 +633,7 @@
 				}
 			}
 		}
-		"35"	//The Kritzkrieg
+		"35"	//The Kritzkrieg 闪电战医疗枪
 		{
 			"think"
 			{
@@ -215,7 +658,7 @@
 				"<enum>"
 				{
 					"procedure"		"ConfigEvent_ManageSelfTFCond"
-					"vsh2target"	"player"
+					"vsh2target"	"medic"
 
 					"add"		"true"
 					"conditions"
@@ -224,6 +667,234 @@
 						{
 							"id"		"42"
 							"duration"		"8.0"
+						}
+					}
+				}
+			}
+			"uber_loop"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageAreaTFCond"
+					"vsh2target"	"medic"
+
+					"flags"	"1"
+					"distance"	"<250.0"
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"11"
+							"duration"	"3.0"
+						}
+					}
+				}
+			}
+		}
+		"411"	//Quick Fix 快速医疗枪
+		{
+			"uber_loop"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageAreaTFCond"
+					"vsh2target"	"medic"
+
+					"flags"	"1"
+					"distance"	"<300.0"
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"32"
+							"duration"	"5.0"
+						}
+					}
+				}
+			}
+		}
+		"413"	//Solemn Vow 希波克拉底的塑像
+		{
+			"playerhud"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ViewRage"
+					"vsh2target"	"player"
+
+					""
+				}
+			}
+		}
+		//Sniper 狙击手
+		"56, 1005, 1092"	//Huntsman 猎人短弓
+		{
+			"projectile_touch"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_Explode"
+
+					"enttarget"	"projectile"
+					"damage"	"45.0"
+					"radius"	"120.0"
+				}
+			}
+		}
+		"752"	//Hitman's Heatmaker 职业杀手的手感
+		{
+			"btd_takedamage"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+					"<enum>"
+					{
+						"name"	"rage_meter"
+						"vsh2target"	"player"
+						"size"	"5"
+						"type"	"float"
+						"prop"	"m_flRageMeter"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"formatted_value"
+						"value"	"{0} + 40.0"
+						"size"	"6"
+						"args"
+						{
+							"<enum>"	"f@rage_meter"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"final_rage_meter"
+						"from"	"@formatted_value"
+						"truncate"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_SetProp"
+
+					"<enum>"
+					{
+						"vsh2target"
+						"type"	"float"
+						"size"	"6"
+						"prop"	"m_flRageMeter"
+						"datamap"	"false"
+						"value"	"final_rage_meter"
+						"max"	"100.0"
+					}
+				}
+			}
+		}
+		"171"	//Tribalman's Shiv 部落者刮刀
+		{
+			"playerclimb"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+					{
+						"<enum>"
+						{
+							"name"	"attackdelay"
+							"type"	"bool"
+							"value"	"false"
+						}
+						"<enum>"
+						{
+							"name"	"upwardvel"
+							"type"	"float"
+							"value"	"450.0"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
+		"232"	//Bushwacka 灌木丛
+		{
+			"playerclimb"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"upwardvel"
+						"type"	"float"
+						"value"	"1000.0"
+					}
+					"<enum>"
+					{
+						"name"	"health"
+						"type"	"int"
+						"value"	"40"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
+		}
+		"401"	//Shahanshah 诸王之王
+		{
+			"playerclimb"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"upwardvel"
+						"type"	"float"
+						"value"	"500.0"
+					}
+				}
+			}
+		}
+		//Spy 间谍
+		"61, 1006"	//Ambassador 大使手枪
+		{
+			"btd_ambasssador"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"vsh2target"	"player"
+
+					"add"	"true"
+
+					"conditions"
+					{
+						"<enum>"
+						{
+							"id"	"32"
+							"duration"	"3.0"
 						}
 					}
 				}
