@@ -46,3 +46,30 @@ public Action ConfigEvent_Explode(EventMap args, ConfigEventType_t event_type)
 
 	return Plugin_Continue;
 }
+
+public Action ConfigEvent_DestroyEntity(EventMap args, ConfigEventType_t event_type)
+{
+	/*
+	// ConfigEvent_DestroyEntity();
+	"<enum>"
+	{
+		"procedure"  "ConfigEvent_DestroyEntity"
+		"vsh2target" "player"
+		"enttarget"	"projectile"
+	}
+	*/
+	int calling_player_idx;
+	VSH2Player calling_player;
+	int entity_target;
+
+	if (!args.GetTarget(calling_player_idx, calling_player))
+		return Plugin_Continue;
+
+
+	if (!args.GetTargetEnt(entity_target) || !IsValidEntity(entity_target) || GameRules_GetRoundState() == RoundState_Preround)
+		return Plugin_Continue;
+
+	DestroyEntity(entity_target);
+
+	return Plugin_Continue;
+}
