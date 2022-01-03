@@ -14,7 +14,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_GetProp"
-		
+
 		"vsh2target"	"player"
 		// "target"		"entity"
 
@@ -22,7 +22,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 		{
 			"name"	"my_string"
 			"type"	"int"
-			// "size"		"4" 
+			// "size"		"4"
 			// "element"	"0"
 			// "element"	"@my_var"	// element is ignored when "custom" is "resource"
 			// "custom"		"resource"
@@ -40,7 +40,7 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 		if (!args.GetTarget(calling_ent_index, dummy_vsh2player))
 			args.GetTargetEnt(calling_ent_index);
 	}
-	
+
 	int args_count = args.Size;
 	int resource_ent;
 
@@ -85,13 +85,13 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 		int prop_name_size;
 		if (!var_sec.GetInt("prop", prop_name_size))
 			prop_name_size = 48;
-		char[] prop_name = new char[prop_name_size]; 
+		char[] prop_name = new char[prop_name_size];
 		var_sec.Get("prop", prop_name, prop_name_size);
 
 		int prop_size;
 		if (!var_sec.GetInt("size", prop_size))
 			prop_size = 4;
-		
+
 		int prop_element;
 		{
 			char element[8];
@@ -184,7 +184,7 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		"<enum>"
 		{
 			"type"	"int"
-			// "size"		"4" 
+			// "size"		"4"
 			// "element"	"0"
 			// "element"	"@my_var"	// element is ignored when "custom" is "resource"
 			// "custom"		"resource"
@@ -255,13 +255,13 @@ public Action ConfigEvent_SetProp(EventMap args, ConfigEventType_t event_type)
 		int prop_name_size;
 		if (!var_sec.GetInt("prop", prop_name_size))
 			prop_name_size = 48;
-		char[] prop_name = new char[prop_name_size]; 
+		char[] prop_name = new char[prop_name_size];
 		var_sec.Get("prop", prop_name, prop_name_size);
 
 		int prop_size;
 		if (!var_sec.GetInt("size", prop_size))
 			prop_size = 4;
-		
+
 		int prop_element;
 		{
 			char element[8];
@@ -387,7 +387,7 @@ public Action ConfigEvent_GetGameTime(EventMap args, ConfigEventType_t event_typ
 	{
 		float delta_time;
 		char[] delta_name = new char[delta_name_size];
-		delta.Get("name", delta_name, delta_name_size);
+		args.Get("delta", delta_name, delta_name_size);
 		if (delta_name[0] == '@')
 			ConfigSys.Params.GetValue(delta_name[1], delta_time);
 		else delta_time = StringToFloat(delta_name);

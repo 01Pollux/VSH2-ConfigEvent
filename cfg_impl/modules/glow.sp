@@ -10,9 +10,9 @@ public Action ConfigEvent_SetClientGlow(EventMap args, ConfigEventType_t event_t
     } */
 
     int calling_player_idx;
-	VSH2Player calling_player;
-	if (!args.GetTarget(calling_player_idx, calling_player))
-		return Plugin_Continue;
+    VSH2Player calling_player;
+    if (!args.GetTarget(calling_player_idx, calling_player))
+        return Plugin_Continue;
 
     float o_glowtime = calling_player.GetPropFloat("flGlowtime");
     float addtime; args.GetFloat("addtime", addtime);

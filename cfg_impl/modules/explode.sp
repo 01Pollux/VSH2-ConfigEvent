@@ -69,7 +69,7 @@ public Action ConfigEvent_DestroyEntity(EventMap args, ConfigEventType_t event_t
 	if (!args.GetTargetEnt(entity_target) || !IsValidEntity(entity_target) || GameRules_GetRoundState() == RoundState_Preround)
 		return Plugin_Continue;
 
-	DestroyEntity(entity_target);
+	RemoveEntity(entity_target);
 
 	return Plugin_Continue;
 }

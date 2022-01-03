@@ -14,7 +14,7 @@ public Action ConfigEvent_GiveRage(EventMap args, ConfigEventType_t event_type)
         return Plugin_Continue;
 
     int damage; args.GetInt("damage", damage);
-    VSH2Player(calling_player).GiveRage(damage);
+    calling_player.GiveRage(damage);
 
     return Plugin_Continue;
 }
