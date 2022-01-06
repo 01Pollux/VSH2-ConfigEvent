@@ -30,6 +30,21 @@
 
 			}
 		}
+		"downloads"
+		{
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_Download"
+
+				"sounds"
+				{
+					"<enum>"	"vsh_rewrite/stab01.mp3"
+					"<enum>"	"vsh_rewrite/stab02.mp3"
+					"<enum>"	"vsh_rewrite/stab03.mp3"
+					"<enum>"	"vsh_rewrite/stab04.mp3"
+				}
+			}
+		}
 	}
 	"weapons"
 	{
