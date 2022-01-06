@@ -3,7 +3,33 @@
 	// same as "weapons" with "*" params, except it doesnt limit to only the player and gets executed before "weapons"
 	"globals"
 	{
+		"reset_vsh2player"
+		{
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_AllocateParams"
 
+				"<enum>"
+				{
+					"name"	"ZERO"
+					"type"	"int"
+					"value"	"0"
+				}
+			}
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_SetProp"
+				"vsh2target"	"player"
+
+				"<enum>"
+				{
+					"custom"	"vsh2player"
+					"prop"	"iChainStab"
+					"value"	"ZERO"
+				}
+
+			}
+		}
 	}
 	"weapons"
 	{
@@ -897,6 +923,205 @@
 							"duration"	"3.0"
 						}
 					}
+				}
+			}
+		}
+		"225"	//Your Eternal Reward 永生的回报
+		{
+			"btd_stab"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+					"vsh2target"	"player"
+
+					"<enum>"
+					{
+						"name"	"cur_stabs"
+						"custom"	"vsh2player"
+						"prop"	"iChainStab"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"3"
+					"operators"	"10"
+					"skips"	"4"	//skip the four procedure (DO SOMETHING)
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"new_damage"
+						"value"	"{0} * 6 + 666"
+						"size"	"128"
+						"args"
+						{
+							"<enum>"	"f@damage"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"damage"
+						"from"	"@new_damage"
+						"turncate"	"true"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AllocateParams"
+
+					"<enum>"
+					{
+						"name"	"cur_stabs"
+						"type"	"int"
+						"value"	"0"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"0"
+					"operators"	"1"
+					"skips"	"2"	//skip the 2 procedure (DO NOTHING)
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_FormatParams"
+
+					"<enum>"
+					{
+						"name"	"cur_stabs_str"
+						"value"	"{0} + 1"
+						"size"	"8"
+						"args"
+						{
+							"<enum>"	"i@cur_stabs"
+						}
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_ParseForumla"
+
+					"<enum>"
+					{
+						"name"	"cur_stabs"
+						"from"	"@cur_stabs_str"
+						"turncate"	"true"
+					}
+				}
+				"<enum>"	//write the cur_stabs
+				{
+					"procedure"	"ConfigEvent_SetProp"
+					"vsh2target"	"player"
+
+					"<enum>"
+					{
+						"custom"	"vsh2player"
+						"prop"	"iChainStab"
+						"value"	"cur_stabs"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"0"
+					// cur_stabs <= 0
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//first stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab01.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"1"
+					// cur_stabs <= 1
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//second stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab02.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"2"
+					// cur_stabs <= 2
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//third stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab03.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"1"
+					// cur_stabs <= 3
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//forth stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab04.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
 				}
 			}
 		}
