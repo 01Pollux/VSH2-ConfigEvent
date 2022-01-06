@@ -453,7 +453,7 @@
 		//Heavy 机枪手
 		"159, 433"	//Dalokohs Bar 达勒克斯巧克力块 (Addammo primay when consume)
 		{
-			
+
 		}
 		"43"	//Killing Gloves of Boxing 杀戮拳击手套
 		{
@@ -757,7 +757,7 @@
 					"procedure"	"ConfigEvent_ViewRage"
 					"vsh2target"	"player"
 
-					""
+					"string"    "Boss Rage: %f"
 				}
 			}
 		}
