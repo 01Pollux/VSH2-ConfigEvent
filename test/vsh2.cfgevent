@@ -1039,6 +1039,90 @@
 						"value"	"cur_stabs"
 					}
 				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"0"
+					// cur_stabs <= 0
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//first stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab01.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"1"
+					// cur_stabs <= 1
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//second stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab02.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"2"
+					// cur_stabs <= 2
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//third stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab03.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"first"	"cur_stabs"
+					"csecond"	"1"
+					// cur_stabs <= 3
+					"operators"	"100011"	//less or equal
+					"skips"	"1"
+				}
+				"<enum>"	//forth stab
+				{
+					"procedure"	"ConfigEvent_EmitSound"
+					"vsh2target"	"player"
+
+					"flags"	"11"	//everyone
+					"distance"	"9999.0"	//whole map
+					"sound"	"vsh_rewrite/stab04.mp3"
+					"time"	"0.0"
+					"filter"	"all"
+					"type"	"generic"
+				}
 			}
 		}
 	}
