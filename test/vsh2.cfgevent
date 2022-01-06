@@ -453,13 +453,7 @@
 		//Heavy 机枪手
 		"159, 433"	//Dalokohs Bar 达勒克斯巧克力块 (Addammo primay when consume)
 		{
-			"think"
-			{
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_GetProp"
-				}
-			}
+			
 		}
 		"43"	//Killing Gloves of Boxing 杀戮拳击手套
 		{
