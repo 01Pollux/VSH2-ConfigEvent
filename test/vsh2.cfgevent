@@ -117,6 +117,7 @@
 		{
 			"falldamage"
 			{
+				// ConfigEvent_FormatParams(...);
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_FormatParams"
@@ -553,10 +554,10 @@
 				}
 				"<enum>"
 				{
-					"procedure"		"ConfigEvent_SetGlow"
+					"procedure"		"ConfigEvent_SetClientGlow"
 					"vsh2target"	"player"
 
-					"duration"		"6.0"
+					"addtime"		"6.0"
 				}
 			}
 		}
@@ -565,6 +566,20 @@
 		{
 			"btd_takedamage"
 			{
+				// ConfigEvent_GetProp(...);
+				"<enum>"
+				{
+					"procedure"  "ConfigEvent_GetProp"
+
+					"vsh2target"	"player"
+
+					"<enum>"
+					{
+						"name"	"iCurHealth"
+						"type"	"int"
+						"prop"  "m_iHealth"
+					}
+				}
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_GetProp"

@@ -83,7 +83,7 @@ public Action ConfigEvent_SetAttribWep(EventMap args, ConfigEventType_t event_ty
 	if (attributes_size)
 	{
 		int slot;
-		int weapon = args.GetInt("slot", slot) ? GetPlayerWeaponSlot(calling_player_idx, slot) : -1;
+		int weapon = args.GetInt("slot", slot) ? TF2_GetItemInSlot(calling_player_idx, slot) : -1;
 		if (weapon == -1)
 			return Plugin_Continue;
 
@@ -181,7 +181,7 @@ public Action ConfigEvent_RemoveAttribWep(EventMap args, ConfigEventType_t event
 	if (attributes_size)
 	{
 		int slot;
-		int weapon = args.GetInt("slot", slot) ? GetPlayerWeaponSlot(calling_player_idx, slot) : -1;
+		int weapon = args.GetInt("slot", slot) ? TF2_GetItemInSlot(calling_player_idx, slot) : -1;
 		if (weapon == -1)
 			return Plugin_Continue;
 		
