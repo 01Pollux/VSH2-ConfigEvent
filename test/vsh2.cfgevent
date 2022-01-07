@@ -38,16 +38,17 @@
 
 				"sounds"
 				{
-					"<enum>"	"vsh_rewrite/stab01.mp3"
-					"<enum>"	"vsh_rewrite/stab02.mp3"
-					"<enum>"	"vsh_rewrite/stab03.mp3"
-					"<enum>"	"vsh_rewrite/stab04.mp3"
+					"<enum>"	"sound/vsh_rewrite/stab01.mp3"
+					"<enum>"	"sound/vsh_rewrite/stab02.mp3"
+					"<enum>"	"sound/vsh_rewrite/stab03.mp3"
+					"<enum>"	"sound/vsh_rewrite/stab04.mp3"
 				}
 			}
 		}
 	}
 	"weapons"
 	{
+		//Scout 侦察兵
 		"773"	//Pretty Boy's Pocket Pistol 帅气男孩的袖珍手枪
 		{
 			"btd_takedamage"
@@ -84,7 +85,7 @@
 				}
 			}
 		}
-		“44”	//Sandman 睡魔
+		"44"	//Sandman 睡魔
 		{
 			"btd_takedamage"
 			{
@@ -96,7 +97,8 @@
 				}
 			}
 		}
-		"226"	//The Battalion's Backup 军队的支援 士兵
+		//Soldier 士兵
+		"226"	//The Battalion's Backup 军队的支援 
 		{
 			"banner_start"
 			{
@@ -154,26 +156,26 @@
 				}
 			}
 		}
-		"133"	//Gunboats 炮艇
+		"133"	//Gunboats 炮艇 
 		{
 			"falldamage"
 			{
-				// ConfigEvent_FormatParams(...);
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_FormatParams"
-
+					
 					"<enum>"
 					{
 						"name"	"damage_str"
 						"value"	"0.5 * {0}"
 						"size"	"128"
+						"args"
 						{
 							"<enum>"	"f@damage"
 						}
 					}
 				}
-				"<eunm>"
+				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ParseForumla"
 
@@ -208,7 +210,7 @@
 				}
 			}
 		}
-		//Pyro 火焰喷射器
+		//Pyro 火焰兵
 		"21, 208, 40, 215, 659, 741, 798, 807, 887, 896, 905, 914, 963, 972, 1146, 1178, 15005, 15017, 15030, 15034, 15049, 15054, 15066, 15067, 15068, 15089, 15090, 15115, 15141, 30474"
 		{
 			"btd_takedamage"
@@ -290,8 +292,8 @@
 				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
 					"vsh2target"	"player"
-
 					"add"	"true"
+					"conditions"
 					{
 						"<enum>"
 						{
@@ -312,6 +314,7 @@
 					"vsh2target"	"victim"
 
 					"add"	"true"
+					"conditions"
 					{
 						"<enum>"
 						{
@@ -341,53 +344,6 @@
 							"duration"	"-1.0"
 						}
 					}
-				}
-			}
-		}
-		"307"	//Ullapool Caber 木柄手榴弹
-		{
-			"prep_redteam"
-			{
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_SetProp"
-					//"vsh2target"	"player"
-					"enttarget"	"melee"
-					"<enum>"
-					{
-						"name"	"modelscale"
-						"type"	"float"
-						"prop"	"m_flModelScale"
-						"value"	"3.0"
-					}
-				}
-			}
-			"btd_takedamage"
-			{
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_Explode"
-					"vsh2target"	"player"
-					"damage"	"0.0"
-					"radius"	"0.0"
-					"particle"	"fluidSmokeExpl_ring"
-					"sound"
-					{
-						"<enum>"	"ambient/explosions/explode_1.wav"
-						"<enum>"	"ambient/explosions/explode_2.wav"
-						"<enum>"	"ambient/explosions/explode_3.wav"
-						"<enum>"	"ambient/explosions/explode_4.wav"
-						"<enum>"	"ambient/explosions/explode_5.wav"
-						"<enum>"	"ambient/explosions/explode_6.wav"
-						"<enum>"	"ambient/explosions/explode_7.wav"
-						"<enum>"	"ambient/explosions/explode_8.wav"
-						"<enum>"	"ambient/explosions/explode_9.wav"
-					}
-				}
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_ForceSuicide"
-					"vsh2target"	"player"
 				}
 			}
 		}
@@ -451,10 +407,6 @@
 			}
 		}
 		//Heavy 机枪手
-		"159, 433"	//Dalokohs Bar 达勒克斯巧克力块 (Addammo primay when consume)
-		{
-
-		}
 		"43"	//Killing Gloves of Boxing 杀戮拳击手套
 		{
 			"btd_takedamage"
@@ -463,6 +415,7 @@
 				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
 					"add"	"true"
+					"conditions"
 					{
 						"vsh2target"	"player"
 						"id"	"56"
@@ -542,7 +495,7 @@
 		}
 		"140, 1086, 30668"	//Wrangler 遥控手柄
 		{
-			"prep_redteam"
+			"think"
 			{
 				"<enum>"
 				{
@@ -554,7 +507,7 @@
 						"<enum>"
 						{
 							"id"	"78"
-							"duration"	"-1.0"
+							"duration"	"0.15"
 						}
 					}
 				}
@@ -647,7 +600,7 @@
 				}
 			}
 		}
-		"29, 211, 663, 796, 805, 885, 894, 903, 912, 961, 970, 15008, 15010, 15025, 15039, 15050, 15078, 15097, 15121, 15122, 15123, 15145, 15146"	//Stock Medigun
+		"29, 211, 663, 796, 805, 885, 894, 903, 912, 961, 970, 15008, 15010, 15025, 15039, 15050, 15078, 15097, 15121, 15122, 15123, 15145, 15146"	//Stock Medigun 原配医疗枪
 		{
 			"think"
 			{
@@ -822,10 +775,10 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_SetProp"
+					"vsh2target"	"player
 
 					"<enum>"
 					{
-						"vsh2target"
 						"type"	"float"
 						"size"	"6"
 						"prop"	"m_flRageMeter"
@@ -843,19 +796,18 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_AllocateParams"
+					
+					"<enum>"
 					{
-						"<enum>"
-						{
-							"name"	"attackdelay"
-							"type"	"bool"
-							"value"	"false"
-						}
-						"<enum>"
-						{
-							"name"	"upwardvel"
-							"type"	"float"
-							"value"	"450.0"
-						}
+						"name"	"attackdelay"
+						"type"	"bool"
+						"value"	"false"
+					}
+					"<enum>"
+					{
+						"name"	"upwardvel"
+						"type"	"float"
+						"value"	"450.0"
 					}
 				}
 				"<enum>"
@@ -909,6 +861,12 @@
 						"type"	"float"
 						"value"	"500.0"
 					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
 				}
 			}
 		}

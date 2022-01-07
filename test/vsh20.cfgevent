@@ -84,7 +84,7 @@
 				}
 			}
 		}
-		“44”	//Sandman 睡魔
+		"44"	//Sandman 睡魔
 		{
 			"btd_takedamage"
 			{
@@ -312,6 +312,7 @@
 					"vsh2target"	"victim"
 
 					"add"	"true"
+					"conditions"
 					{
 						"<enum>"
 						{
@@ -463,6 +464,7 @@
 				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
 					"add"	"true"
+					"conditions"
 					{
 						"vsh2target"	"player"
 						"id"	"56"
