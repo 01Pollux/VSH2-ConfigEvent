@@ -2,6 +2,8 @@ enum struct ConfigSys_t
 {
 	// ConfigWeaponEvent_t
 	ArrayList WeaponEvents[view_as<int>(CET_Count)];
+	// ConfigWeaponEvent_t
+	ArrayList AnyWeaponEvents[view_as<int>(CET_Count)];
 	// ConfigGlobalEvent_t
 	ArrayList GlobalEvents[view_as<int>(CET_Count)];
 	StringMap Params;
@@ -46,7 +48,7 @@ void ConfigEvent_Load()
 	ConfigMap weapons = cfg.GetSection("weapons");
 	if (weapons)
 		ConfigEvent_ParseWeapons(weapons);
-	
+
 	ConfigMap globals = cfg.GetSection("globals");
 	if (globals)
 		ConfigEvent_ParseGlobals(globals);
@@ -136,10 +138,6 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 					continue;
 				}
 
-				ArrayList cur_event = ConfigSys.WeaponEvents[type];
-				if (!cur_event)
-					ConfigSys.WeaponEvents[type] = cur_event = new ArrayList(sizeof(ConfigWeaponEvent_t));
-				
 				ConfigWeaponEvent_t event_info;
 				for (int event_info_i = event_sec.Size - 1; event_info_i >= 0; event_info_i--)
 				{
@@ -184,6 +182,19 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 						event_info.Arguments.SetInt("__ref_count__", 0);
 					}
 
+					ArrayList cur_event;
+					bool is_passive;
+					if (section.GetBool("<passive>", is_passive) && is_passive)
+					{
+						if (!(cur_event = ConfigSys.AnyWeaponEvents[type]))
+							ConfigSys.AnyWeaponEvents[type] = cur_event = new ArrayList(sizeof(ConfigWeaponEvent_t));
+					}
+					else
+					{
+						if (!(cur_event = ConfigSys.WeaponEvents[type]))
+							ConfigSys.WeaponEvents[type] = cur_event = new ArrayList(sizeof(ConfigWeaponEvent_t));
+					}
+
 					// Iterate through our weapon indexes "xx, yy" 'weapon_ids'
 					for (int weapon_i = 0; weapon_i < entries; weapon_i++)
 					{
@@ -200,8 +211,11 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 					event_info.Arguments.SetInt("__ref_count__", entries);
 				}
 
-				if (!cur_event.Length)
+				// delete the entire section if its empty, so we can just check if its not null before the execution
+				if (ConfigSys.WeaponEvents[type] && !ConfigSys.WeaponEvents[type].Length)
 					delete ConfigSys.WeaponEvents[type];
+				else if (ConfigSys.AnyWeaponEvents[type] && !ConfigSys.AnyWeaponEvents[type].Length)
+					delete ConfigSys.AnyWeaponEvents[type];
 			}
 			delete cur_weapon_iter;
 		}
@@ -282,7 +296,7 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 
 bool ConfigEvent_ShouldExecuteWeapons(ConfigEventType_t type)
 {
-	if (ConfigSys.WeaponEvents[type])
+	if (ConfigSys.WeaponEvents[type] || ConfigSys.AnyWeaponEvents[type])
 	{
 		ConfigSys.Params.Clear();
 		return true;
@@ -293,21 +307,93 @@ bool ConfigEvent_ShouldExecuteWeapons(ConfigEventType_t type)
 Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType_t type)
 {
 	ArrayList cur_event = ConfigSys.WeaponEvents[type];
-	ConfigWeaponEvent_t event_info;
+	Action highest_ret = Plugin_Continue;
+	if (cur_event)
+	{
+		// grab the weapon id to check if we have it to execute the event
+		int weapon = GetActiveWep(client);
+		if (weapon == -1)
+			return ConfigEvent_ExecutePassiveWeapons(player, client, type);
 
-	// grab the weapon id to check if we have it to execute the event
-	int weapon = GetActiveWep(client);
-	if (weapon == -1)
+		bool is_minion = player.bIsMinion;
+		int event_size = cur_event.Length;
+		ConfigWeaponEvent_t event_info;
+		
+		for (int i = 0; i < event_size; i++)
+		{
+			cur_event.GetArray(i, event_info);
+			if (event_info.ItemID != -1 && event_info.ItemID != weapon)
+				continue;
+
+			// Disallow minions from executing weapon's callbacks,
+			bool minion_can_execute;
+			if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || (!minion_can_execute && is_minion))
+				continue;
+
+			Call_StartFunction(event_info.Plugin, event_info.Procedure);
+			Call_PushCell(event_info.Arguments);
+			Call_PushCell(type);
+			Action ret;
+			Call_Finish(ret);
+			if (ret < view_as<Action>(Plugin_SkipN))
+			{
+				if (ret > highest_ret)
+				{
+					if ((highest_ret = ret) >= Plugin_Stop)
+						break;
+				}
+			}
+			else
+			{
+				int skip_delta = view_as<int>(ret) - Plugin_SkipN * 2;
+				i += skip_delta;
+				ClampValue(i, 0, event_size - 1);
+			}
+		}
+	}
+
+	Action ret = ConfigEvent_ExecutePassiveWeapons(player, client, type);
+	return ret > highest_ret ? ret : highest_ret;
+}
+
+static Action ConfigEvent_ExecutePassiveWeapons(VSH2Player player, int client, ConfigEventType_t type)
+{
+	ArrayList cur_event = ConfigSys.AnyWeaponEvents[type];
+	if (!cur_event)
 		return Plugin_Continue;
+
+	// grab the weapons id to check if we have it to execute the event
+	int weapons[TF2WeaponSlot_MaxWeapons];
+	for(int slot; slot < TF2WeaponSlot_MaxWeapons; slot++)
+	{
+		int weapon = GetPlayerWeaponSlot(client, slot);
+		weapons[slot] = weapon == -1 ? -1 : GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	}
 
 	Action highest_ret = Plugin_Continue;
 	bool is_minion = player.bIsMinion;
 	int event_size = cur_event.Length;
+	ConfigWeaponEvent_t event_info;
+	
 	for (int i = 0; i < event_size; i++)
 	{
 		cur_event.GetArray(i, event_info);
-		if (event_info.ItemID != -1 && event_info.ItemID != weapon)
-			continue;
+		if (event_info.ItemID != -1)
+		{
+			bool has_slot = false;
+
+			for (int slot = 0; slot < sizeof(weapons); slot++)
+			{
+				if (weapons[slot] == event_info.ItemID)
+				{
+					has_slot = true;
+					break;
+				}
+			}
+			
+			if (!has_slot)
+				continue;
+		}
 
 		// Disallow minions from executing weapon's callbacks,
 		bool minion_can_execute;
