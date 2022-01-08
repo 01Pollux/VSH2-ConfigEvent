@@ -99,7 +99,6 @@ public Action ConfigEvent_SummonZombie(EventMap args, ConfigEventType_t event_ty
 		ConfigMap section = info_section.GetIntSection(GetRandomInt(0, info_section_size));
 		VSH2Player player = players_list.Get(i);
 
-
 		player.SetPropAny("_cfgsys_slay_on_ownerdeath", slay);
 		player.SetPropAny("_cfgsys_minion_infosection", section);
 		player.SetPropAny("_cfgsys_minion_section", args);
@@ -130,8 +129,15 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 	int owner_index = vsh2_owner.index;
 	{
 		TFClassType class; infosection.GetInt("class", view_as<int>(class));
+
 		TF2_SetPlayerClass(client, class, .persistent = false);
-		minion.ForceTeamChange(GetClientTeam(owner_index));
+
+		SetEntProp(client, Prop_Send, "m_lifeState", 2);
+		ChangeClientTeam(client, GetClientTeam(owner_index));
+		SetEntProp(client, Prop_Send, "m_lifeState", 0);
+		PrintToServer("Respawn player %N", client);
+
+		TF2_RespawnPlayer(client);
 	}
 
 	TF2_RemoveAllWeapons(client);

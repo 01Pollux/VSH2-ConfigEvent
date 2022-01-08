@@ -285,7 +285,7 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 			ConfigMap event_sec = cur_global.GetIntSection(cur_global_i);
 			if (!event_sec)
 				continue;
-			
+
 			int function_name_size = event_sec.GetSize("procedure");
 			char[] function_name = new char[function_name_size];
 			event_sec.Get("procedure", function_name, function_name_size);
@@ -304,7 +304,7 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 				}
 			}
 
-			if (!(event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name))))
+			if ((event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name))) == INVALID_FUNCTION)
 			{
 				LogError("[VSH2 CfgEvent] Function doesn't exists \"globals::%s::%s\".", event_key, function_name);
 				continue;
