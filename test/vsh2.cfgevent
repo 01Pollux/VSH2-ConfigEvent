@@ -56,10 +56,11 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_GetProp"
+					"vsh2target"	"player"
 
 					"<enum>"
 					{
-						"vsh2target"	"player"
+
 						"name"	"iMyHealth"
 						"type"	"int"
 						"size"	"4"
