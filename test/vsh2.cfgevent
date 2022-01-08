@@ -27,7 +27,6 @@
 					"prop"	"iChainStab"
 					"value"	"ZERO"
 				}
-
 			}
 		}
 		"downloads"
@@ -56,10 +55,11 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_GetProp"
+					"vsh2target"	"player"
 
 					"<enum>"
 					{
-						"vsh2target"	"player"
+
 						"name"	"iMyHealth"
 						"type"	"int"
 						"size"	"4"
@@ -78,7 +78,7 @@
 						"<enum>"
 						{
 							"token"	"A"
-							"value"	"@iMyHealth"
+							"value"	"i@iMyHealth"
 						}
 					}
 					"clamp"		 "199"
@@ -221,10 +221,10 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_GetProp"
+					"vsh2target"	"player"
 
 					"<enum>"
 					{
-						"vsh2target"	"player"
 						"name"	"iMyHealth"
 						"type"	"int"
 						"size"	"4"
@@ -243,7 +243,7 @@
 						"<enum>"
 						{
 							"token"	"A"
-							"value"	"@iMyHealth"
+							"value"	"i@iMyHealth"
 						}
 					}
 					"clamp"		 "280"
@@ -257,10 +257,10 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_GetProp"
+					"vsh2target"	"player"
 
 					"<enum>"
 					{
-						"vsh2target"	"player"
 						"name"	"iMyHealth"
 						"type"	"int"
 						"size"	"4"
@@ -279,7 +279,7 @@
 						"<enum>"
 						{
 							"token"	"A"
-							"value"	"@iMyHealth"
+							"value"	"i@iMyHealth"
 						}
 					}
 					"clamp"		 "280"
@@ -437,10 +437,10 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_GetProp"
+					"vsh2target"	"player"
 
 					"<enum>"
 					{
-						"vsh2target"	"player"
 						"name"	"iMyHealth"
 						"type"	"int"
 						"size"	"4"
@@ -458,7 +458,7 @@
 						"<enum>"
 						{
 							"token" "A"
-							"value"	"@iMyHealth"
+							"value"	"i@iMyHealth"
 						}
 					}
 					"clamp"	"500"
@@ -560,27 +560,13 @@
 		{
 			"btd_takedamage"
 			{
-				// ConfigEvent_GetProp(...);
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_GetProp"
-
+					"procedure"	"ConfigEvent_GetProp"
 					"vsh2target"	"player"
 
 					"<enum>"
 					{
-						"name"	"iCurHealth"
-						"type"	"int"
-						"prop"  "m_iHealth"
-					}
-				}
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_GetProp"
-
-					"<enum>"
-					{
-						"vsh2target"	"player"
 						"name"	"iMyHealth"
 						"type"	"int"
 						"size"	"4"
@@ -599,7 +585,7 @@
 						"<enum>"
 						{
 							"token"	"A"
-							"value"	"@iMyHealth"
+							"value"	"i@iMyHealth"
 						}
 					}
 					"clamp"		 "270"
