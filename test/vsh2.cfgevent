@@ -98,13 +98,14 @@
 			}
 		}
 		//Soldier 士兵
-		"226"	//The Battalion's Backup 军队的支援 
+		"226"	//The Battalion's Backup 军队的支援
 		{
 			"banner_start"
 			{
 				"<enum>"
 				{
 					"procedure"	 "ConfigEvent_SummonZombie"
+					"<passive>"	"true"
 					"minion can execute"	"false"
 
 					"vsh2target"	 "owner"
@@ -142,10 +143,10 @@
 							"health"	"125.0"
 							"model"	 "models/player/scout.mdl"
 
-							"text"  "You are now %N's minion! Attack the other team."
+							"text"  "你现在是 %N 召唤的僵尸！攻击敌人！"
 
 							"classname"  "tf_weapon_bat"
-							"attributes" "68 ; -1"
+							"attributes" "68 ; -1 ; 1 ; 0.5"
 							"index"	  "190"
 							"ammo"		"-9"
 							"clip"		"-9"
@@ -156,14 +157,15 @@
 				}
 			}
 		}
-		"133"	//Gunboats 炮艇 
+		"133"	//Gunboats 炮艇
 		{
 			"falldamage"
 			{
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_FormatParams"
-					
+					"<passive>"	"true"
+
 					"<enum>"
 					{
 						"name"	"damage_str"
@@ -178,6 +180,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ParseForumla"
+					"<passive>"	"true"
 
 					"<enum>"
 					{
@@ -291,6 +294,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"<passive>"	"true"
 					"vsh2target"	"player"
 					"add"	"true"
 					"conditions"
@@ -311,6 +315,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
+					"<passive>"	"true"
 					"vsh2target"	"victim"
 
 					"add"	"true"
@@ -332,6 +337,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_SetAttribWep"
+					"<passive>"	"true"
 					"vsh2target"	"player"
 
 					"attributes"
@@ -545,7 +551,7 @@
 					"procedure"		"ConfigEvent_SetClientGlow"
 					"vsh2target"	"player"
 
-					"addtime"		"6.0"
+					"addtime"		"10.0"
 				}
 			}
 		}
@@ -708,6 +714,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ViewRage"
+					"<passive>"	"true"
 					"vsh2target"	"player"
 
 					"string"    "Boss Rage: %f"
@@ -796,7 +803,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_AllocateParams"
-					
+
 					"<enum>"
 					{
 						"name"	"attackdelay"
