@@ -23,12 +23,12 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 			"<enum>"
 			{
 				"token"	"B"
-				"value"	"@myHealth"
+				"value"	"i@myHealth"
 			}
 			"<enum>"
 			{
 				"token"	"B"
-				"value"	"@myMaxHealth"
+				"value"	"i@myMaxHealth"
 			}
 		}
 		// <=0.0 to clamp it to current max health
@@ -45,8 +45,8 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 	ConfigMap health_sec = args.GetSection("health");
 	if (health_sec)
 	{
-		int token_size = health_sec.Size - 1;
-		char[] tokens = new char[token_size];
+		int token_size = health_sec.Size;
+		char[] tokens = new char[token_size + 1];
 		float[] values = new float[token_size];
 		int written_tokens;
 
@@ -56,14 +56,29 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 			if (!sec)
 				break;
 			
-			sec.Get("token", tokens[written_tokens], 1);
+			char token[2];
+			sec.Get("token", token, sizeof(token));
+			tokens[written_tokens] = token[0];
 
 			int value_size = sec.GetSize("value");
 			char[] value_str = new char[value_size];
 			sec.Get("value", value_str, value_size);
-			if (value_str[0] == '@')
-				ConfigSys.Params.GetValue(value_str[1], view_as<float>(values[written_tokens]));
+
+			if (value_str[1] == '@')
+			{
+				switch (value_str[0])
+				{
+				case 'i': 
+				{
+					int tmp;
+					ConfigSys.Params.GetValue(value_str[2], tmp);
+					values[written_tokens] = float(tmp);
+				}
+				case 'f': ConfigSys.Params.GetValue(value_str[2], values[written_tokens]);
+				}
+			}
 			else values[written_tokens] = StringToFloat(value_str);
+
 			++written_tokens;
 		}
 
@@ -75,8 +90,13 @@ public Action ConfigEvent_ManageSelfHeal(EventMap args, ConfigEventType_t event_
 
 			int new_health = RoundToFloor(ParseFormulaEx(health_str, tokens, values, written_tokens));
 			int max_health;
-			if (args.GetInt("clamp", max_health) && new_health > max_health)
-				new_health = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", .element = calling_player_idx);
+			if (args.GetInt("clamp", max_health))
+			{
+				if (max_health < -1)
+					new_health = GetEntProp(GetPlayerResourceEntity(), Prop_Send, "m_iMaxHealth", .element = calling_player_idx);
+				if (new_health > max_health)
+					new_health = max_health;
+			}
 
 			SetEntProp(calling_player_idx, Prop_Send, "m_iHealth", new_health);
 		}
