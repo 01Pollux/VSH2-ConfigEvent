@@ -82,6 +82,29 @@ void ConfigEvent_Unload()
 		}
 	}
 	{
+		ConfigWeaponEvent_t event_info;
+		for (int i = 0; i < sizeof(ConfigSys.AnyWeaponEvents); i++)
+		{
+			ArrayList cur_event = ConfigSys.AnyWeaponEvents[i];
+			if (cur_event)
+			{
+				ConfigSys.AnyWeaponEvents[i] = null;
+				for (int j = cur_event.Length - 1; j >= 0; j--)
+				{
+					cur_event.GetArray(j, event_info);
+
+					int ref_count;
+					event_info.Arguments.GetInt("__ref_count__", ref_count);
+					if (!--ref_count)
+						DeleteCfg(event_info.Arguments);
+					else
+						event_info.Arguments.SetInt("__ref_count__", ref_count);
+				}
+				delete cur_event;
+			}
+		}
+	}
+	{
 		ConfigGlobalEvent_t event_info;
 		for (int i = 0; i < sizeof(ConfigSys.GlobalEvents); i++)
 		{
