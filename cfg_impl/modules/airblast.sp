@@ -34,6 +34,9 @@ public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
   args.GetInt("damage", g_iTagsAirblastRequirement[calling_player_idx]);
   args.GetInt("start", g_iTagsAirblastDamage[calling_player_idx]);
 
+  int primary = calling_player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
+  if (primary == INVALID_ENT_REFERENCE)
+    return Plugin_Continue;
   if (g_iTagsAirblastRequirement[calling_player_idx] > g_iTagsAirblastDamage[calling_player_idx])
     SetEntPropFloat(calling_player_idx, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime()); //3 years
   else
