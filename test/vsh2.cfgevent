@@ -249,6 +249,31 @@
 					"clamp"		 "280"
 				}
 			}
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AirBlast"
+					"target"	"player"
+					"damage"	"400"
+					"start"	"400"
+				}
+			}
+			"playerhud"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AirBlast_HUD"
+					"vsh2target"	"player"
+					"string"	"Airblast: %f%"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_WriteReturn"
+
+					"return"	"changed"
+				}
+			}
 		}
 		"594"	//Phlogistinator 燃素喷射器
 		{
@@ -866,7 +891,7 @@
 		//Spy 间谍
 		"61, 1006"	//Ambassador 大使手枪
 		{
-			"btd_ambasssador"
+			"btd_ambassador"
 			{
 				"<enum>"
 				{
@@ -888,10 +913,7 @@
 		}
 		"225"	//Your Eternal Reward 永生的回报
 		{
-			"btd_stab"
-			{
-
-			}
+			
 		}
 	}
 }
