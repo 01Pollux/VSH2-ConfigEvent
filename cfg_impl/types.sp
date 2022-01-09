@@ -116,7 +116,7 @@ ConfigEventType_t ConfigEvent_NameToType(const char[] name)
 		"btd_marketgarden",
 		"btd_powerjack",
 		"btd_katana",
-		"btd_ambasssador",
+		"btd_ambassador",
 		"btd_diamondback_manmelter",
 		"btd_holidaypunch",
 		"btd_trigger_hurt",

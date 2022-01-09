@@ -18,6 +18,7 @@ void ConfigEvent_LoadVSH2Hooks()
 	VSH2_HOOK(OnBossJarated);
 	VSH2_HOOK(OnBossPickUpItem);
 	VSH2_HOOK(OnVariablesReset);
+	VSH2_HOOK(OnRoundStart);
 	VSH2_HOOK(OnUberDeployed);
 	VSH2_HOOK(OnUberLoop);
 	VSH2_HOOK(OnLastPlayer);
@@ -82,6 +83,7 @@ void ConfigEvent_UnloadVSH2Hooks()
 	VSH2_UNHOOK(OnBossJarated);
 	VSH2_UNHOOK(OnBossPickUpItem);
 	VSH2_UNHOOK(OnVariablesReset);
+	VSH2_UNHOOK(OnRoundStart);
 	VSH2_UNHOOK(OnUberDeployed);
 	VSH2_UNHOOK(OnUberLoop);
 	VSH2_UNHOOK(OnLastPlayer);
@@ -298,6 +300,26 @@ void ConfigEvent_OnVariablesReset(const VSH2Player player)
 	{
 		ConfigSys.Params.SetValue("player", player);
 		ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+	}
+}
+
+void ConfigEvent_OnRoundStart(const VSH2Player[] bosses, const int boss_count, const VSH2Player[] red_players, const int red_count)
+{
+	for (int i = 0; i < boss_count; i++)
+	{
+		if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
+		{
+			ConfigSys.Params.SetValue("player", bosses[i]);
+			ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+		}
+	}
+	for (int i = 0; i < red_count; i++)
+	{
+		if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
+		{
+			ConfigSys.Params.SetValue("player", red_players[i]);
+			ConfigEvent_ExecuteGlobals(CET_ResetVSH2Vars);
+		}
 	}
 }
 

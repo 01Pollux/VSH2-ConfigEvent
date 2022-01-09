@@ -31,22 +31,44 @@ Action ConfigEvent_OnBossTakeDamage(
 			{
 				ConfigMap section = view_as<ConfigMap>(player.GetPropAny("_cfgsys_minion_section"));
 				float steal_hp; section.GetFloat("vampire", steal_hp);
+				float reduct; section.GetFloat("weak", reduct);
 				if (steal_hp)
-					damage /= steal_hp;
+					player.iHealth = RoundToCeil(damage / steal_hp);
+				if (reduct)
+					damage /= reduct;
 			}
-			if (ConfigEvent_ShouldExecuteGlobals(CET_BTD_OnTakeDamage))
+			if (ConfigEvent_ShouldExecuteGlobals(CET_BTD_OnStabbed))
 			{
-				ConfigSys.Params.SetValue("player", player);
 				ConfigSys.Params.SetValue("victim", victim);
+				ConfigSys.Params.SetValue("player", attacker);
 				ConfigSys.Params.SetValue("damage", damage);
-				ConfigEvent_ExecuteGlobals(CET_BTD_OnTakeDamage);
+				Action ret = ConfigEvent_ExecuteGlobals(CET_BTD_OnStabbed);
+				switch (ret)
+				{
+					case Plugin_Continue: { }
+					default:
+					{
+						ConfigSys.Params.GetValue("damage", damage);
+						if (ret >= Plugin_Handled)
+							return ret;
+					}
+				}
 			}
-			if (ConfigEvent_ShouldExecuteWeapons(CET_BTD_OnTakeDamage))
+			if (ConfigEvent_ShouldExecuteWeapons(CET_BTD_OnStabbed))
 			{
-				ConfigSys.Params.SetValue("player", player);
 				ConfigSys.Params.SetValue("victim", victim);
+				ConfigSys.Params.SetValue("player", attacker);
 				ConfigSys.Params.SetValue("damage", damage);
-				ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnTakeDamage);
+				Action ret = ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnStabbed);
+				switch (ret)
+				{
+					case Plugin_Continue: { }
+					default:
+					{
+						ConfigSys.Params.GetValue("damage", damage);
+						return ret;
+					}
+				}
 			}
 		}
 	}

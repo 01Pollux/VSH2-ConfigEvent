@@ -10,7 +10,8 @@ public Action ConfigEvent_SummonZombie(EventMap args, ConfigEventType_t event_ty
 		"vsh2target"	 "player"
 		"max players"	 "3"
 
-		"vampire"		 "10.0"	// steal 5.0% of victim's health on attack
+		"vampire"		 "10.0"	// steal 1/10 of victim's health on attack
+		"weak"			 "3.0"	// reduce  damage by 1/3
 
 		"slay"			"true"  // slay when the owner dies
 		"no boss"		"true"  // dont summon as minion if the player was previously a boss
