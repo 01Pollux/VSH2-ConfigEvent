@@ -34,13 +34,14 @@ public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
   args.GetInt("damage", g_iTagsAirblastRequirement[calling_player_idx]);
   args.GetInt("start", g_iTagsAirblastDamage[calling_player_idx]);
 
-  int primary = calling_player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
+  int primary = TF2_GetItemInSlot(calling_player_idx, TF2WeaponSlot_Primary);
   if (primary == INVALID_ENT_REFERENCE)
     return Plugin_Continue;
+
   if (g_iTagsAirblastRequirement[calling_player_idx] > g_iTagsAirblastDamage[calling_player_idx])
-    SetEntPropFloat(calling_player_idx, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime()); //3 years
+    SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime()); //3 years
   else
-    SetEntPropFloat(calling_player_idx, Prop_Send, "m_flNextSecondaryAttack", 0.0);
+    SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 0.0);
 
   g_bIsAirBlastLimit[calling_player_idx] = true;
 
@@ -52,11 +53,12 @@ void ConfigEvent_AirBlast_OnTakeDamage(VSH2Player player, float damage, int weap
   if (!g_bIsAirBlastLimit[player.index])
     return;
 
-  int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
+  int attacker = player.index;
+  int primary = TF2_GetItemInSlot(attacker, TF2WeaponSlot_Primary);
   if (primary == INVALID_ENT_REFERENCE)
     return;
 
-  int attacker = player.index;
+
   if (g_iTagsAirblastRequirement[attacker] > 0 && primary == weapon)
   {
     bool full = (g_iTagsAirblastDamage[attacker] >= g_iTagsAirblastRequirement[attacker]);
@@ -83,10 +85,10 @@ void ConfigEvent_AirBlast_Think(VSH2Player player)
   int client = player.index;
   if (g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] >= g_iTagsAirblastRequirement[client])
   {
-    int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary); //Detect if airblast is used, and reset if so
+    int primary = TF2_GetItemInSlot(client, TF2WeaponSlot_Primary); //Detect if airblast is used, and reset if so
     if (primary > MaxClients)
     {
-      FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeapostate"));
+      FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeaponState"));
       if (state != g_nTagsAirblastState[client] && state == FlamethrowerState_Airblast)
       {
         g_iTagsAirblastDamage[client] = 0;
@@ -99,7 +101,7 @@ void ConfigEvent_AirBlast_Think(VSH2Player player)
   int buttons = GetClientButtons(client); //Prevent clients holding m2 while airblast in cooldown
   if (buttons & IN_ATTACK2 && g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] < g_iTagsAirblastRequirement[client])
   {
-    int primary = player.GetWeaponSlotIndex(TF2WeaponSlot_Primary);
+    int primary = TF2_GetItemInSlot(client, TF2WeaponSlot_Primary);
     int activewep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
     if (activewep > MaxClients && primary == activewep)
       buttons &= ~IN_ATTACK2;
