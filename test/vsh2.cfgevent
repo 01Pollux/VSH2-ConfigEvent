@@ -105,7 +105,7 @@
 				"<enum>"
 				{
 					"procedure"	 "ConfigEvent_SummonZombie"
-					"<passive>"	"true"
+					"<passive>"	"false"
 					"minion can execute"	"false"
 
 					"vsh2target"	 "owner"
