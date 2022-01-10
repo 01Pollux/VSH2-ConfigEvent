@@ -249,27 +249,19 @@
 					"clamp"		 "280"
 				}
 			}
-			"prep_redteam"
-			{
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_AirBlast"
-					"target"	"player"
-					"damage"	"400"
-					"start"	"400"
-				}
-			}
 			"playerhud"
 			{
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_AirBlast_HUD"
+					"<passive>"	"true"
 					"vsh2target"	"player"
 					"string"	"Airblast: %f%"
 				}
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_WriteReturn"
+					"<passive>"	"true"
 
 					"return"	"changed"
 				}
@@ -913,7 +905,7 @@
 		}
 		"225"	//Your Eternal Reward 永生的回报
 		{
-			
+
 		}
 	}
 }
