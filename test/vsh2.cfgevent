@@ -28,6 +28,11 @@
 					"value"	"ZERO"
 				}
 			}
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_AirBlast_Reset"
+				"vsh2target"	"player"
+			}
 		}
 		"downloads"
 		{
@@ -249,6 +254,24 @@
 					"clamp"		 "280"
 				}
 			}
+			"prep_redteam"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AirBlast"
+					"vsh2target"	"player"
+
+					"cooldown"	"6.0"
+				}
+			}
+			"think"
+			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_AirBlast_Think"
+					"vsh2target"	"player"
+				}
+			}
 			"playerhud"
 			{
 				"<enum>"
@@ -256,14 +279,8 @@
 					"procedure"	"ConfigEvent_AirBlast_HUD"
 					"<passive>"	"true"
 					"vsh2target"	"player"
-					"string"	"Airblast: %f%"
-				}
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_WriteReturn"
-					"<passive>"	"true"
 
-					"return"	"changed"
+					"string"	" | Airblast: %f second"
 				}
 			}
 		}
