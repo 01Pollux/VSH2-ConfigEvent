@@ -21,35 +21,38 @@ In 'globals' section of the config file:
 In 'weapons' section of the config file:
 "weapons"
 {
-  "prep_redteam"
+  "21"  //Flame Thrower
   {
-    "<enum>"
+    "prep_redteam"
     {
-      "procedure" "ConfigEvent_AirBlast"  //set the airblast cooldown of the player
-      "vsh2target"  "player"
+      "<enum>"
+      {
+        "procedure" "ConfigEvent_AirBlast"  //set the airblast cooldown of the player
+        "vsh2target"  "player"
 
-      "cooldown"  "6.0"
+        "cooldown"  "6.0"
+      }
     }
-  }
-  "think"
-  {
-    "<enum>"
+    "think"
     {
-      "procedure" "ConfigEvent_AirBlast_Think"  //Detect airblast and fix visual bug
-      "vsh2target"  "player"
+      "<enum>"
+      {
+        "procedure" "ConfigEvent_AirBlast_Think"  //Detect airblast and fix visual bug
+        "vsh2target"  "player"
+      }
     }
-  }
-  "playerhud"
-  {
-    "<enum>"
+    "playerhud"
     {
-      "procedure" "ConfigEvent_AirBlast_HUD"  //show the cooldown in hud
-      "vsh2target"  "player"
-      "<passive>" "true"  //better show the hud all the time
+      "<enum>"
+      {
+        "procedure" "ConfigEvent_AirBlast_HUD"  //show the cooldown in hud
+        "vsh2target"  "player"
+        "<passive>" "true"  //better show the hud all the time
 
-      "string"  "Airblast cooldown: %f second"
+        "string"  " | Airblast cooldown: %f second"
+      }
+      //no need to write Plugin_Changed with another procedure. it's already done in the ConfigEvent_AirBlast_HUD
     }
-    //no need to write Plugin_Changed with another procedure. it's already done in the ConfigEvent_AirBlast_HUD
   }
 } */
 
@@ -91,7 +94,7 @@ public Action ConfigEvent_AirBlast_Think(EventMap args, ConfigEventType_t event_
     int primary = TF2_GetItemInSlot(calling_player_idx, TFWeaponSlot_Primary);
     if (primary > MaxClients)
     {
-      FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeapoState"));
+      FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeaponState"));
       if (state != g_nTagsAirblastState[calling_player_idx] && state == FlamethrowerState_Airblast)
       {
         g_flTagsAirblastLastUsed[calling_player_idx] = GetGameTime();	//Set cooldown
