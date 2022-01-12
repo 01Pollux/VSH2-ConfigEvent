@@ -26,7 +26,6 @@ Action ConfigEvent_OnBossTakeDamage(
 		VSH2Player player = VSH2Player(attacker);	//player = attacker
 		if (player != victim)	//not a self damage
 		{
-			ConfigEvent_AirBlast_OnTakeDamage(player, damage, weapon);
 			if (player.GetPropAny("bIsZombie"))
 			{
 				ConfigMap section = view_as<ConfigMap>(player.GetPropAny("_cfgsys_minion_section"));
@@ -37,12 +36,12 @@ Action ConfigEvent_OnBossTakeDamage(
 				if (reduct)
 					damage /= reduct;
 			}
-			if (ConfigEvent_ShouldExecuteGlobals(CET_BTD_OnStabbed))
+			if (ConfigEvent_ShouldExecuteGlobals(CET_BTD_OnTakeDamage))
 			{
 				ConfigSys.Params.SetValue("victim", victim);
 				ConfigSys.Params.SetValue("player", attacker);
 				ConfigSys.Params.SetValue("damage", damage);
-				Action ret = ConfigEvent_ExecuteGlobals(CET_BTD_OnStabbed);
+				Action ret = ConfigEvent_ExecuteGlobals(CET_BTD_OnTakeDamage);
 				switch (ret)
 				{
 					case Plugin_Continue: { }
@@ -54,12 +53,12 @@ Action ConfigEvent_OnBossTakeDamage(
 					}
 				}
 			}
-			if (ConfigEvent_ShouldExecuteWeapons(CET_BTD_OnStabbed))
+			if (ConfigEvent_ShouldExecuteWeapons(CET_BTD_OnTakeDamage))
 			{
 				ConfigSys.Params.SetValue("victim", victim);
 				ConfigSys.Params.SetValue("player", attacker);
 				ConfigSys.Params.SetValue("damage", damage);
-				Action ret = ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnStabbed);
+				Action ret = ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnTakeDamage);
 				switch (ret)
 				{
 					case Plugin_Continue: { }
