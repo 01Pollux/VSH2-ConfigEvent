@@ -211,7 +211,7 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 
 					ArrayList cur_event;
 					bool is_passive;
-					if (section.GetBool("<passive>", is_passive) && is_passive)
+					if (section.GetBool("<passive>", is_passive, false) && is_passive)
 					{
 						if (!(cur_event = ConfigSys.AnyWeaponEvents[type]))
 							ConfigSys.AnyWeaponEvents[type] = cur_event = new ArrayList(sizeof(ConfigWeaponEvent_t));
