@@ -294,7 +294,7 @@ void ConfigEvent_OnVariablesReset(const VSH2Player player)
 	// ./cfg_impl/modules/zombie.sp
 	player.SetPropAny("bIsZombie", false);
 	//./cfg_impl/modules/airblast.sp
-	//player.SetPropAny("bIsAirBlastLimited", false);
+	player.SetPropAny("bIsAirBlastLimited", false);
 
 	if (ConfigEvent_ShouldExecuteGlobals(CET_ResetVSH2Vars))
 	{
@@ -445,6 +445,7 @@ void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
 		return;
 
 	ConfigEvent_Zombie_Think(player, player_index);
+	ConfigEvent_AirBlast_Think(player);
 	if (ConfigEvent_ShouldExecuteGlobals(CET_RedPlayerThink))
 	{
 		ConfigSys.Params.SetValue("player", player);

@@ -119,7 +119,7 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	int weapon = TF2_GetItemInSlot(calling_player_idx, slot);
 	if (IsValidEdict(weapon))
 	{
-		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", clip);
+		SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
 
 		if (duration >= 0.0)
 		{
@@ -145,7 +145,7 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 		if (cur_energy > max)
 			cur_energy = max;
 
-		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", cur_energy);
+		SetEntProp(weapon, Prop_Send, "m_flEnergy", cur_energy);
 	}
 
 	delete data;

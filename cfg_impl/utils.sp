@@ -230,11 +230,11 @@ stock void ClampValue(any& val, const any min, const any max)
 stock int TF2_GetItemInSlot(int client, int slot)
 {
 	int weapon = GetPlayerWeaponSlot(client, slot);
-	if (!IsValidEdict(weapon))
+	if (!IsValidEntity(weapon))
 	{
 		// If weapon not found in slot, check if it a wearable
 		weapon = SDKCall(SDKGetEquippedWearable, client, slot);
-		if (!IsValidEdict(weapon))
+		if (!IsValidEntity(weapon))
 			return -1;
 	}
 
