@@ -1,27 +1,57 @@
-static int g_iTagsAirblastRequirement[MAXPLAYERS+1];
-static int g_iTagsAirblastDamage[MAXPLAYERS+1];
-static bool g_bIsAirBlastLimit[MAXPLAYERS+1];
+//static bool g_bIsAirBlastLimit[MAXPLAYERS+1];
 static FlamethrowerState g_nTagsAirblastState[MAXPLAYERS+1];
 #define SOUND_METERFULL "player/recharged.wav"
+static float g_flTagsAirblastCooldown[MAXPLAYERS+1];
+static float g_flTagsAirblastLastUsed[MAXPLAYERS+1];
 
-/*
-"<enum>"
+/* --FullExample of Airblast Module--
+It only works with pyro. So try not to use it on other classes.
+In 'globals' section of the config file:
+"globals"
 {
-  // limit pyro's airblast until it deals certain damage (use this only when round begins/player spawns. like "prep_redteam")
-  "procedure"  "ConfigEvent_AirBlast"
-
-  // depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
-  // 'target' will assume the 'player' is an entity index
-  // while 'vsh2target' will assume the 'player' is a client userid
-  "vsh2target"	"player"
-  //"target"		"player"
-
-  //damage required to recharge airblast
-  "damage"  "400"
-  //charged when add
-  "start" "400"
+  "reset_vsh2player"
+  {
+    "<enum>"
+    {
+      "procedure" "ConfigEvent_AirBlast_Reset"  //reset the airblast cooldown of the player
+      "vsh2target"  "player"
+    }
+  }
 }
-*/
+In 'weapons' section of the config file:
+"weapons"
+{
+  "prep_redteam"
+  {
+    "<enum>"
+    {
+      "procedure" "ConfigEvent_AirBlast"  //set the airblast cooldown of the player
+      "vsh2target"  "player"
+
+      "cooldown"  "6.0"
+    }
+  }
+  "think"
+  {
+    "<enum>"
+    {
+      "procedure" "ConfigEvent_AirBlast_Think"  //Detect airblast and fix visual bug
+      "vsh2target"  "player"
+    }
+  }
+  "playerhud"
+  {
+    "<enum>"
+    {
+      "procedure" "ConfigEvent_AirBlast_HUD"  //show the cooldown in hud
+      "vsh2target"  "player"
+      "<passive>" "true"  //better show the hud all the time
+
+      "string"  "Airblast cooldown: %f second"
+    }
+    //no need to write Plugin_Changed with another procedure. it's already done in the ConfigEvent_AirBlast_HUD
+  }
+} */
 
 public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
 {
@@ -30,114 +60,74 @@ public Action ConfigEvent_AirBlast(EventMap args, ConfigEventType_t event_type)
   if (!args.GetTarget(calling_player_idx, calling_player))
     return Plugin_Continue;
 
-  PrecacheSound(SOUND_METERFULL);
-  args.GetInt("damage", g_iTagsAirblastRequirement[calling_player_idx]);
-  args.GetInt("start", g_iTagsAirblastDamage[calling_player_idx]);
-
-  int primary = TF2_GetItemInSlot(calling_player_idx, TF2WeaponSlot_Primary);
-  if (primary == INVALID_ENT_REFERENCE)
-    return Plugin_Continue;
-
-  if (g_iTagsAirblastRequirement[calling_player_idx] > g_iTagsAirblastDamage[calling_player_idx])
-    SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime()); //3 years
-  else
-    SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 0.0);
-
-  g_bIsAirBlastLimit[calling_player_idx] = true;
+  args.GetFloat("cooldown", g_flTagsAirblastCooldown[calling_player_idx]);
 
   return Plugin_Continue;
 }
 
-void ConfigEvent_AirBlast_OnTakeDamage(VSH2Player player, float damage, int weapon)
+public Action ConfigEvent_AirBlast_Reset(EventMap args, ConfigEventType_t event_type)
 {
-  if (!g_bIsAirBlastLimit[player.index])
-    return;
+  int calling_player_idx;
+  VSH2Player calling_player;
+  if (!args.GetTarget(calling_player_idx, calling_player))
+    return Plugin_Continue;
 
-  int attacker = player.index;
-  int primary = TF2_GetItemInSlot(attacker, TF2WeaponSlot_Primary);
-  if (primary == INVALID_ENT_REFERENCE)
-    return;
+  g_flTagsAirblastCooldown[calling_player_idx] = 0.0;
+  g_flTagsAirblastLastUsed[calling_player_idx] = 0.0;
 
-
-  if (g_iTagsAirblastRequirement[attacker] > 0 && primary == weapon)
-  {
-    bool full = (g_iTagsAirblastDamage[attacker] >= g_iTagsAirblastRequirement[attacker]);
-    g_iTagsAirblastDamage[attacker] = g_iTagsAirblastRequirement[attacker];
-    g_iTagsAirblastDamage[attacker] += RoundToNearest(damage);
-
-    if (g_iTagsAirblastDamage[attacker] >= g_iTagsAirblastRequirement[attacker])
-    {
-      g_iTagsAirblastDamage[attacker] = g_iTagsAirblastRequirement[attacker];
-      if (!full)
-      {
-        EmitSoundToClient(attacker, SOUND_METERFULL);
-        SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 0.0);
-      }
-    }
-  }
+  return Plugin_Continue;
 }
 
-void ConfigEvent_AirBlast_Think(VSH2Player player)
+public Action ConfigEvent_AirBlast_Think(EventMap args, ConfigEventType_t event_type)
 {
-  if (!g_bIsAirBlastLimit[player.index])
-    return;
+  int calling_player_idx;
+  VSH2Player calling_player;
+  if (!args.GetTarget(calling_player_idx, calling_player))
+    return Plugin_Continue;
 
-  int client = player.index;
-  if (g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] >= g_iTagsAirblastRequirement[client])
+  if (g_flTagsAirblastCooldown[calling_player_idx] > 0.0 && g_flTagsAirblastLastUsed[calling_player_idx] + g_flTagsAirblastCooldown[calling_player_idx] < GetGameTime())
   {
-    int primary = TF2_GetItemInSlot(client, TF2WeaponSlot_Primary); //Detect if airblast is used, and reset if so
+    //Detect if airblast is used, and reset if so
+    int primary = TF2_GetItemInSlot(calling_player_idx, TFWeaponSlot_Primary);
     if (primary > MaxClients)
     {
-      FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeaponState"));
-      if (state != g_nTagsAirblastState[client] && state == FlamethrowerState_Airblast)
+      FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeapoState"));
+      if (state != g_nTagsAirblastState[calling_player_idx] && state == FlamethrowerState_Airblast)
       {
-        g_iTagsAirblastDamage[client] = 0;
-        SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", 31536000.0+GetGameTime()); //3 years
+        g_flTagsAirblastLastUsed[calling_player_idx] = GetGameTime();	//Set cooldown
+        SetEntPropFloat(primary, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + g_flTagsAirblastCooldown[calling_player_idx]);
       }
-      g_nTagsAirblastState[client] = state;
+
+      g_nTagsAirblastState[calling_player_idx] = state;
     }
   }
 
-  int buttons = GetClientButtons(client); //Prevent clients holding m2 while airblast in cooldown
-  if (buttons & IN_ATTACK2 && g_iTagsAirblastRequirement[client] > 0 && g_iTagsAirblastDamage[client] < g_iTagsAirblastRequirement[client])
+  int buttons = GetClientButtons(calling_player_idx);
+  if (buttons & IN_ATTACK2 && g_flTagsAirblastLastUsed[calling_player_idx] + g_flTagsAirblastCooldown[calling_player_idx] > GetGameTime())
   {
-    int primary = TF2_GetItemInSlot(client, TF2WeaponSlot_Primary);
-    int activewep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+    int primary = TF2_GetItemInSlot(calling_player_idx, TFWeaponSlot_Primary);
+    int activewep = GetEntPropEnt(calling_player_idx, Prop_Send, "m_hActiveWeapon");
     if (activewep > MaxClients && primary == activewep)
       buttons &= ~IN_ATTACK2;
 
-    if (g_nTagsAirblastState[client] == FlamethrowerState_Airblast) //Change the m_iWeaponState to a proper value after the airblast to prevent the visual bug
+    //Change the m_iWeaponState to a proper value after the airblast to prevent the visual bug
+    if (g_nTagsAirblastState[calling_player_idx] == FlamethrowerState_Airblast)
     {
       if (buttons & IN_ATTACK)
       {
-        g_nTagsAirblastState[client] = FlamethrowerState_Firing;
+        g_nTagsAirblastState[calling_player_idx] = FlamethrowerState_Firing;
         SetEntProp(primary, Prop_Send, "m_iWeaponState", FlamethrowerState_Firing);
       }
       else
       {
-        g_nTagsAirblastState[client] = FlamethrowerState_Idle;
+        g_nTagsAirblastState[calling_player_idx] = FlamethrowerState_Idle;
         SetEntProp(primary, Prop_Send, "m_iWeaponState", FlamethrowerState_Idle);
       }
     }
   }
+
+  return Plugin_Continue;
 }
-
-/*
-"<enum>"
-{
-  // process airblast hud. for event type "playerhud" only
-  "procedure"  "ConfigEvent_AirBlast_HUD"
-
-  // depend on 	'event_type', usually 'player' for calling player, check 'vsh2hooks*.sp'
-  // 'target' will assume the 'player' is an entity index
-  // while 'vsh2target' will assume the 'player' is a client userid
-  "vsh2target"	"player"
-  //"target"		"player"
-
-  // %f : percentage of airblast
-  "string"		"Airblast: %f%"
-}
-*/
 
 public Action ConfigEvent_AirBlast_HUD(EventMap args, ConfigEventType_t event_type)
 {
@@ -146,28 +136,18 @@ public Action ConfigEvent_AirBlast_HUD(EventMap args, ConfigEventType_t event_ty
   if (!args.GetTarget(calling_player_idx, calling_player))
     return Plugin_Continue;
 
-  if (!g_bIsAirBlastLimit[calling_player_idx])
-    return Plugin_Continue;
-
-  float percentage = GetAirblastPercentage(calling_player_idx) * 100.0;
-  if (percentage >= 0.0)
+  //Display airblast cooldown
+  float cooldown = g_flTagsAirblastLastUsed[calling_player_idx] + g_flTagsAirblastCooldown[calling_player_idx] - GetGameTime();
+  if (cooldown > 0.0)
   {
-    int abhud_size = args.GetSize("string");
-    char[] abhud_str = new char[abhud_size];
-    args.Get("string", abhud_str, abhud_size);
-    char percentage_replace[3];
-    IntToString(RoundToFloor(percentage), percentage_replace, 3);
-    ReplaceString(abhud_str, abhud_size, "%f", percentage_replace);
+    char abhud_str[128];
+    args.Get("string", abhud_str, 128);
+    char cooldown_replace[16];
+    FormatEx(cooldown_replace, sizeof(cooldown_replace), "%.1f", cooldown);
+    ReplaceString(abhud_str, strlen(abhud_str), "%f", cooldown_replace);
     ConfigSys.Params.SetString("new_text", abhud_str);
     return Plugin_Changed;
   }
+
   return Plugin_Continue;
-}
-
-stock float GetAirblastPercentage(int client)
-{
-  if (g_iTagsAirblastRequirement[client] <= 0)
-    return -1.0;
-
-  return float(g_iTagsAirblastDamage[client]) / float(g_iTagsAirblastRequirement[client]);
 }

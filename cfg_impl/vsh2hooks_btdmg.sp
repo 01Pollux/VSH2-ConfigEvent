@@ -26,7 +26,6 @@ Action ConfigEvent_OnBossTakeDamage(
 		VSH2Player player = VSH2Player(attacker);	//player = attacker
 		if (player != victim)	//not a self damage
 		{
-			ConfigEvent_AirBlast_OnTakeDamage(player, damage, weapon);
 			if (player.GetPropAny("bIsZombie"))
 			{
 				ConfigMap section = view_as<ConfigMap>(player.GetPropAny("_cfgsys_minion_section"));
