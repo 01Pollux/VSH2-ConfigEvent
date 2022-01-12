@@ -9,8 +9,8 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
             "<enum>"
             {
                 "procedure" "ConfigEvent_SandManStun"
-                "vsh2player" "plater"
-                "victim"    "victim"
+                "target" "player"
+                "vsh2victim"    "victim"
                 //Change the vars in cfg_impl/modules/sandman.sp if need.
             }
         }
@@ -27,13 +27,17 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
     if (!args.GetTargetEx("vsh2victim", "victim", victim, vsh2victim))
         return Plugin_Continue;
 
+    PrintToServer("VictimIndex: %i", victim);
+    PrintToServer("AttackerIndex: %i", attacker);
+
     float attacker_pos[3], victim_pos[3];
-    GetClientAbsOrigin(victim, attacker_pos);
+    GetClientAbsOrigin(attacker, attacker_pos);
     GetClientAbsOrigin(victim, victim_pos);
 
     float dist = GetVectorDistance(victim_pos, attacker_pos);
     float duration;
     int flags = TF_STUNFLAGS_SMALLBONK;
+
 
     switch (RoundToFloor(dist / 128))
     {

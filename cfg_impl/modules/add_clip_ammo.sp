@@ -111,7 +111,7 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-	float clip; args.GetFloat("clip", clip);
+	float clip; args.GetFloat("amount", clip);
 	float max; args.GetFloat("max", max);
 	int slot; args.GetInt("slot", slot);
 	float duration; args.GetFloat("duration", duration);
