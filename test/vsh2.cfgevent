@@ -97,8 +97,8 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_SandManStun"
-					"vsh2player"	"player"
-					"victim"	"victim"
+					"target"	"player"
+					"vsh2victim"	"victim"
 				}
 			}
 		}
@@ -211,8 +211,8 @@
 					"procedure"	"ConfigEvent_SetClipEnergy"
 					"vsh2target"	"player"
 
-					"ammount"	"100.0"
-					"max"	"200.0"
+					"amount"	"100.0"
+					"max"	"100.0"
 					"slot"	"1"
 					"duration"	"-1.0"
 				}
