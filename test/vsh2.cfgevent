@@ -522,6 +522,7 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_Explode"
+					"vsh2target"	"player"
 
 					"enttarget"	"projectile"
 					"damage"	"45.0"
@@ -751,6 +752,8 @@
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_Explode"
+					"<passive>"	"true"
+					"vsh2target"	"player"
 
 					"enttarget"	"projectile"
 					"damage"	"45.0"
