@@ -13,13 +13,14 @@ public void OnEntityCreated(int entity, const char[] classname)
  * Keys:
  * [in] "projectile": projectile entity index
  * [in] "toucher": toucher entity index actually idk where to use it
+ * [in] "player" projectile owner vsh2player instance
  */
-Action OnProjectileTouch(int projectile, int toucher)
+public Action OnProjectileTouch(int projectile, int toucher)
 {
 	if (VSH2GameMode.GetPropInt("iRoundState") != StateRunning)	return Plugin_Continue;
 
 	int client = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
-	if (0 < client <= MaxClients && IsClientInGame(client))	return Plugin_Continue;
+	if (client < 0 && client > MaxClients && !IsClientInGame(client))	return Plugin_Continue;
 
 	VSH2Player vsh2client = VSH2Player(client);
 	if (vsh2client.GetPropInt("bIsBoss"))
@@ -34,15 +35,17 @@ Action OnProjectileTouch(int projectile, int toucher)
 		{
 			ConfigSys.Params.SetValue("toucher", toucher);
 			ConfigSys.Params.SetValue("projectile", projectile);
+			ConfigSys.Params.SetValue("player", vsh2client);
 			ConfigEvent_ExecuteGlobals(CET_ProjectileTouch);
 		}
 		if (ConfigEvent_ShouldExecuteWeapons(CET_ProjectileTouch))
 		{
 			ConfigSys.Params.SetValue("toucher", toucher);
 			ConfigSys.Params.SetValue("projectile", projectile);
+			ConfigSys.Params.SetValue("player", vsh2client);
 			ConfigEvent_ExecuteWeapons(vsh2client, client, CET_ProjectileTouch);
 		}
 	}
-	
+
 	return Plugin_Continue;
 }
