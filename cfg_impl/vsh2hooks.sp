@@ -436,6 +436,13 @@ void ConfigEvent_OnPlayerHurt(const VSH2Player player, const VSH2Player victim, 
 		ConfigSys.Params.SetValue("event", event);
 		ConfigEvent_ExecuteGlobals(CET_PlayerHurt);
 	}
+	if (ConfigEvent_ShouldExecuteWeapons(CET_PlayerHurt))
+	{
+		ConfigSys.Params.SetValue("player", player);
+		ConfigSys.Params.SetValue("victim", victim);
+		ConfigSys.Params.SetValue("event", event);
+		ConfigEvent_ExecuteWeapons(player, player.index, CET_PlayerHurt);
+	}
 }
 
 void ConfigEvent_OnRedPlayerThink(const VSH2Player player)
