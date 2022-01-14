@@ -5,7 +5,8 @@ static float g_flTagsAirblastCooldown[MAXPLAYERS+1];
 static float g_flTagsAirblastLastUsed[MAXPLAYERS+1];
 
 /* --FullExample of Airblast Module--
-It only works with pyro. So try not to use it on other classes.
+For cooldown you can just use the attribute "mult_airblast_refire_time" instead of this.
+TODO_: change it to damage requirement
 In 'globals' section of the config file:
 "globals"
 {
