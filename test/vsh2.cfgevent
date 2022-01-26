@@ -354,6 +354,38 @@
 			{
 				"<enum>"
 				{
+					"procedure"	"ConfigEvent_GetProp"
+					"<passive>"	"true"
+					"target"	"weapon"
+
+					"<enum>"
+					{
+						"name"	"weapon_index"
+						"type"	"int"
+						"prop"	"m_iItemDefinitionIndex"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"<passive>"	"true"
+					"first"	"i@weapon_index"
+					"csecond"	"131"
+					"operators"	"1"
+					"skips"	"2"
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"<passive>"	"true"
+					"first"	"i@weapon_index"
+					"csecond"	"1144"
+					"operators"	"1000001"
+					"skips"	"1"
+				}
+				"<enum>"
+				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
 					"<passive>"	"true"
 					"vsh2target"	"player"
@@ -373,6 +405,29 @@
 		{
 			"btd_takedamage"
 			{
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_GetProp"
+					"<passive>"	"true"
+					"target"	"weapon"
+
+					"<enum>"
+					{
+						"name"	"weapon_index"
+						"type"	"int"
+						"prop"	"m_iItemDefinitionIndex"
+						"datamap"	"false"
+					}
+				}
+				"<enum>"
+				{
+					"procedure"	"ConfigEvent_JumpIf"
+					"<passive>"	"true"
+					"first"	"i@weapon_index"
+					"csecond"	"406"
+					"operators"	"1000001"
+					"skips"	"1"
+				}
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ManageSelfTFCond"
