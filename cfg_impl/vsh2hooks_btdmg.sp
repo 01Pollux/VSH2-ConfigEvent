@@ -41,6 +41,7 @@ Action ConfigEvent_OnBossTakeDamage(
 				ConfigSys.Params.SetValue("victim", victim);
 				ConfigSys.Params.SetValue("player", attacker);
 				ConfigSys.Params.SetValue("damage", damage);
+				ConfigSys.Params.SetValue("weapon", weapon);
 				Action ret = ConfigEvent_ExecuteGlobals(CET_BTD_OnTakeDamage);
 				switch (ret)
 				{
@@ -58,6 +59,7 @@ Action ConfigEvent_OnBossTakeDamage(
 				ConfigSys.Params.SetValue("victim", victim);
 				ConfigSys.Params.SetValue("player", attacker);
 				ConfigSys.Params.SetValue("damage", damage);
+				ConfigSys.Params.SetValue("weapon", weapon);
 				Action ret = ConfigEvent_ExecuteWeapons(player, attacker, CET_BTD_OnTakeDamage);
 				switch (ret)
 				{
