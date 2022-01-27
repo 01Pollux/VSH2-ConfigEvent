@@ -99,7 +99,7 @@ public Action ConfigEvent_SetAttribWep(EventMap args, ConfigEventType_t event_ty
 			int value_str_size = attrib.GetSize("value");
 			char[] value_str = new char[value_str_size];
 			attrib.Get("value", value_str, value_str_size);
-			
+
 			float value;
 			if (value_str[0] == '@')
 				ConfigSys.Params.GetValue(value_str[1], value);
@@ -108,12 +108,19 @@ public Action ConfigEvent_SetAttribWep(EventMap args, ConfigEventType_t event_ty
 			float duration; attrib.GetFloat("duration", duration);
 
 			//Address_Null if attribute doesn't exist
-			Address attrib_address = TF2Attrib_GetByDefIndex(weapon, index);
+			/* Address attrib_address = TF2Attrib_GetByDefIndex(weapon, index);
 			int attrib_idx = TF2Attrib_GetDefIndex(attrib_address);
-			float o_value = attrib_idx == index ? TF2Attrib_GetValue(attrib_address) : -39393939.0;
+			float o_value = attrib_idx == index ? TF2Attrib_GetValue(attrib_address) : -39393939.0; */
+			float o_value = -39393939.0;
+			Address attrib_address = TF2Attrib_GetByDefIndex(weapon, index);
+			if (attrib_address)
+			{
+				if (TF2Attrib_GetDefIndex(attrib_address) == index)
+					o_value = TF2Attrib_GetValue(attrib_address);
+			}
 
 			TF2Attrib_SetByDefIndex(weapon, index, value);
-			
+
 			if (duration != -1.0)
 			{
 				DataPack data;
@@ -148,7 +155,7 @@ public Action Timer_ResetAttribWep(Handle hTimer, DataPack data)
 		TF2Attrib_ClearCache(weapon);
 	}
 
-	delete data;
+	//delete data;
 
 	return Plugin_Continue;
 }
@@ -184,7 +191,7 @@ public Action ConfigEvent_RemoveAttribWep(EventMap args, ConfigEventType_t event
 		int weapon = args.GetInt("slot", slot) ? TF2_GetItemInSlot(calling_player_idx, slot) : -1;
 		if (weapon == -1)
 			return Plugin_Continue;
-		
+
 		for (int i = 0; i < attributes_size; i++)
 		{
 			ConfigMap attrib = attributes.GetIntSection(i);
@@ -197,6 +204,6 @@ public Action ConfigEvent_RemoveAttribWep(EventMap args, ConfigEventType_t event
 
 		TF2Attrib_ClearCache(weapon);
 	}
-	
+
 	return Plugin_Continue;
 }

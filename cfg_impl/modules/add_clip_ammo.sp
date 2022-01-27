@@ -55,7 +55,7 @@ public Action Timer_ResetClip(Handle hTimer, DataPack data)
 
 		SetClip(calling_player_idx, slot, currentclip);
 	}
-	delete data;
+	//delete data;
 
 	return Plugin_Continue;
 }
