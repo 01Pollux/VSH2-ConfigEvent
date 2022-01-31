@@ -21,9 +21,9 @@ public Action ConfigEvent_BlockCommand(EventMap args, ConfigEventType_t event_ty
 public Action ConfigEvent_EurekaEffect_Reset(EventMap args, ConfigEventType_t event_type)
 {
 	int calling_player_idx;
-  VSH2Player calling_player;
-  if (!args.GetTarget(calling_player_idx, calling_player))
-    return Plugin_Continue;
+	VSH2Player calling_player;
+	if (!args.GetTarget(calling_player_idx, calling_player))
+		return Plugin_Continue;
 
 	fEurekaEffectLastUsed[calling_player_idx] = 0.0;
 	fEurekaEffectCooldown[calling_player_idx] = 0.0;
@@ -66,7 +66,7 @@ public Action ConfigEvent_CoolDownHUD(EventMap args, ConfigEventType_t event_typ
 	}
 	"<enum>"
 	{
-		"procedure" "ConfigEvent_SkipIf"
+		"procedure" "ConfigEvent_JumpIf"
 		"first" "f@EukuraEffectCooldown"
 		"csecond" "0.0"
 		"operators" "100011"	//if cooldown left <= 0.0 then skip
