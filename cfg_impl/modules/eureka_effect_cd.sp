@@ -2,7 +2,7 @@ static bool bIsEurekaEffectCD[MAXPLAYERS+1];
 static float fEurekaEffectLastUsed[MAXPLAYERS+1];
 static float fEurekaEffectCooldown[MAXPLAYERS+1];
 
-public Action ConfigEvent_BlockCommand(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_EurekaEffect_BlockCommand(EventMap args, ConfigEventType_t event_type)
 {
 	int calling_player_idx;
 	VSH2Player calling_player;
@@ -31,7 +31,7 @@ public Action ConfigEvent_EurekaEffect_Reset(EventMap args, ConfigEventType_t ev
 	return Plugin_Continue;
 }
 
-public Action ConfigEvent_StartCoolDown(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_EurekaEffect_StartCoolDown(EventMap args, ConfigEventType_t event_type)
 {
 	/*
 	// ConfigEvent_StartCoolDown();
@@ -56,52 +56,14 @@ public Action ConfigEvent_StartCoolDown(EventMap args, ConfigEventType_t event_t
 	return Plugin_Continue;
 }
 
-public Action ConfigEvent_CoolDownHUD(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_EurekaEffect_CoolDownHUD(EventMap args, ConfigEventType_t event_type)
 {
 	/* "<enum>"
 	{
-		"procedure"	"ConfigEvent_CoolDownHUD"
+		"procedure"	"ConfigEvent_EurekaEffect_CoolDownHUD"
 		"vsh2target"	"player"
 		//EukuraEffectCooldown = cooldown left
-	}
-	"<enum>"
-	{
-		"procedure" "ConfigEvent_JumpIf"
-		"first" "f@EukuraEffectCooldown"
-		"csecond" "0.0"
-		"operators" "100011"	//if cooldown left <= 0.0 then skip
-		"skips"	"3"
-	}
-	"<enum>"
-	{
-		"procedure"	"ConfigEvent_FormatParams"
-		"<enum>"
-		{
-			"name"	"hud_string"
-			"value"	" | Eureka Effect: {0} seconds"
-			"size"	"128"
-			"args"
-			{
-				"<enum>"	"f@EukuraEffectCooldown"
-			}
-		}
-	}
-	"<enum>"
-	{
-		"procedure"	"ConfigEvent_ParseForumla"
-
-		"<enum>"
-		{
-			"name"	"new_text"
-			"from"	"@hud_string"
-			"truncate"	"false"
-		}
-	}
-	"<enum>"
-	{
-		"procedure"	"ConfigEvent_WriteReturn"
-
-		"return"	"changed"
+		"string"	" | Eureka Effect: %f seconds"
 	} */
 	int calling_player_idx;
 	VSH2Player calling_player;
@@ -109,7 +71,16 @@ public Action ConfigEvent_CoolDownHUD(EventMap args, ConfigEventType_t event_typ
 		return Plugin_Continue;
 
 	float cooldown = fEurekaEffectLastUsed[calling_player_idx] + fEurekaEffectCooldown[calling_player_idx] - GetGameTime();
-	ConfigSys.Params.SetValue("EukuraEffectCooldown", cooldown);
+	if (cooldown > 0.0)
+	{
+		char hud_string[128];
+		args.Get("string", hud_string, 128);
+		char cooldown_replace[16];
+		FormatEx(cooldown_replace, sizeof(cooldown_replace), "%.2f", cooldown);
+		ReplaceString(hud_string, strlen(hud_string), "%f", cooldown_replace);
+		ConfigSys.Params.SetString("new_text", hud_string);
+		return Plugin_Changed;
+	}
 
 	return Plugin_Continue;
 }
