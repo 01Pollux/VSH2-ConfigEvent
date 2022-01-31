@@ -1,12 +1,12 @@
-enum
+enum 
 {
-    JIFLAGS_EQUAL   = (1 << 0),
-    JIFLAGS_LESS    = (1 << 1),
-    JIFLAGS_GREATER = (1 << 2),
-    JIFLAGS_AND     = (1 << 3),
-    JIFLAGS_OR      = (1 << 4),
-    JIFLAGS_XOR     = (1 << 5),
-    JIFLAGS_NOT     = (1 << 6)
+    JIFLAGS_EQUAL       = (1 << 0),
+    JIFLAGS_LESS        = (1 << 1),
+    JIFLAGS_GREATER     = (1 << 2),
+    JIFLAGS_AND         = (1 << 3),
+    JIFLAGS_OR          = (1 << 4),
+    JIFLAGS_XOR         = (1 << 5),
+    JIFLAGS_NOT         = (1 << 6)
 };
 
 /**
@@ -25,15 +25,14 @@ public Action ConfigEvent_JumpIf(EventMap args, ConfigEventType_t event_type)
         // 0100000: Xor
         // 1000000: Not
 
-        // execute the 'success' functions if operators is
+        // skip the next procedures on success
         // first [==, !=, <, >, <=, >=, |, &] second
         // "first" and "second" are variable must be set in ConfigSys.Params
-        // "cfirst" and "csecond" are constants
-		"procedure"  "ConfigEvent_JumpIf"
+		"procedure"  "ConfigEvent_SkipIf"
 
-        // must be set if we won't be using their counterpart
-        // "cfirst"        "3"
-        // "csecond"       "3"
+        // flags to read first/second as floating point instead of integers
+        // "fsecond"    "true"
+        // "ffirst"     "true"
 
         "operators"     ""
         // skip the next 3 "<enum>" if the results were successful
@@ -41,58 +40,150 @@ public Action ConfigEvent_JumpIf(EventMap args, ConfigEventType_t event_type)
 
 
         // // a < b
-        // "first"         "a"
-        // "second"        "b"
+        // "first"         "@a"
+        // "second"        "@b"
         // "operators"     "10" // Less
 
         // // a > b == !(a <= b)
-        // "first"         "a"
-        // "second"        "b"
+        // "first"         "@a"
+        // "second"        "@b"
         // "operators"     "100"    // Greater
         // // "operators"  "100011" // Less or equal
 
-        // // a != b
-        // "first"         "a"
-        // "second"        "b"
+        // // a != 0
+        // "first"         "@a"
+        // "second"        "0"
         // "operators"     "1000001"    // No equal
 
-        // // !(a ^ b)
-        // "first"         "a"
-        // "second"        "b"
+        // // !(1 ^ b)
+        // "first"         "1"
+        // "second"        "@b"
         // "operators"     "1100000"    // Not Xor (NXOR)
 
-        // // !(a | b)
-        // "first"         "a"
-        // "second"        "b"
+        // // !(12 | 32)
+        // "first"         "12"
+        // "second"        "32"
         // "operators"     "1010000"    // Not Or (NOR)
 	}
 	*/
 
     any first, second;
-    if (!(ConfigSys.Params.GetValue("first", first) || args.GetInt("cfirst", first)))
-        return Plugin_Continue;
-    if (!(ConfigSys.Params.GetValue("second", second) || args.GetInt("csecond", second)))
-        return Plugin_Continue;
+    bool first_is_float, second_is_float;
+    char tmp_name[36];
 
-    int jiflags; args.GetInt("operators", jiflags);
+    args.GetBool("ffirst", first_is_float, false);
+    args.GetBool("fsecond", second_is_float, false);
 
-    bool success = false;
-    if ((jiflags & JIFLAGS_EQUAL) && first == second)
-        success = true;
+    if (args.Get("first", tmp_name, sizeof(tmp_name)))
+    {
+        if (tmp_name[0] == '@')
+            ConfigSys.Params.GetValue(tmp_name[1], first);
+        else
+        {
+            if (first_is_float)
+                first = StringToFloat(tmp_name);
+            else 
+                first = StringToInt(tmp_name);
+        }
+    }
+    else return Plugin_Continue;
+    if (args.Get("second", tmp_name, sizeof(tmp_name)))
+    {
+        if (tmp_name[0] == '@')
+            ConfigSys.Params.GetValue(tmp_name[1], first);
+        else
+        {
+            if (first_is_float)
+                first = StringToFloat(tmp_name);
+            else 
+                first = StringToInt(tmp_name);
+        }
+    }
+    else return Plugin_Continue;
 
-    if (!success && (jiflags & JIFLAGS_LESS) && (first < second))
-        success = true;
+    int jiflags; args.GetInt("operators", jiflags, 2);
 
-    if (!success && (jiflags & JIFLAGS_GREATER) && (first > second))
-        success = true;
+    bool success = true;
+    if (jiflags & JIFLAGS_LESS)
+    {
+        if (first_is_float)
+        {
+            if (second_is_float)
+                success = view_as<float>(first) < view_as<float>(second);
+            else
+                success = view_as<float>(first) < float(second);
+        }
+        else
+        {
+            if (second_is_float)
+                success = float(first) < view_as<float>(second);
+            else
+                success = first < second;
+        }
+        if ((jiflags & JIFLAGS_EQUAL) && !success)
+        {
+            if (first_is_float)
+            {
+                if (second_is_float)
+                    success = view_as<float>(first) == view_as<float>(second);
+                else
+                    success = view_as<float>(first) == float(second);
+            }
+            else
+            {
+                if (second_is_float)
+                    success = float(first) == view_as<float>(second);
+                else
+                    success = first == second;
+            }
+        }
+    }
+    else if (jiflags & JIFLAGS_GREATER)
+    {
+        if (first_is_float)
+        {
+            if (second_is_float)
+                success = view_as<float>(first) > view_as<float>(second);
+            else
+                success = view_as<float>(first) > float(second);
+        }
+        else
+        {
+            if (second_is_float)
+                success = float(first) > view_as<float>(second);
+            else
+                success = first > second;
+        }
+        if ((jiflags & JIFLAGS_EQUAL) && !success)
+        {
+            if (first_is_float)
+            {
+                if (second_is_float)
+                    success = view_as<float>(first) == view_as<float>(second);
+                else
+                    success = view_as<float>(first) == float(second);
+            }
+            else
+            {
+                if (second_is_float)
+                    success = float(first) == view_as<float>(second);
+                else
+                    success = first == second;
+            }
+        }
+    }
 
-    if (!success && (jiflags & JIFLAGS_AND) && (first & second))
-        success = true;
+    if (!first_is_float && !second_is_float)
+    {
+        if (jiflags & JIFLAGS_AND)
+            success = (first & second);
+        else if (jiflags & JIFLAGS_OR)
+            success = (first | second);
+        else if (jiflags & JIFLAGS_XOR)
+            success = (first | second);
+    }
 
-    if (!success && (jiflags & JIFLAGS_OR) && (first | second))
-        success = true;
-
-    if ((jiflags & JIFLAGS_NOT))
+    if (jiflags & JIFLAGS_NOT)
         success = !success;
 
     if (success)
