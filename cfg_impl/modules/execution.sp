@@ -1,4 +1,4 @@
-enum 
+enum
 {
     JIFLAGS_EQUAL   = (1 << 0),
     JIFLAGS_LESS    = (1 << 1),
@@ -29,7 +29,7 @@ public Action ConfigEvent_JumpIf(EventMap args, ConfigEventType_t event_type)
         // first [==, !=, <, >, <=, >=, |, &] second
         // "first" and "second" are variable must be set in ConfigSys.Params
         // "cfirst" and "csecond" are constants
-		"procedure"  "ConfigEvent_SkipIf"
+		"procedure"  "ConfigEvent_JumpIf"
 
         // must be set if we won't be using their counterpart
         // "cfirst"        "3"

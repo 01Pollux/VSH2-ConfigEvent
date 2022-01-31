@@ -5,7 +5,7 @@ public Action ConfigEvent_AllocateParams(EventMap args, ConfigEventType_t event_
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_AllocateParams"
-		
+
 		"<enum>"
 		{
 			// int a = 32;
@@ -55,13 +55,13 @@ public Action ConfigEvent_AllocateParams(EventMap args, ConfigEventType_t event_
 		}
 	}
 	*/
-	
+
 	for (int var_i = args.Size; var_i >= 0; var_i--)
 	{
 		ConfigMap var_sec = args.GetIntSection(var_i);
 		if (!var_sec)
 			continue;
-		
+
 		int var_name_size = var_sec.GetSize("name");
 		char[] var_name = new char[var_name_size];
 		var_sec.Get("name", var_name, var_name_size);
@@ -155,7 +155,7 @@ public Action ConfigEvent_AllocateParams(EventMap args, ConfigEventType_t event_
 			{
 				// Unsupported use object
 			}
-			
+
 		}
 		case PT_Object:
 		{
@@ -175,7 +175,7 @@ public Action ConfigEvent_AllocateParams(EventMap args, ConfigEventType_t event_
 		}
 		}
 	}
-	
+
 	return Plugin_Continue;
 }
 
@@ -187,7 +187,7 @@ public Action ConfigEvent_EraseParams(EventMap args, ConfigEventType_t event_typ
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_EraseParams"
-		
+
 		"<enum>"
 		{
 			"name"  "a"
@@ -198,13 +198,13 @@ public Action ConfigEvent_EraseParams(EventMap args, ConfigEventType_t event_typ
 		}
 	}
 	*/
-	
+
 	for (int var_i = args.Size; var_i >= 0; var_i--)
 	{
 		ConfigMap var_sec = args.GetIntSection(var_i);
 		if (!var_sec)
 			continue;
-		
+
 		int var_name_size = var_sec.GetSize("name");
 		char[] var_name = new char[var_name_size];
 		var_sec.Get("name", var_name, var_name_size);
@@ -223,7 +223,7 @@ public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_ty
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_FormatParams"
-		
+
 		"<enum>"
 		{
 			// const char[] other_string = "AAAA";
@@ -249,19 +249,19 @@ public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_ty
 		}
 	}
 	*/
-	
+
 	int args_count = args.Size;
 	for (int var_i = 0; var_i < args_count; ++var_i)
 	{
 		ConfigMap var_sec = args.GetIntSection(var_i);
 		if (!var_sec)
 			break;
-		
+
 
 		int str_size;
 		if (!var_sec.GetInt("size", str_size))
 			str_size = 64;
-		char[] var_buffer = new char[str_size]; 
+		char[] var_buffer = new char[str_size];
 		var_sec.Get("value", var_buffer, str_size);
 
 		ConfigMap args_stack = var_sec.GetSection("args");
@@ -303,7 +303,7 @@ public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_ty
 					{
 						float val; ConfigSys.Params.GetValue(arg_name[2], val);
 						char flt_val[16];
-						FormatEx(flt_val, sizeof(flt_val), "%f", val);
+						FormatEx(flt_val, sizeof(flt_val), "%.2f", val);
 
 						ReplaceStringEx(var_buffer, str_size, "{}", flt_val);
 						ReplaceString(var_buffer, str_size, arg_fmt, flt_val);
@@ -339,13 +339,13 @@ public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_ty
 					{
 						int val; ConfigSys.Params.GetValue(arg_name[2], val);
 						char c_val[1]; c_val[0] = view_as<char>(val);
-						
+
 						ReplaceStringEx(var_buffer, str_size, "{}", c_val);
 						ReplaceString(var_buffer, str_size, arg_fmt, c_val);
 					}
 					}
 				}
-				else 
+				else
 				{
 				 	ReplaceStringEx(var_buffer, str_size, "{}", arg_name);
 					ReplaceString(var_buffer, str_size, arg_fmt, arg_name);
@@ -371,14 +371,14 @@ public Action ConfigEvent_WriteReturn(EventMap args, ConfigEventType_t event_typ
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_WriteReturn"
-		
+
 		"return"		"continue"
 		// "return"		"changed"
 		// "return"		"handled"
 		// "return"		"stop"
 	}
 	*/
-	
+
 	char return_names[][] = {
 		"continue",
 		"changed",
@@ -407,7 +407,7 @@ public Action ConfigEvent_ParseForumla(EventMap args, ConfigEventType_t event_ty
 	"<enum>"
 	{
 		"procedure"  "ConfigEvent_ParseForumla"
-		
+
 		"<enum>"
 		{
 			// int my_n = 10;
@@ -419,16 +419,16 @@ public Action ConfigEvent_ParseForumla(EventMap args, ConfigEventType_t event_ty
 		}
 	}
 	*/
-	
+
 	int args_count = args.Size;
 	for (int var_i = 0; var_i < args_count; ++var_i)
 	{
 		ConfigMap var_sec = args.GetIntSection(var_i);
 		if (!var_sec)
 			break;
-		
+
 		int from_str_size = var_sec.GetSize("from");
-		char[] from_str = new char[from_str_size]; 
+		char[] from_str = new char[from_str_size];
 		var_sec.Get("from", from_str, from_str_size);
 		if (from_str[0] == '@')
 		{
@@ -451,7 +451,7 @@ static void ConfigEvent_ParseForumla_Internal(ConfigMap var_sec, const char[] fr
 	bool trucate;
 	if (var_sec.GetBool("truncate", trucate, false) && trucate)
 		val = RoundToFloor(val);
-	
+
 	int val_name_size = var_sec.GetSize("name");
 	char[] val_name = new char[val_name_size];
 	var_sec.Get("name", val_name, val_name_size);
