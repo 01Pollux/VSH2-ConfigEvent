@@ -2,7 +2,7 @@ static bool bIsEurekaEffectCD[MAXPLAYERS+1];
 static float fEurekaEffectLastUsed[MAXPLAYERS+1];
 static float fEurekaEffectCooldown[MAXPLAYERS+1];
 
-public Action ConfigEvent_EurekaEffect_BlockCommand(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_TeleportBlock(EventMap args, ConfigEventType_t event_type)
 {
 	int calling_player_idx;
 	VSH2Player calling_player;
@@ -18,7 +18,7 @@ public Action ConfigEvent_EurekaEffect_BlockCommand(EventMap args, ConfigEventTy
 	return bIsEurekaEffectCD[calling_player_idx] ? Plugin_Handled /* block the 'eukura_teleport' from being processed */: Plugin_Continue;
 }
 
-public Action ConfigEvent_EurekaEffect_Reset(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_TeleportReset(EventMap args, ConfigEventType_t event_type)
 {
 	int calling_player_idx;
 	VSH2Player calling_player;
@@ -31,7 +31,7 @@ public Action ConfigEvent_EurekaEffect_Reset(EventMap args, ConfigEventType_t ev
 	return Plugin_Continue;
 }
 
-public Action ConfigEvent_EurekaEffect_StartCoolDown(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_TeleportCooldown(EventMap args, ConfigEventType_t event_type)
 {
 	/*
 	// ConfigEvent_StartCoolDown();
@@ -56,7 +56,7 @@ public Action ConfigEvent_EurekaEffect_StartCoolDown(EventMap args, ConfigEventT
 	return Plugin_Continue;
 }
 
-public Action ConfigEvent_EurekaEffect_CoolDownHUD(EventMap args, ConfigEventType_t event_type)
+public Action ConfigEvent_TeleportHUD(EventMap args, ConfigEventType_t event_type)
 {
 	/* "<enum>"
 	{
