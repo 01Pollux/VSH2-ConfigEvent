@@ -56,12 +56,12 @@ public Action ConfigEvent_SummonZombie(EventMap args, ConfigEventType_t event_ty
 		}
 	}
 	*/
-	
+
 	int calling_player_idx;
 	VSH2Player calling_player;
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
-	
+
 	bool no_boss; args.GetBool("no boss", no_boss, false);
 	ArrayList players_list = new ArrayList();
 
@@ -116,7 +116,7 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 {
 	if (!minion.GetPropAny("bIsZombie"))
 		return;
-	
+
 	ConfigMap infosection = view_as<ConfigMap>(minion.GetPropAny("_cfgsys_minion_infosection"));
 	ConfigMap section = view_as<ConfigMap>(minion.GetPropAny("_cfgsys_minion_section"));
 
@@ -125,13 +125,13 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 
 	if (infosection.Get("health", model, sizeof(model)))
 		health = RoundToNearest(ParseFormula(model, VSH2GameMode_GetTotalRedPlayers()));
-	
+
 	int client = minion.index;
 	int owner_index = vsh2_owner.index;
 	{
-		TFClassType class; infosection.GetInt("class", view_as<int>(class));
-
-		TF2_SetPlayerClass(client, class, .persistent = false);
+		char buffer[64];
+		infosection.Get("class", buffer, sizeof(buffer));
+		TFClassType class = TF2_GetClass(buffer);
 
 		SetEntProp(client, Prop_Send, "m_lifeState", 2);
 		ChangeClientTeam(client, GetClientTeam(owner_index));
@@ -139,12 +139,13 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		PrintToServer("Respawn player %N", client);
 
 		TF2_RespawnPlayer(client);
+		TF2_SetPlayerClass(client, class, .persistent = false);
 	}
 
 	TF2_RemoveAllWeapons(client);
 	if (VSH2GameMode.GetPropInt("bTF2Attribs"))
 		TF2Attrib_RemoveAll(client);
-	
+
 	if (infosection.Get("classname", classname, sizeof(classname)))
 	{
 		infosection.Get("attributes", model, sizeof(model));
@@ -161,7 +162,7 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		{
 			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 			SetEntProp(weapon, Prop_Send, "m_iWorldModelIndex", -1);
-			
+
 			/// PDA, normal sapper
 			if (StrEqual(classname, "tf_weapon_builder") && index != 735 )
 			{
@@ -200,11 +201,11 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 	{
 		float position[3], velocity[3];
 		GetEntPropVector(owner_index, Prop_Data, "m_vecOrigin", position);
-		
+
 		velocity[0] = GetRandomFloat(300.0, 500.0) * (GetRandomInt(0, 1) ? 1:-1);
 		velocity[1] = GetRandomFloat(300.0, 500.0) * (GetRandomInt(0, 1) ? 1:-1);
 		velocity[2] = GetRandomFloat(300.0, 500.0);
-		
+
 		TeleportEntity(client, position, NULL_VECTOR, velocity);
 		TF2_AddCondition(client, TFCond_Ubercharged, 2.0);
 	}
