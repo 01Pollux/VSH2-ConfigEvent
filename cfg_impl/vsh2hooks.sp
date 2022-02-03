@@ -547,7 +547,7 @@ Action ConfigEvent_OnPlayerClimb(const VSH2Player player, const int weapon, floa
 		ConfigSys.Params.SetValue("player", player);
 		ConfigSys.Params.SetValue("upwardvel", upwardvel);
 		ConfigSys.Params.SetValue("health", health);
-		ConfigSys.Params.SetValue("attack_delay", attackdelay);
+		ConfigSys.Params.SetValue("attackdelay", attackdelay);
 		switch (ConfigEvent_ExecuteGlobals(CET_PlayerClimb))
 		{
 			case Plugin_Continue: { }
@@ -555,7 +555,7 @@ Action ConfigEvent_OnPlayerClimb(const VSH2Player player, const int weapon, floa
 			{
 				ConfigSys.Params.GetValue("upwardvel", upwardvel);
 				ConfigSys.Params.GetValue("health", health);
-				ConfigSys.Params.GetValue("health", attackdelay);
+				ConfigSys.Params.GetValue("attackdelay", attackdelay);
 				return Plugin_Changed;
 			}
 		}
@@ -572,7 +572,7 @@ Action ConfigEvent_OnPlayerClimb(const VSH2Player player, const int weapon, floa
 			{
 				ConfigSys.Params.GetValue("upwardvel", upwardvel);
 				ConfigSys.Params.GetValue("health", health);
-				ConfigSys.Params.GetValue("health", attackdelay);
+				ConfigSys.Params.GetValue("attackdelay", attackdelay);
 				return Plugin_Changed;
 			}
 			case Plugin_Handled, Plugin_Stop: return Plugin_Handled;
