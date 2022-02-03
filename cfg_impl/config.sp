@@ -82,6 +82,29 @@ void ConfigEvent_Unload()
 		}
 	}
 	{
+		ConfigWeaponEvent_t event_info;
+		for (int i = 0; i < sizeof(ConfigSys.AnyWeaponEvents); i++)
+		{
+			ArrayList cur_event = ConfigSys.AnyWeaponEvents[i];
+			if (cur_event)
+			{
+				ConfigSys.AnyWeaponEvents[i] = null;
+				for (int j = cur_event.Length - 1; j >= 0; j--)
+				{
+					cur_event.GetArray(j, event_info);
+
+					int ref_count;
+					event_info.Arguments.GetInt("__ref_count__", ref_count);
+					if (!--ref_count)
+						DeleteCfg(event_info.Arguments);
+					else
+						event_info.Arguments.SetInt("__ref_count__", ref_count);
+				}
+				delete cur_event;
+			}
+		}
+	}
+	{
 		ConfigGlobalEvent_t event_info;
 		for (int i = 0; i < sizeof(ConfigSys.GlobalEvents); i++)
 		{
@@ -106,8 +129,9 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 {
 	StringMapSnapshot weapon_iter = weapons.Snapshot();
 	Handle myself = GetMyHandle();
+	int weapon_iter_size = weapon_iter.Length;
 
-	for (int weapon_iter_i = weapon_iter.Length - 1; weapon_iter_i >= 0; weapon_iter_i--)
+	for (int weapon_iter_i = 0; weapon_iter_i < weapon_iter_size; weapon_iter_i++)
 	{
 		int key_size = weapon_iter.KeyBufferSize(weapon_iter_i) + 1;
 		char[] key = new char[key_size];
@@ -121,7 +145,9 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 
 		{
 			StringMapSnapshot cur_weapon_iter = cur_weapon.Snapshot();
-			for (int cur_weapon_j = cur_weapon_iter.Length - 1; cur_weapon_j >= 0; cur_weapon_j--)
+			int cur_weapon_iter_size = cur_weapon_iter.Length;
+
+			for (int cur_weapon_j = 0; cur_weapon_j < cur_weapon_iter_size; cur_weapon_j++)
 			{
 				int event_key_size = cur_weapon_iter.KeyBufferSize(cur_weapon_j) + 1;
 				char[] event_key = new char[event_key_size];
@@ -139,7 +165,8 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 				}
 
 				ConfigWeaponEvent_t event_info;
-				for (int event_info_i = event_sec.Size - 1; event_info_i >= 0; event_info_i--)
+				int event_info_size = event_sec.Size;
+				for (int event_info_i = 0; event_info_i < event_info_size; event_info_i++)
 				{
 					ConfigMap section = event_sec.GetIntSection(event_info_i);
 					if (!section)
@@ -184,7 +211,7 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 
 					ArrayList cur_event;
 					bool is_passive;
-					if (section.GetBool("<passive>", is_passive) && is_passive)
+					if (section.GetBool("<passive>", is_passive, false) && is_passive)
 					{
 						if (!(cur_event = ConfigSys.AnyWeaponEvents[type]))
 							ConfigSys.AnyWeaponEvents[type] = cur_event = new ArrayList(sizeof(ConfigWeaponEvent_t));
@@ -229,8 +256,9 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 	StringMapSnapshot globals_iter = globals.Snapshot();
 	ConfigGlobalEvent_t event_info;
 	Handle myself = GetMyHandle();
+	int global_iter_size = globals_iter.Length;
 
-	for (int globals_iter_i = globals_iter.Length - 1; globals_iter_i >= 0; globals_iter_i--)
+	for (int globals_iter_i = 0; globals_iter_i < global_iter_size; globals_iter_i++)
 	{
 		int event_key_size = globals_iter.KeyBufferSize(globals_iter_i) + 1;
 		char[] event_key = new char[event_key_size];
@@ -252,12 +280,12 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 		if (!cur_event)
 			ConfigSys.GlobalEvents[type] = cur_event = new ArrayList(sizeof(ConfigGlobalEvent_t));
 		
-		for (int cur_global_i = cur_global_size; cur_global_i >= 0; cur_global_i--)
+		for (int cur_global_i = 0; cur_global_i < cur_global_size; cur_global_i++)
 		{
 			ConfigMap event_sec = cur_global.GetIntSection(cur_global_i);
 			if (!event_sec)
 				continue;
-			
+
 			int function_name_size = event_sec.GetSize("procedure");
 			char[] function_name = new char[function_name_size];
 			event_sec.Get("procedure", function_name, function_name_size);
@@ -276,7 +304,7 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 				}
 			}
 
-			if (!(event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name))))
+			if ((event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name))) == INVALID_FUNCTION)
 			{
 				LogError("[VSH2 CfgEvent] Function doesn't exists \"globals::%s::%s\".", event_key, function_name);
 				continue;
@@ -315,6 +343,8 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 		if (weapon == -1)
 			return ConfigEvent_ExecutePassiveWeapons(player, client, type);
 
+		int weapon_id = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+
 		bool is_minion = player.bIsMinion;
 		int event_size = cur_event.Length;
 		ConfigWeaponEvent_t event_info;
@@ -322,13 +352,16 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 		for (int i = 0; i < event_size; i++)
 		{
 			cur_event.GetArray(i, event_info);
-			if (event_info.ItemID != -1 && event_info.ItemID != weapon)
+			if (event_info.ItemID != -1 && event_info.ItemID != weapon_id)
 				continue;
 
 			// Disallow minions from executing weapon's callbacks,
 			bool minion_can_execute;
-			if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || (!minion_can_execute && is_minion))
-				continue;
+			if (is_minion)
+			{
+				if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || !minion_can_execute)
+					continue;
+			}
 
 			Call_StartFunction(event_info.Plugin, event_info.Procedure);
 			Call_PushCell(event_info.Arguments);
@@ -397,8 +430,11 @@ static Action ConfigEvent_ExecutePassiveWeapons(VSH2Player player, int client, C
 
 		// Disallow minions from executing weapon's callbacks,
 		bool minion_can_execute;
-		if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || (!minion_can_execute && is_minion))
-			continue;
+		if (is_minion)
+		{
+			if (!event_info.Arguments.GetBool("minion can execute", minion_can_execute, false) || !minion_can_execute)
+				continue;
+		}
 
 		Call_StartFunction(event_info.Plugin, event_info.Procedure);
 		Call_PushCell(event_info.Arguments);

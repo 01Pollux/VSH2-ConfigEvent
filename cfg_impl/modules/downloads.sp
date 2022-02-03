@@ -62,18 +62,19 @@ public Action ConfigEvent_Download(EventMap args, ConfigEventType_t event_type)
 			bool save = LockStringTables(false);
 			for (int i = 0; i < sounds_size; i++)
 			{
-				int file_size = sounds.GetIntKeySize(i);
-				char[] file = new char[file_size + 6 /* sizeof("sounds/)*/];
+				int file_size = sounds.GetIntKeySize(i) + 6 /* sizeof("sounds/)*/ + 4 /* sizeof(".mp3") */;
+				char[] file = new char[file_size];
 
 				sounds.GetIntKey(i, file, file_size);
+				
+				PrecacheSound(file);
+				Format(file, file_size, "sound/%s", file);
+
 				if (!FileExists(file, true))
 				{
 					LogError("[VSH2 CfgEvent] Failed to find file \"%s\"", file);
 					continue;
 				}
-				PrecacheSound(file);
-
-				Format(file, file_size, "sound/%s", file);
 				AddToStringTable(download_stringtable, file);
 			}
 			LockStringTables(save);
@@ -123,7 +124,7 @@ public Action ConfigEvent_Download(EventMap args, ConfigEventType_t event_type)
 	
 	// "models"
 	{
-		ConfigMap models = args.GetSection("sounds");
+		ConfigMap models = args.GetSection("models");
 		int models_size = models ? models.Size : 0;
 		if (models_size)
 		{

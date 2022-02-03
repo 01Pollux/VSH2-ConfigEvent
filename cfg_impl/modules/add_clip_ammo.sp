@@ -55,7 +55,7 @@ public Action Timer_ResetClip(Handle hTimer, DataPack data)
 
 		SetClip(calling_player_idx, slot, currentclip);
 	}
-	delete data;
+	//delete data;
 
 	return Plugin_Continue;
 }
@@ -111,7 +111,7 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	if (!args.GetTarget(calling_player_idx, calling_player))
 		return Plugin_Continue;
 
-	float clip; args.GetFloat("clip", clip);
+	float clip; args.GetFloat("amount", clip);
 	float max; args.GetFloat("max", max);
 	int slot; args.GetInt("slot", slot);
 	float duration; args.GetFloat("duration", duration);
@@ -119,7 +119,7 @@ public Action ConfigEvent_SetClipEnergy(EventMap args, ConfigEventType_t event_t
 	int weapon = TF2_GetItemInSlot(calling_player_idx, slot);
 	if (IsValidEdict(weapon))
 	{
-		SetEntProp(weapon, Prop_Send, "m_flEnergy", clip);
+		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", clip);
 
 		if (duration >= 0.0)
 		{
@@ -145,7 +145,7 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 		if (cur_energy > max)
 			cur_energy = max;
 
-		SetEntProp(weapon, Prop_Send, "m_flEnergy", cur_energy);
+		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", cur_energy);
 	}
 
 	delete data;

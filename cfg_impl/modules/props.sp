@@ -37,8 +37,8 @@ public Action ConfigEvent_GetProp(EventMap args, ConfigEventType_t event_type)
 	int calling_ent_index;
 	{
 		VSH2Player dummy_vsh2player;
-		if (!args.GetTarget(calling_ent_index, dummy_vsh2player))
-			args.GetTargetEnt(calling_ent_index);
+		if (!args.GetTarget(calling_ent_index, dummy_vsh2player) && !args.GetTargetEnt(calling_ent_index))
+			return Plugin_Stop;
 	}
 
 	int args_count = args.Size;

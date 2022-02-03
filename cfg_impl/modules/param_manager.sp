@@ -303,7 +303,7 @@ public Action ConfigEvent_FormatParams(EventMap args, ConfigEventType_t event_ty
 					{
 						float val; ConfigSys.Params.GetValue(arg_name[2], val);
 						char flt_val[16];
-						FormatEx(flt_val, sizeof(flt_val), "%f", val);
+						FormatEx(flt_val, sizeof(flt_val), "%.2f", val);
 
 						ReplaceStringEx(var_buffer, str_size, "{}", flt_val);
 						ReplaceString(var_buffer, str_size, arg_fmt, flt_val);
