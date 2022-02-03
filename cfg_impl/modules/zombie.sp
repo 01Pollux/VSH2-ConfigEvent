@@ -129,7 +129,7 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 	int client = minion.index;
 	int owner_index = vsh2_owner.index;
 	{
-		char buffer[64];
+		char buffer[16];
 		infosection.Get("class", buffer, sizeof(buffer));
 		TFClassType class = TF2_GetClass(buffer);
 
