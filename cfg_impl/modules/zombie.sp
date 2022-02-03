@@ -140,6 +140,7 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 
 		TF2_RespawnPlayer(client);
 		TF2_SetPlayerClass(client, class, .persistent = false);
+		PrintToServer("Changing %N's class to %s / %i", client, buffer, class);
 	}
 
 	TF2_RemoveAllWeapons(client);
