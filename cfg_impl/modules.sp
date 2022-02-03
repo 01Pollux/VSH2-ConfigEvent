@@ -19,4 +19,5 @@
 #include "cfg_impl/modules/rage.sp"
 #include "cfg_impl/modules/glow.sp"
 #include "cfg_impl/modules/chainstabs.sp"
+#include "cfg_impl/modules/shahanshah.sp"
 //#include "cfg_impl/modules/print_to_server.sp"

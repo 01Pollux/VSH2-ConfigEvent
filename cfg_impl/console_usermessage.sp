@@ -40,7 +40,8 @@ public Action Console_EurakaTeleportCommand(int client, const char[] command, in
  */
 public Action OnTeleportHomeMessage(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
-	int client = players[0];
+	//int client = players[0];
+	int client = msg.ReadByte();
 	VSH2Player vsh2client = VSH2Player(client);
 	if (vsh2client.bIsBoss || VSH2GameMode.GetPropInt("iRoundState") != StateRunning)
 		return Plugin_Continue;
