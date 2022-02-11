@@ -6,7 +6,7 @@ public Action ConfigEvent_Shahanshah(EventMap args, ConfigEventType_t event_type
     return Plugin_Continue;
 
   int health = GetClientHealth(calling_player_idx);
-  int judge = GetEntProp(calling_player_idx, Prop_Send, "m_iMaxHealth") / 2;
+  int judge = GetEntProp(calling_player_idx, Prop_Data, "m_iMaxHealth") / 2;
   if (health > judge)
   {
     float upwardvel = 300.0;
