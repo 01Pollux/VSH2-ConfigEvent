@@ -133,14 +133,17 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		infosection.Get("class", buffer, sizeof(buffer));
 		TFClassType class = TF2_GetClass(buffer);
 
-		SetEntProp(client, Prop_Send, "m_lifeState", 2);
+		/* SetEntProp(client, Prop_Send, "m_lifeState", 2);
 		ChangeClientTeam(client, GetClientTeam(owner_index));
-		SetEntProp(client, Prop_Send, "m_lifeState", 0);
-		PrintToServer("Respawn player %N", client);
+		SetEntProp(client, Prop_Send, "m_lifeState", 0); */
+		TFTeam team = view_as<TFTeam>(GetClientTeam(owner_index));
+		AssignTeam(client, team, 1);
 
-		TF2_RespawnPlayer(client);
+		//PrintToServer("Respawn player %N", client);
+
+		//TF2_RespawnPlayer(client); //Already respawn the player in AssignTeam
 		TF2_SetPlayerClass(client, class, .persistent = false);
-		PrintToServer("Changing %N's class to %s / %i", client, buffer, class);
+		//PrintToServer("Changing %N's class to %s / %i", client, buffer, class);
 	}
 
 	TF2_RemoveAllWeapons(client);
@@ -245,5 +248,25 @@ void ConfigEvent_Zombie_Think(VSH2Player minion, int minion_index)
 			if (!IsPlayerAlive(owner_boss.index))
 				ForcePlayerSuicide(minion_index);
 		}
+	}
+}
+
+stock void AssignTeam(int client, TFTeam team, int desiredclass=0)
+{
+	if(!GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass")) // Initial living spectator check. A value of 0 means that no class is selected
+	{
+		LogError("Zombie: INVALID DESIRED CLASS FOR %N!", client);
+		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", !desiredclass ? 1 : desiredclass); // So we assign one to prevent living spectators
+	}
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	TF2_ChangeClientTeam(client, team);
+	// SetEntProp(client, Prop_Send, "m_lifeState", 0); // Is this even needed? According to naydef, this is the other cause of living spectators.
+	TF2_RespawnPlayer(client);
+
+	if(GetEntProp(client, Prop_Send, "m_iObserverMode") && IsPlayerAlive(client)) // If the initial checks fail, use brute-force.
+	{
+		LogError("Zombie: %N IS A LIVING SPECTATOR!", client);
+		TF2_SetPlayerClass(client, view_as<TFClassType>((!desiredclass ? 1 : desiredclass)), _, true);
+		TF2_RespawnPlayer(client);
 	}
 }
