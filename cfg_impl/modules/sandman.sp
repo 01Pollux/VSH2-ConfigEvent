@@ -27,7 +27,7 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
     if (!args.GetTargetEx("vsh2victim", "victim", victim, vsh2victim))
         return Plugin_Continue;
 
-    int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+    int weapon; ConfigSys.Params.GetValue("weapon", weapon);
     int weapon_id = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
     if (weapon_id != 44)
       return Plugin_Continue;
