@@ -132,6 +132,7 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		char buffer[16];
 		infosection.Get("class", buffer, sizeof(buffer));
 		TFClassType class = TF2_GetClass(buffer);
+		TF2_SetPlayerClass(client, class, _, true);	//HotoCocoaco: Need to set their m_iDesiredPlayerClass first then respawn them.
 
 		/* SetEntProp(client, Prop_Send, "m_lifeState", 2);
 		ChangeClientTeam(client, GetClientTeam(owner_index));
@@ -142,7 +143,6 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		//PrintToServer("Respawn player %N", client);
 
 		//TF2_RespawnPlayer(client); //Already respawn the player in AssignTeam
-		TF2_SetPlayerClass(client, class, .persistent = false);
 		//PrintToServer("Changing %N's class to %s / %i", client, buffer, class);
 	}
 
