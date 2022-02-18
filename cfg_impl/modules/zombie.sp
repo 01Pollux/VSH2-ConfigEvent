@@ -139,6 +139,7 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		SetEntProp(client, Prop_Send, "m_lifeState", 0); */
 		TFTeam team = view_as<TFTeam>(GetClientTeam(owner_index));
 		AssignTeam(client, team, 1);
+		TF2_SetPlayerClass(client, class, _, false);	//then we set their class with force way.
 
 		//PrintToServer("Respawn player %N", client);
 
