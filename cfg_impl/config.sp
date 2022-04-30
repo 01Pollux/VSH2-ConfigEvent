@@ -34,7 +34,7 @@ void ConfigEvent_Load()
 	ConfigMap cfg_event = new ConfigMap("configs/saxton_hale/vsh2.cfgevent");
 	if (!cfg_event)
 		return;
-	
+
 	ConfigMap cfg = cfg_event.GetSection("config");
 	if (!cfg)
 	{
@@ -136,7 +136,7 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 		int key_size = weapon_iter.KeyBufferSize(weapon_iter_i) + 1;
 		char[] key = new char[key_size];
 		weapon_iter.GetKey(weapon_iter_i, key, key_size);
-		
+
 		int separators = CountCharInString(key, ',') + 1;
 		char[][] weapon_ids = new char[separators][6];
 		int entries = ExplodeString(key, ",", weapon_ids, separators, 6);
@@ -151,12 +151,12 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 			{
 				int event_key_size = cur_weapon_iter.KeyBufferSize(cur_weapon_j) + 1;
 				char[] event_key = new char[event_key_size];
-				
+
 				cur_weapon_iter.GetKey(cur_weapon_j, event_key, event_key_size);
 				ConfigMap event_sec = cur_weapon.GetSection(event_key);
 				if (!event_sec)
 					continue;
-				
+
 				ConfigEventType_t type = ConfigEvent_NameToType(event_key);
 				if (type == CET_Invalid)
 				{
@@ -263,23 +263,23 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 		int event_key_size = globals_iter.KeyBufferSize(globals_iter_i) + 1;
 		char[] event_key = new char[event_key_size];
 		globals_iter.GetKey(globals_iter_i, event_key, event_key_size);
-		
+
 		ConfigEventType_t type = ConfigEvent_NameToType(event_key);
 		if (type == CET_Invalid)
 		{
 			LogError("[VSH2 CfgEvent] Event doesn't exists \"globals::%s\".", event_key);
 			continue;
 		}
-		
+
 		ConfigMap cur_global = globals.GetSection(event_key);
 		int cur_global_size = cur_global ? cur_global.Size : 0;
 		if (!cur_global_size)
 			continue;
-		
+
 		ArrayList cur_event = ConfigSys.GlobalEvents[type];
 		if (!cur_event)
 			ConfigSys.GlobalEvents[type] = cur_event = new ArrayList(sizeof(ConfigGlobalEvent_t));
-		
+
 		for (int cur_global_i = 0; cur_global_i < cur_global_size; cur_global_i++)
 		{
 			ConfigMap event_sec = cur_global.GetIntSection(cur_global_i);
@@ -334,6 +334,10 @@ bool ConfigEvent_ShouldExecuteWeapons(ConfigEventType_t type)
 
 Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType_t type)
 {
+	//This plugin should not work for boss. If you want to make some event for boss please just edit it with vsh2's subplugin. --Hoto Cocoa
+	if (player.bIsBoss)
+		return Plugin_Continue;
+
 	ArrayList cur_event = ConfigSys.WeaponEvents[type];
 	Action highest_ret = Plugin_Continue;
 	if (cur_event)
@@ -348,7 +352,7 @@ Action ConfigEvent_ExecuteWeapons(VSH2Player player, int client, ConfigEventType
 		bool is_minion = player.bIsMinion;
 		int event_size = cur_event.Length;
 		ConfigWeaponEvent_t event_info;
-		
+
 		for (int i = 0; i < event_size; i++)
 		{
 			cur_event.GetArray(i, event_info);
@@ -407,7 +411,7 @@ static Action ConfigEvent_ExecutePassiveWeapons(VSH2Player player, int client, C
 	bool is_minion = player.bIsMinion;
 	int event_size = cur_event.Length;
 	ConfigWeaponEvent_t event_info;
-	
+
 	for (int i = 0; i < event_size; i++)
 	{
 		cur_event.GetArray(i, event_info);
@@ -423,7 +427,7 @@ static Action ConfigEvent_ExecutePassiveWeapons(VSH2Player player, int client, C
 					break;
 				}
 			}
-			
+
 			if (!has_slot)
 				continue;
 		}
