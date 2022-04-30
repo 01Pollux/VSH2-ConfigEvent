@@ -40,13 +40,13 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
     float duration;
     int flags = TF_STUNFLAGS_SMALLBONK;
 
-		float level1; args.GetFloat("level1", level1);
-		float level2; args.GetFloat("level2", level2);
-		float level3; args.GetFloat("level3", level3);
-		float level4; args.GetFloat("level4", level4);
-		float level5; args.GetFloat("level5", level5);
-		float level6; args.GetFloat("level6", level6);
-		float level7; args.GetFloat("level7", level7);
+    float level1; args.GetFloat("level1", level1);
+    float level2; args.GetFloat("level2", level2);
+    float level3; args.GetFloat("level3", level3);
+    float level4; args.GetFloat("level4", level4);
+    float level5; args.GetFloat("level5", level5);
+    float level6; args.GetFloat("level6", level6);
+    float level7; args.GetFloat("level7", level7);
 
 
     switch (RoundToFloor(dist / 128))
