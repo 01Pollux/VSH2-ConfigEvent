@@ -92,7 +92,7 @@ public Action ConfigEvent_AirBlast_Think(EventMap args, ConfigEventType_t event_
   if (g_flTagsAirblastCooldown[calling_player_idx] > 0.0 && g_flTagsAirblastLastUsed[calling_player_idx] + g_flTagsAirblastCooldown[calling_player_idx] < GetGameTime())
   {
     //Detect if airblast is used, and reset if so
-    int primary = TF2_GetItemInSlot(calling_player_idx, TFWeaponSlot_Primary);
+    int primary = TF2Util_GetPlayerLoadoutEntity(calling_player_idx, TFWeaponSlot_Primary);
     if (primary > MaxClients)
     {
       FlamethrowerState state = view_as<FlamethrowerState>(GetEntProp(primary, Prop_Send, "m_iWeaponState"));
@@ -109,7 +109,7 @@ public Action ConfigEvent_AirBlast_Think(EventMap args, ConfigEventType_t event_
   int buttons = GetClientButtons(calling_player_idx);
   if (buttons & IN_ATTACK2 && g_flTagsAirblastLastUsed[calling_player_idx] + g_flTagsAirblastCooldown[calling_player_idx] > GetGameTime())
   {
-    int primary = TF2_GetItemInSlot(calling_player_idx, TFWeaponSlot_Primary);
+    int primary = TF2Util_GetPlayerLoadoutEntity(calling_player_idx, TFWeaponSlot_Primary);
     int activewep = GetEntPropEnt(calling_player_idx, Prop_Send, "m_hActiveWeapon");
     if (activewep > MaxClients && primary == activewep)
       buttons &= ~IN_ATTACK2;
