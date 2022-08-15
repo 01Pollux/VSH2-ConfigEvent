@@ -188,12 +188,16 @@ stock void TF2_Explode(
 		DispatchKeyValue(bomb, "health", "1");
 		DispatchKeyValue(bomb, "explode_particle", explode_particle);
 		DispatchKeyValue(bomb, "sound", sound);
+
 		DispatchSpawn(bomb);
 
 		if (attacker == -1)
 			AcceptEntityInput(bomb, "Detonate");
 		else
+		{
+			SetEntPropEnt(bomb, Prop_Send, "m_hOwnerEntity", attacker);
 			SDKHooks_TakeDamage(bomb, 0, attacker, 9999.0);
+		}
 	}
 }
 
@@ -225,18 +229,4 @@ stock void ClampValue(any& val, const any min, const any max)
 		val = min;
 	if (val > max)
 		val = max;
-}
-
-stock int TF2_GetItemInSlot(int client, int slot)
-{
-	int weapon = GetPlayerWeaponSlot(client, slot);
-	if (!IsValidEdict(weapon))
-	{
-		// If weapon not found in slot, check if it a wearable
-		weapon = SDKCall(SDKGetEquippedWearable, client, slot);
-		if (!IsValidEdict(weapon))
-			return -1;
-	}
-
-	return weapon;
 }

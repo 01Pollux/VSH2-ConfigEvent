@@ -120,11 +120,11 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 	ConfigMap infosection = view_as<ConfigMap>(minion.GetPropAny("_cfgsys_minion_infosection"));
 	ConfigMap section = view_as<ConfigMap>(minion.GetPropAny("_cfgsys_minion_section"));
 
-	char classname[64], model[PLATFORM_MAX_PATH];
+	char classname[64], buffer_g[PLATFORM_MAX_PATH];
 	int health = 250;
 
-	if (infosection.Get("health", model, sizeof(model)))
-		health = RoundToNearest(ParseFormula(model, VSH2GameMode_GetTotalRedPlayers()));
+	if (infosection.Get("health", buffer_g, sizeof(buffer_g)))
+		health = RoundToNearest(ParseFormula(buffer_g, VSH2GameMode_GetTotalRedPlayers()));
 
 	int client = minion.index;
 	int owner_index = vsh2_owner.index;
@@ -132,14 +132,19 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		char buffer[16];
 		infosection.Get("class", buffer, sizeof(buffer));
 		TFClassType class = TF2_GetClass(buffer);
+		TF2_SetPlayerClass(client, class, _, false);
 
-		SetEntProp(client, Prop_Send, "m_lifeState", 2);
+		/* SetEntProp(client, Prop_Send, "m_lifeState", 2);
 		ChangeClientTeam(client, GetClientTeam(owner_index));
-		SetEntProp(client, Prop_Send, "m_lifeState", 0);
-		PrintToServer("Respawn player %N", client);
+		SetEntProp(client, Prop_Send, "m_lifeState", 0); */
+		TFTeam team = view_as<TFTeam>(GetClientTeam(owner_index));
+		AssignTeam(client, team, 1);
+		TF2_SetPlayerClass(client, class, _, false);	//then we set their class with force way.
 
-		TF2_RespawnPlayer(client);
-		TF2_SetPlayerClass(client, class, .persistent = false);
+		//PrintToServer("Respawn player %N", client);
+
+		//TF2_RespawnPlayer(client); //Already respawn the player in AssignTeam
+		//PrintToServer("Changing %N's class to %s / %i", client, buffer, class);
 	}
 
 	TF2_RemoveAllWeapons(client);
@@ -148,14 +153,14 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 
 	if (infosection.Get("classname", classname, sizeof(classname)))
 	{
-		infosection.Get("attributes", model, sizeof(model));
+		infosection.Get("attributes", buffer_g, sizeof(buffer_g));
 		int index; infosection.GetInt("index", index);
 		int weapon = minion.SpawnWeapon(
 			classname,
 			index,
 			100,
 			5,
-			model /* attributes */
+			buffer_g /* attributes */
 		);
 
 		if (IsValidEntity(weapon))
@@ -210,11 +215,17 @@ void ConfigEvent_Zombie_Init(VSH2Player minion, VSH2Player vsh2_owner)
 		TF2_AddCondition(client, TFCond_Ubercharged, 2.0);
 	}
 
-	infosection.Get("model", model, sizeof(model));
+	char model[PLATFORM_MAX_PATH];
+	if (!infosection)	LogToFileEx("logs/zombie_model.txt", "Invalid Info section");
+	if (!infosection.Get("model", model, sizeof(model)) || !model[0])	LogToFileEx("logs/zombie_model.txt", "Invalid Model");
+	//infosection.Get("model", model, sizeof(model));
 
-	SetVariantString(model);
-	AcceptEntityInput(client, "SetCustomModel");
-	SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+	if (model[0])
+	{
+		SetVariantString(model);
+		AcceptEntityInput(client, "SetCustomModel");
+		SetEntProp(client, Prop_Send, "m_bUseClassAnimations", 1);
+	}
 
 	if (infosection.Get("text", model, sizeof(model)))
 		PrintHintText(client, model, owner_index);
@@ -233,7 +244,30 @@ void ConfigEvent_Zombie_Think(VSH2Player minion, int minion_index)
 	if (minion.GetPropAny("_cfgsys_slay_on_ownerdeath"))
 	{
 		VSH2Player owner_boss = minion.hOwnerBoss;
-		if (!IsPlayerAlive(owner_boss.index))
-			ForcePlayerSuicide(minion_index);
+		if (IsClientInGame(owner_boss.index) && 0 < owner_boss.index <= MaxClients)
+		{
+			if (!IsPlayerAlive(owner_boss.index))
+				ForcePlayerSuicide(minion_index);
+		}
+	}
+}
+
+stock void AssignTeam(int client, TFTeam team, int desiredclass=0)
+{
+	if(!GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass")) // Initial living spectator check. A value of 0 means that no class is selected
+	{
+		LogError("Zombie: INVALID DESIRED CLASS FOR %N!", client);
+		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", !desiredclass ? 1 : desiredclass); // So we assign one to prevent living spectators
+	}
+	SetEntProp(client, Prop_Send, "m_lifeState", 2);
+	TF2_ChangeClientTeam(client, team);
+	// SetEntProp(client, Prop_Send, "m_lifeState", 0); // Is this even needed? According to naydef, this is the other cause of living spectators.
+	TF2_RespawnPlayer(client);
+
+	if(GetEntProp(client, Prop_Send, "m_iObserverMode") && IsPlayerAlive(client)) // If the initial checks fail, use brute-force.
+	{
+		LogError("Zombie: %N IS A LIVING SPECTATOR!", client);
+		TF2_SetPlayerClass(client, view_as<TFClassType>((!desiredclass ? 1 : desiredclass)), _, true);
+		TF2_RespawnPlayer(client);
 	}
 }

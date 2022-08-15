@@ -3,6 +3,7 @@
 #include <vsh2>
 #include <cfgmap>
 #include <tf2attributes>
+#include <tf2utils>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -35,21 +36,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
-	GameData gamedata = new GameData("vsh2.configsys");
-
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayer::GetEquippedWearableForLoadoutSlot");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
-	if (!(SDKGetEquippedWearable = EndPrepSDKCall()))
-	{
-		delete gamedata;
-		SetFailState("Failed to create call to 'CTFPlayer::GetEquippedWearableForLoadoutSlot'");
-		return;
-	}
-
-	delete gamedata;
-
 	RegAdminCmd("vsh2_cfgevent_reload", OnReloadConfig, ADMFLAG_ROOT, "Reload VSH2-Configsystem");
 
 	AddCommandListener(Console_EurakaTeleportCommand, "eureka_teleport");
