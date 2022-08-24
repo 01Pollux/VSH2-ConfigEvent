@@ -244,7 +244,7 @@ void ConfigEvent_Zombie_Think(VSH2Player minion, int minion_index)
 	if (minion.GetPropAny("_cfgsys_slay_on_ownerdeath"))
 	{
 		VSH2Player owner_boss = minion.hOwnerBoss;
-		if (IsClientInGame(owner_boss.index) && 0 < owner_boss.index <= MaxClients)
+		if (0 < owner_boss.index <= MaxClients && IsClientInGame(owner_boss.index))
 		{
 			if (!IsPlayerAlive(owner_boss.index))
 				ForcePlayerSuicide(minion_index);
