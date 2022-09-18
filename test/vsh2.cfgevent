@@ -3,229 +3,111 @@
 	// same as "weapons" with "*" params, except it doesnt limit to only the player and gets executed before "weapons"
 	"globals"
 	{
+	"reset_vsh2player"
+	{
+		"<enum>"
+		{
+			"procedure"	"ConfigEvent_AllocateParams"
 
+			"<enum>"
+			{
+				"name"	"ZERO"
+				"type"	"int"
+				"value"	"0"
+			}
+		}
+
+		"<enum>"
+		{
+			"procedure"	"ConfigEvent_TeleportReset"
+			"vsh2target"	"player"
+		}
+
+		"<enum>"
+		{
+			"procedure"	"ConfigEvent_SetProp"
+			"vsh2target"	"player"
+
+			"<enum>"
+			{
+				"custom"	"vsh2player"
+				"prop"	"iChainStab"
+				"value"	"ZERO"
+			}
+		}
+
+		"<enum>"
+		{
+			"procedure"	"ConfigEvent_SetProp"
+			"vsh2target"	"player"
+
+			"<enum>"
+			{
+				"custom"	"vsh2player"
+				"prop"	"bIsZombie"
+				"value"	"false"
+			}
+		}
+
+		"<enum>"
+		{
+			"procedure"	"ConfigEvent_ChainStab_Reset"
+			"vsh2target"	"player"
+		}
 	}
 	"weapons"
 	{
-		"226"	//The Battalion's Backup 军队的支援
-		{
-			"banner_start"
-			{
-				"<enum>"
-				{
-					"procedure"	 "ConfigEvent_SummonZombie"
-					"minion can execute"	"false"
-
-					"vsh2target"	 "owner"
-					"max players"	 "3"
-
-					"vampire"		 "10.0"	// steal 5.0% of victim's health on attack
-
-					"slay"			"true"  // slay when the owner dies
-					"no boss"		"true"  // dont summon as minion if the player was previously a boss
-
-					"allow weapons" "false" // allow minions to use execute weapons config ('bCfgSysXAllow')
-					"delay"			"0.1"	// spawn minion after 'delay' seconds
-					"spawn"		 "false" // true to teleport directly to spawn
-
-					"climb"
-					{
-						"enable"	"true"
-						"velocity"  "400.0"
-					}
-
-					"conditions"
-					{
-						"<enum>"
-						{
-							"id"	"25"	//Bleed cond 流血
-							"value" "999.0"
-						}
-					}
-
-					"info"
-					{
-						"<enum>"
-						{
-							"class"	 "scout"
-							"health"	"125.0"
-							"model"	 "models/player/scout.mdl"
-
-							"text"  "You are now %N's minion! Attack the other team."
-
-							"classname"  "tf_weapon_bat"
-							"attributes" "68 ; -1"
-							"index"	  "190"
-							"ammo"		"-9"
-							"clip"		"-9"
-
-							"particle"	"ghost_smoke"
-						}
-					}
-				}
-			}
-		}
-		"133"	//Gunboats 炮艇
-		{
-			"falldamage"
-			{
-				// ConfigEvent_FormatParams(...);
-				"<enum>"
-				{
-					"procedure"  "ConfigEvent_FormatParams"
-
-					"<enum>"
-					{
-						"name"	"damage_str"
-						"value"	"0.5 * {0}"
-						"size"	"32"
-						"args"
-						{
-							"<enum>"	"f@damage"				// 0
-						}
-					}
-				}
-				"<enum>"
-				{
-					"procedure"  "ConfigEvent_ParseForumla"
-
-					"<enum>"
-					{
-						"name"		"damage"
-						"from"		"@damage_str"
-					}
-				}
-			}
-		}
-		"589"	//Eureka Effect 传送扳手
-		{
-			"eureka_teleport"
-			{
-				"<enum>"
-				{
-					"procedure"		"ConfigEvent_BlockCommand"	//only block if in cooldown
-					"vsh2target"	"player"
-				}
-			}
-			"eureka_teleported"
-			{
-				"<enum>"
-				{
-					"procedure"		"ConfigEvent_StartCoolDown"
-					"vsh2target"	"player"
-
-					"cooldown"		"45.0"	//45 seconds to set bIsEukuraEffectCD to false
-				}
-				"<enum>"
-				{
-					"procedure"		"ConfigEvent_MakeStun"
-					"vsh2target"	"player"
-
-					"duration"		"6.0"
-					"flags"		"110"	//TF_STUNFLAG_BONKSTUCK | TF_STUNFLAG_LIMITMOVEMENT
-				}
-				"<enum>"
-				{
-					"procedure"		"ConfigEvent_SetClientGlow"
-					"vsh2target"	"player"
-
-					"addtime"		"6.0"
-				}
-			}
-		}
-		"773"	//Pretty Boy's Pocket Pistol 帅气男孩的袖珍手枪
+		"773"	//Pretty Boy's Pocket Pistol
 		{
 			"btd_takedamage"
 			{
-				// ConfigEvent_GetProp(...);
 				"<enum>"
 				{
-					"procedure"  "ConfigEvent_GetProp"
-
-					"vsh2target"	"player"
+					"procedure"	"ConfigEvent_GetProp"
+					"target"	"player"
 
 					"<enum>"
 					{
-						"name"	"iCurHealth"
+
+						"name"	"iMyHealth"
 						"type"	"int"
-						"prop"  "m_iHealth"
+						"size"	"7"
+						"prop"	"m_iHealth"
+						"datamap"	"false"
+						}
 					}
-				}
 				"<enum>"
 				{
 					"procedure"	"ConfigEvent_ManageSelfHeal"
-					"vsh2target"	"player"
+					"target"	"player"
 
 					"health"
 					{
-						"formula"	"H + 5"
+						"formula"	"A + 5"
 						"<enum>"
 						{
-							"token"	"H"
-							"value"	"iCurHealth"
+							"token"	"A"
+							"value"	"i@iMyHealth"
 						}
 					}
 					"clamp"		 "199"
 				}
 			}
 		}
-		"29, 211, 663, 796, 805, 885, 894, 903, 912, 961, 970, 15008, 15010, 15025, 15039, 15050, 15078, 15097, 15121, 15122, 15123, 15145, 15146"	//Stock Medigun
+
+		"305, 1079"	//Crusader's Crossbow
 		{
-			"think"
+			"projectile_touch"
 			{
 				"<enum>"
 				{
-					"procedure"		"ConfigEvent_ManagePatientTFCond"
+					"procedure"	"ConfigEvent_Explode"
+					"<passive>"	"true"
 					"vsh2target"	"player"
 
-					"add"			"true"
-					"conditions"
-					{
-						"<enum>"
-						{
-							"id"		"16"	//minicrits
-							"duration"		"0.05"	//good for onplayerthink
-						}
-					}
-				}
-			}
-		}
-		"35"	//The Kritzkrieg
-		{
-			"think"
-			{
-				"<enum>"
-				{
-					"procedure"		"ConfigEvent_ManagePatientTFCond"
-					"vsh2target"	"player"
-
-					"add"		"true"
-					"conditions"
-					{
-						"<enum>"
-						{
-							"id"		"16"
-							"duration"		"0.05"
-						}
-					}
-				}
-			}
-			"uber_deploy"
-			{
-				"<enum>"
-				{
-					"procedure"		"ConfigEvent_ManageSelfTFCond"
-					"vsh2target"	"player"
-
-					"add"		"true"
-					"conditions"
-					{
-						"<enum>"
-						{
-							"id"		"42"
-							"duration"		"8.0"
-						}
-					}
+					"enttarget"	"projectile"
+					"damage"	"45.0"
+					"radius"	"120.0"
 				}
 			}
 		}
