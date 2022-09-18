@@ -3,111 +3,113 @@
 	// same as "weapons" with "*" params, except it doesnt limit to only the player and gets executed before "weapons"
 	"globals"
 	{
-	"reset_vsh2player"
-	{
-		"<enum>"
+		"reset_vsh2player"
 		{
-			"procedure"	"ConfigEvent_AllocateParams"
-
 			"<enum>"
 			{
-				"name"	"ZERO"
-				"type"	"int"
-				"value"	"0"
-			}
-		}
+				"procedure"	"ConfigEvent_AllocateParams"
 
-		"<enum>"
-		{
-			"procedure"	"ConfigEvent_TeleportReset"
-			"vsh2target"	"player"
-		}
-
-		"<enum>"
-		{
-			"procedure"	"ConfigEvent_SetProp"
-			"vsh2target"	"player"
-
-			"<enum>"
-			{
-				"custom"	"vsh2player"
-				"prop"	"iChainStab"
-				"value"	"ZERO"
-			}
-		}
-
-		"<enum>"
-		{
-			"procedure"	"ConfigEvent_SetProp"
-			"vsh2target"	"player"
-
-			"<enum>"
-			{
-				"custom"	"vsh2player"
-				"prop"	"bIsZombie"
-				"value"	"false"
-			}
-		}
-
-		"<enum>"
-		{
-			"procedure"	"ConfigEvent_ChainStab_Reset"
-			"vsh2target"	"player"
-		}
-	}
-	"weapons"
-	{
-		"773"	//Pretty Boy's Pocket Pistol
-		{
-			"btd_takedamage"
-			{
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_GetProp"
-					"target"	"player"
-
-					"<enum>"
-					{
-
-						"name"	"iMyHealth"
-						"type"	"int"
-						"size"	"7"
-						"prop"	"m_iHealth"
-						"datamap"	"false"
-						}
-					}
-				"<enum>"
-				{
-					"procedure"	"ConfigEvent_ManageSelfHeal"
-					"target"	"player"
-
-					"health"
-					{
-						"formula"	"A + 5"
-						"<enum>"
-						{
-							"token"	"A"
-							"value"	"i@iMyHealth"
-						}
-					}
-					"clamp"		 "199"
+					"name"	"ZERO"
+					"type"	"int"
+					"value"	"0"
 				}
 			}
-		}
 
-		"305, 1079"	//Crusader's Crossbow
-		{
-			"projectile_touch"
+			"<enum>"
 			{
+				"procedure"	"ConfigEvent_TeleportReset"
+				"vsh2target"	"player"
+			}
+
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_SetProp"
+				"vsh2target"	"player"
+
 				"<enum>"
 				{
-					"procedure"	"ConfigEvent_Explode"
-					"<passive>"	"true"
-					"vsh2target"	"player"
+					"custom"	"vsh2player"
+					"prop"	"iChainStab"
+					"value"	"ZERO"
+				}
+			}
 
-					"enttarget"	"projectile"
-					"damage"	"45.0"
-					"radius"	"120.0"
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_SetProp"
+				"vsh2target"	"player"
+
+				"<enum>"
+				{
+					"custom"	"vsh2player"
+					"prop"	"bIsZombie"
+					"value"	"false"
+				}
+			}
+
+			"<enum>"
+			{
+				"procedure"	"ConfigEvent_ChainStab_Reset"
+				"vsh2target"	"player"
+			}
+		}
+		"weapons"
+		{
+			"773"	//Pretty Boy's Pocket Pistol
+			{
+				"btd_takedamage"
+				{
+					"<enum>"
+					{
+						"procedure"	"ConfigEvent_GetProp"
+						"target"	"player"
+
+						"<enum>"
+						{
+
+							"name"	"iMyHealth"
+							"type"	"int"
+							"size"	"7"
+							"prop"	"m_iHealth"
+							"datamap"	"false"
+							}
+						}
+					}
+					"<enum>"
+					{
+						"procedure"	"ConfigEvent_ManageSelfHeal"
+						"target"	"player"
+
+						"health"
+						{
+							"formula"	"A + 5"
+							"<enum>"
+							{
+								"token"	"A"
+								"value"	"i@iMyHealth"
+							}
+						}
+						"clamp"		 "199"
+					}
+				}
+			}
+
+			"305, 1079"	//Crusader's Crossbow
+			{
+				"projectile_touch"
+				{
+					"<enum>"
+					{
+						"procedure"	"ConfigEvent_Explode"
+						"<passive>"	"true"
+						"vsh2target"	"player"
+
+						"enttarget"	"projectile"
+						"damage"	"45.0"
+						"radius"	"120.0"
+					}
 				}
 			}
 		}
