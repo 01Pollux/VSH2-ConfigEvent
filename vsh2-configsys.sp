@@ -32,6 +32,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	CreateNative("VSH2CfgEvent.Refresh", Native_Refresh);
 	CreateNative("VSH2CfgEvent.GetParams", Native_GetCurrentParams);
+	return APLRes_Success;
 }
 
 public void OnPluginStart()
