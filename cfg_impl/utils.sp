@@ -57,7 +57,6 @@ enum ConfigEvent_ParamType_t
 
 #define Plugin_SkipN		999
 
-Handle SDKGetEquippedWearable;
 
 int CountCharInString(const char[] str, char c)
 {
