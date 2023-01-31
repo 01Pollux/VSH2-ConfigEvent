@@ -90,13 +90,13 @@ public Action ConfigEvent_JumpIf(EventMap args, ConfigEventType_t event_type)
     if (args.Get("second", tmp_name, sizeof(tmp_name)))
     {
         if (tmp_name[0] == '@')
-            ConfigSys.Params.GetValue(tmp_name[1], first);
+            ConfigSys.Params.GetValue(tmp_name[1], second);
         else
         {
             if (first_is_float)
-                first = StringToFloat(tmp_name);
+                second = StringToFloat(tmp_name);
             else 
-                first = StringToInt(tmp_name);
+                second = StringToInt(tmp_name);
         }
     }
     else return Plugin_Continue;
@@ -170,6 +170,23 @@ public Action ConfigEvent_JumpIf(EventMap args, ConfigEventType_t event_type)
                 else
                     success = first == second;
             }
+        }
+    }
+    else if (jiflags & JIFLAGS_EQUAL)
+    {
+        if (first_is_float)
+        {
+            if (second_is_float)
+                success = view_as<float>(first) == view_as<float>(second);
+            else
+                success = view_as<float>(first) == float(second);
+        }
+        else
+        {
+            if (second_is_float)
+                success = float(first) == view_as<float>(second);
+            else
+                success = first == second;
         }
     }
 
