@@ -148,7 +148,7 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", cur_energy);
 	}
 
-	delete data;
+	//delete data;
 
 	return Plugin_Continue;
 }
