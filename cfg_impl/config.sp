@@ -12,21 +12,21 @@ ConfigSys_t ConfigSys;
 
 #include "cfg_impl/target.sp"
 
-typedef ConfigWeaponEvent_Proc = function void(EventMap args, ConfigEventType_t type);
+//typedef ConfigWeaponEvent_Proc = function void(EventMap args, ConfigEventType_t type);
 enum struct ConfigWeaponEvent_t
 {
 	EventMap Arguments;
 	Handle Plugin;
-	ConfigWeaponEvent_Proc Procedure;
+	Function Procedure;
 	int	 ItemID;
 }
 
-typedef ConfigGlobalEvent_Proc = function void(EventMap args, ConfigEventType_t type);
+//typedef ConfigGlobalEvent_Proc = function void(EventMap args, ConfigEventType_t type);
 enum struct ConfigGlobalEvent_t
 {
 	EventMap Arguments;
 	Handle Plugin;
-	ConfigGlobalEvent_Proc Procedure;
+	Function Procedure;
 }
 
 void ConfigEvent_Load()
@@ -193,7 +193,7 @@ void ConfigEvent_ParseWeapons(ConfigMap weapons)
 						}
 					}
 
-					event_info.Procedure = view_as<ConfigWeaponEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name));
+					event_info.Procedure = GetFunctionByName(event_info.Plugin, function_name);
 					if (event_info.Procedure == INVALID_FUNCTION)
 					{
 						LogError("[VSH2 CfgEvent] Function doesn't exists \"weapons::%s::%s::%s\".", key, event_key, function_name);
@@ -304,7 +304,7 @@ void ConfigEvent_ParseGlobals(ConfigMap globals)
 				}
 			}
 
-			if ((event_info.Procedure = view_as<ConfigGlobalEvent_Proc>(GetFunctionByName(event_info.Plugin, function_name))) == INVALID_FUNCTION)
+			if ((event_info.Procedure = GetFunctionByName(event_info.Plugin, function_name)) == INVALID_FUNCTION)
 			{
 				LogError("[VSH2 CfgEvent] Function doesn't exists \"globals::%s::%s\".", event_key, function_name);
 				continue;

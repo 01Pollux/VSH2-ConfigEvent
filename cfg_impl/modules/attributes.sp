@@ -155,7 +155,7 @@ public Action Timer_ResetAttribWep(Handle hTimer, DataPack data)
 		TF2Attrib_ClearCache(weapon);
 	}
 
-	//delete data;
+	CloseHandle(data);
 
 	return Plugin_Continue;
 }

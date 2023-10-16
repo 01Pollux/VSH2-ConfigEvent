@@ -11,7 +11,14 @@ public Action ConfigEvent_SandManStun(EventMap args, ConfigEventType_t event_typ
                 "procedure" "ConfigEvent_SandManStun"
                 "target" "player"
                 "vsh2victim"    "victim"
-                //Change the vars in cfg_impl/modules/sandman.sp if need.
+
+								"level1"	"1.0"
+								"level2"	"2.0"
+								"level3"	"3.0"
+								"level4"	"4.0"
+								"level5"	"5.0"
+								"level6"	"6.0"
+								"level7"	"7.0"
             }
         }
     }

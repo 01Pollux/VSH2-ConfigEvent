@@ -55,7 +55,7 @@ public Action Timer_ResetClip(Handle hTimer, DataPack data)
 
 		SetClip(calling_player_idx, slot, currentclip);
 	}
-	//delete data;
+	CloseHandle(data);
 
 	return Plugin_Continue;
 }
@@ -148,7 +148,7 @@ public Action Timer_ResetClipEnergy(Handle hTimer, DataPack data)
 		SetEntPropFloat(weapon, Prop_Send, "m_flEnergy", cur_energy);
 	}
 
-	delete data;
+	CloseHandle(data);
 
 	return Plugin_Continue;
 }

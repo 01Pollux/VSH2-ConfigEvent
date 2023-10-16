@@ -25,13 +25,14 @@ public Plugin myinfo =
 	name		= "VSH2 Config Event",
 	author		= "01Pollux, HotoCocoaco",
 	description	= "Manage VSH2's events with config",
-	version		= "1.0.0"
+	version		= "1.0.2"
 };
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	CreateNative("VSH2CfgEvent.Refresh", Native_Refresh);
 	CreateNative("VSH2CfgEvent.GetParams", Native_GetCurrentParams);
+	return APLRes_Success;
 }
 
 public void OnPluginStart()
